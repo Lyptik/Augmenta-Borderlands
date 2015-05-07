@@ -1544,7 +1544,7 @@ void mousePassiveMotion(int x, int y)
 //-----------------------------------------------------------------------------//
 // MAIN
 //-----------------------------------------------------------------------------//
-int main (int argc, char ** argv)
+/*int main (int argc, char ** argv)
 {
     //init random number generator
     srand(time(NULL));
@@ -1631,5 +1631,5 @@ cleanup:
     // done
     return 0;
     
-}
+}*/
 
