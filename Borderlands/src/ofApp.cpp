@@ -584,17 +584,16 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    //clear color and depth buffers
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glClearDepth(1.0);
     
-    ////PUSH //save current transform
-    glPushMatrix();
+    ofBackground(ofColor::black);
     
-    glLoadIdentity();
+    // Draw fbo
+    m_fbo.begin();
+    
+    ofPushMatrix();
     
     //update viewer position
-    glTranslatef(-position.x,-position.y,-position.z); //translate the screen to the position of our camera
+    ofTranslate(position.x,position.y,position.z); //translate the screen to the position of our camera
     if (menuFlag == false){
         //render rectangles
         if (soundViews){
@@ -619,16 +618,12 @@ void ofApp::draw(){
         printUsage();
     }
     
+    ofPopMatrix();
     
+    m_fbo.end();
     
-    //printUsage();
-    
-    //POP ---//restore state
-    glPopMatrix();
-    
-    //flush and swap
-    glFlush();//renders and empties buffers
-    glutSwapBuffers(); // brings hidden buffer to the front (using double buffering for smoother graphics)
+    m_fbo.draw(0,0,ofGetWidth(),ofGetHeight());
+
 }
 
 //--------------------------------------------------------------
