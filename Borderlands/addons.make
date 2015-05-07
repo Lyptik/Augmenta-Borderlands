@@ -1,0 +1,5 @@
+ofxAugmenta
+ofxLibsndfileRecorder
+ofxSyphon
+ofxXmlSettings
+ofxOsc

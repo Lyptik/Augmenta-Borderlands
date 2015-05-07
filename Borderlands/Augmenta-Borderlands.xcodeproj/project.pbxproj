@@ -48,6 +48,8 @@
 		A345BDF21AFB6124006D309B /* Stk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDE21AFB6124006D309B /* Stk.cpp */; };
 		A345BDF31AFB6124006D309B /* Thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDE51AFB6124006D309B /* Thread.cpp */; };
 		A345BDF41AFB6124006D309B /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDE71AFB6124006D309B /* Window.cpp */; };
+		A345BE301AFB6AED006D309B /* scUBlibsndfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A345BE251AFB6AED006D309B /* scUBlibsndfile.a */; };
+		A345BE321AFB6AED006D309B /* ofxLibsndFileRecorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BE2B1AFB6AED006D309B /* ofxLibsndFileRecorder.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -186,6 +188,11 @@
 		A345BDE61AFB6124006D309B /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
 		A345BDE71AFB6124006D309B /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
 		A345BDE81AFB6124006D309B /* Window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Window.h; sourceTree = "<group>"; };
+		A345BE211AFB6AED006D309B /* sndfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sndfile.h; sourceTree = "<group>"; };
+		A345BE221AFB6AED006D309B /* sndfile.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sndfile.hh; sourceTree = "<group>"; };
+		A345BE251AFB6AED006D309B /* scUBlibsndfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = scUBlibsndfile.a; sourceTree = "<group>"; };
+		A345BE2B1AFB6AED006D309B /* ofxLibsndFileRecorder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxLibsndFileRecorder.cpp; sourceTree = "<group>"; };
+		A345BE2C1AFB6AED006D309B /* ofxLibsndFileRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxLibsndFileRecorder.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -226,6 +233,7 @@
 				E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */,
 				E45BE97F0E8CC7DD009D7055 /* CoreAudio.framework in Frameworks */,
 				E45BE9800E8CC7DD009D7055 /* CoreFoundation.framework in Frameworks */,
+				A345BE301AFB6AED006D309B /* scUBlibsndfile.a in Frameworks */,
 				E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */,
 				E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */,
 				E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */,
@@ -499,9 +507,71 @@
 			path = Borderlands;
 			sourceTree = "<group>";
 		};
+		A345BE101AFB6AED006D309B /* ofxLibsndfileRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				A345BE1E1AFB6AED006D309B /* libs */,
+				A345BE2A1AFB6AED006D309B /* src */,
+			);
+			name = ofxLibsndfileRecorder;
+			path = ../../../addons/ofxLibsndfileRecorder;
+			sourceTree = "<group>";
+		};
+		A345BE1E1AFB6AED006D309B /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				A345BE1F1AFB6AED006D309B /* libsndfile */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		A345BE1F1AFB6AED006D309B /* libsndfile */ = {
+			isa = PBXGroup;
+			children = (
+				A345BE201AFB6AED006D309B /* include */,
+				A345BE231AFB6AED006D309B /* lib */,
+			);
+			path = libsndfile;
+			sourceTree = "<group>";
+		};
+		A345BE201AFB6AED006D309B /* include */ = {
+			isa = PBXGroup;
+			children = (
+				A345BE211AFB6AED006D309B /* sndfile.h */,
+				A345BE221AFB6AED006D309B /* sndfile.hh */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		A345BE231AFB6AED006D309B /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				A345BE241AFB6AED006D309B /* osx */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		A345BE241AFB6AED006D309B /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				A345BE251AFB6AED006D309B /* scUBlibsndfile.a */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		A345BE2A1AFB6AED006D309B /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A345BE2B1AFB6AED006D309B /* ofxLibsndFileRecorder.cpp */,
+				A345BE2C1AFB6AED006D309B /* ofxLibsndFileRecorder.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				A345BE101AFB6AED006D309B /* ofxLibsndfileRecorder */,
 				A345BD941AFB5ED6006D309B /* ofxSyphon */,
 				A345BD871AFB5EBE006D309B /* ofxXmlSettings */,
 				A345BD4E1AFB5E99006D309B /* ofxOsc */,
@@ -701,6 +771,7 @@
 				A345BD811AFB5E99006D309B /* OscTypes.cpp in Sources */,
 				A345BDEC1AFB6124006D309B /* GrainVoice.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
+				A345BE321AFB6AED006D309B /* ofxLibsndFileRecorder.cpp in Sources */,
 				A345BD861AFB5E99006D309B /* ofxOscSender.cpp in Sources */,
 				A345BDC41AFB5ED6006D309B /* SyphonNameboundClient.m in Sources */,
 				A345BDEB1AFB6124006D309B /* GrainCluster.cpp in Sources */,
@@ -735,7 +806,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -773,7 +844,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -889,6 +960,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
+					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx,
+					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/vs2010,
 				);
 				PRODUCT_NAME = "Augmenta-BorderlandsDebug";
 				WRAPPER_EXTENSION = app;
@@ -975,6 +1048,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_49)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
+					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx,
+					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/vs2010,
 				);
 				PRODUCT_NAME = "Augmenta-Borderlands";
 				WRAPPER_EXTENSION = app;
