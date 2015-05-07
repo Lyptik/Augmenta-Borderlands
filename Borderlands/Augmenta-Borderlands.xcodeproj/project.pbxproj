@@ -37,7 +37,6 @@
 		A345BDC71AFB5ED6006D309B /* ofxSyphonServerDirectory.mm in Sources */ = {isa = PBXBuildFile; fileRef = A345BDBE1AFB5ED6006D309B /* ofxSyphonServerDirectory.mm */; };
 		A345BDCE1AFB5EFF006D309B /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A345BDB11AFB5ED6006D309B /* Syphon.framework */; };
 		A345BDE91AFB6124006D309B /* AudioFileSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDD01AFB6124006D309B /* AudioFileSet.cpp */; };
-		A345BDEA1AFB6124006D309B /* Borderlands.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDD21AFB6124006D309B /* Borderlands.cpp */; };
 		A345BDEB1AFB6124006D309B /* GrainCluster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDD31AFB6124006D309B /* GrainCluster.cpp */; };
 		A345BDEC1AFB6124006D309B /* GrainVoice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDD51AFB6124006D309B /* GrainVoice.cpp */; };
 		A345BDED1AFB6124006D309B /* GTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A345BDD71AFB6124006D309B /* GTime.cpp */; };
@@ -165,7 +164,6 @@
 		A345BDBE1AFB5ED6006D309B /* ofxSyphonServerDirectory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxSyphonServerDirectory.mm; sourceTree = "<group>"; };
 		A345BDD01AFB6124006D309B /* AudioFileSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFileSet.cpp; sourceTree = "<group>"; };
 		A345BDD11AFB6124006D309B /* AudioFileSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileSet.h; sourceTree = "<group>"; };
-		A345BDD21AFB6124006D309B /* Borderlands.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Borderlands.cpp; sourceTree = "<group>"; };
 		A345BDD31AFB6124006D309B /* GrainCluster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GrainCluster.cpp; sourceTree = "<group>"; };
 		A345BDD41AFB6124006D309B /* GrainCluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GrainCluster.h; sourceTree = "<group>"; };
 		A345BDD51AFB6124006D309B /* GrainVoice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GrainVoice.cpp; sourceTree = "<group>"; };
@@ -480,7 +478,6 @@
 			children = (
 				A345BDD01AFB6124006D309B /* AudioFileSet.cpp */,
 				A345BDD11AFB6124006D309B /* AudioFileSet.h */,
-				A345BDD21AFB6124006D309B /* Borderlands.cpp */,
 				A345BDD31AFB6124006D309B /* GrainCluster.cpp */,
 				A345BDD41AFB6124006D309B /* GrainCluster.h */,
 				A345BDD51AFB6124006D309B /* GrainVoice.cpp */,
@@ -642,10 +639,10 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				A345BDCF1AFB6124006D309B /* Borderlands */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
+				A345BDCF1AFB6124006D309B /* Borderlands */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -758,7 +755,6 @@
 				A32A46F51AFB8A2D00FBF6CD /* AugmentaInteractiveArea.cpp in Sources */,
 				A345BDC51AFB5ED6006D309B /* ofxSyphonClient.mm in Sources */,
 				A345BD7A1AFB5E99006D309B /* NetworkingUtils.cpp in Sources */,
-				A345BDEA1AFB6124006D309B /* Borderlands.cpp in Sources */,
 				A32A46F61AFB8A2D00FBF6CD /* AugmentaPerson.cpp in Sources */,
 				A345BD921AFB5EBE006D309B /* tinyxmlparser.cpp in Sources */,
 				A32A46F41AFB8A2D00FBF6CD /* AugmentaEvents.cpp in Sources */,
