@@ -16,16 +16,29 @@ cd $ORIG_PATH
 # Install ofxSyphon
 ADDONS=ofxSyphon
 cd $SCRIPT_PATH/../../../addons/ &&
-[ -d $ADDONS ] || git clone https://github.com/astellato/ofxSyphon.git &&
-cd $ADDONS &&
-git checkout master &&
+if [ ! -d $ADDONS ]; then
+	git clone https://github.com/astellato/ofxSyphon.git &&
+	cd $ADDONS &&
+	git checkout master
+fi
 
 # Install ofxAugmenta
 ADDONS=ofxAugmenta
 cd $SCRIPT_PATH/../../../addons/ &&
-[ -d $ADDONS ] || git clone https://github.com/Theoriz/ofxAugmenta.git &&
-cd $ADDONS &&
-git checkout master &&
+if [ ! -d $ADDONS ]; then
+	git clone https://github.com/Theoriz/ofxAugmenta.git &&
+	cd $ADDONS &&
+	git checkout master
+fi
+
+# Install ofxLibsndfileRecorder
+ADDONS=ofxLibsndfileRecorder
+cd $SCRIPT_PATH/../../../addons/ &&
+if [ ! -d $ADDONS ]; then
+	git clone https://github.com/angeloseme/ofxLibsndfileRecorder.git &&
+	cd $ADDONS &&
+	git checkout master
+fi
 
 cd $ORIG_PATH &&
 echo "Done!"
