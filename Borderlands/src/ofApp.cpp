@@ -252,7 +252,7 @@ void draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat sca
     
     glPushMatrix();
     glTranslatef( x, screenHeight-y, z );
-    glScalef( .001f * scale, .001f * scale, .001f * scale );
+    glScalef( .001f * scale, -.001f * scale, .001f * scale );
     
     for( i = 0; i < len; i++ )
         glutStrokeCharacter( GLUT_STROKE_MONO_ROMAN, str[i] );
@@ -471,7 +471,7 @@ void printParam(){
 //update mouse coords based on mousemovement
 void updateMouseCoords(int x, int y){
     mouseX = x+position.x;
-    mouseY = (screenHeight - (y-position.y) );
+    mouseY = y+position.y;
 }
 
 
