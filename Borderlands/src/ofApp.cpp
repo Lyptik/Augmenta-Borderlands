@@ -30,6 +30,11 @@
 //
 
 
+// Global variable containing pointer on instance of this class, used for callback function
+// In setup(), the openStream method wait a pointer on a callback function which
+// respond to typedef RtAudioCallback defined in RTAudio.h, and the callback must access member variables 
+// So we can't provide a pointer on this class in parameter, and we can't make the callback static
+ofApp* thisApp;
 
 using namespace std;
 
@@ -391,6 +396,8 @@ void ofApp::deselect(int shapeType){
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    thisApp = this;
     
     screenWidth = ofGetWidth();
     screenHeight = ofGetHeight();
