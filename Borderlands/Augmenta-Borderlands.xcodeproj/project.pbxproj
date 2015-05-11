@@ -955,8 +955,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
-					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx,
-					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/vs2010,
+					"$(OF_PATH)/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx",
 				);
 				PRODUCT_NAME = "Augmenta-BorderlandsDebug";
 				WRAPPER_EXTENSION = app;
@@ -1041,9 +1040,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_48)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_49)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
+					"$(OF_PATH)/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
-					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx,
-					/Users/theoriz/code/openFrameworks/addons/ofxLibsndfileRecorder/libs/libsndfile/lib/vs2010,
 				);
 				PRODUCT_NAME = "Augmenta-Borderlands";
 				WRAPPER_EXTENSION = app;
