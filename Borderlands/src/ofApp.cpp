@@ -30,130 +30,17 @@
 //
 
 
-//my includes
-#include "Borderlands/theglobals.h"
-
-//audio related
-#include "Borderlands/MyRtAudio.h"
-#include "Borderlands/AudioFileSet.h"
-#include "Borderlands/Window.h"
-
-//graphics related
-#include "Borderlands/SoundRect.h"
-
-//graphics and audio related
-#include "Borderlands/GrainCluster.h"
-
 
 using namespace std;
 
 unsigned int screenWidth, screenHeight;
-
-//-----------------------------------------------------------------------------
-// Shared Data Structures, Global parameters
-//-----------------------------------------------------------------------------
-//audio system
-MyRtAudio * theAudio = NULL;
-//library path
-ofDirectory g_audioDir("./loops/");
-string g_audioPath = g_audioDir.path();
-//parameter string
-string paramString = "";
-//desired audio buffer size
-unsigned int g_buffSize = 1024;
-//audio files
-vector <AudioFile *> * mySounds = NULL;
-//audio file visualization objects
-vector <SoundRect *> * soundViews = NULL;
-//grain cloud audio objects
-vector<GrainCluster *> * grainCloud = NULL;
-//grain cloud visualization objects
-vector<GrainClusterVis *> * grainCloudVis;
-//cloud counter
-unsigned int numClouds = 0;
-
-//global time increment - samples per second
-//global time is incremented in audio callback
-const double samp_time_sec = (double) 1.0 / (double)MY_SRATE;
-
-
-//Initial camera movement vars
-//my position
-ofPoint position = ofPoint(0.0,0.0,0.0f);
-
-
-//ENUMS
-//user selection mode
-enum{RECT,CLOUD};
-enum{MOVE,RESIZE};
-//default selection mode
-int selectionMode = CLOUD;
-int dragMode = MOVE;
-bool resizeDir = false; //for rects
-//rubber band select params
-int rb_anchor_x = -1;
-int rb_anchor_y = -1;
-
-//not used yet - for multiple selection
-vector<int> * selectionIndices = new vector<int>;
-
-//selection helper vars
-int selectedCloud = -1;
-int selectedRect = -1;
-bool menuFlag = true;
-int selectionIndex = 0;
-
-//cloud parameter changing
-enum{NUMGRAINS,DURATION,WINDOW, MOTIONX, MOTIONY,MOTIONXY,DIRECTION,OVERLAP, PITCH, ANIMATE,P_LFO_FREQ,P_LFO_AMT,SPATIALIZE,VOLUME};
-//flag indicating parameter change
-bool paramChanged = false;
-unsigned int currentParam = NUMGRAINS;
-double lastParamChangeTime = 0.0;
-double tempParamVal = -1.0;
-
-
-
-
-//mouse coordinate initialization
-int mouseX = -1;
-int mouseY = -1;
-long veryHighNumber = 50000000;
-long lastDragX = veryHighNumber;
-long lastDragY = veryHighNumber;
-
-
-//--------------------------------------------------------------------------------
-// FUNCTION PROTOTYPES
-//--------------------------------------------------------------------------------
-
-void idleFunc();
-void displayFunc();
-void reshape(int w, int h);
-void specialFunc(int key, int x, int y);
-void keyboardFunc(unsigned char key, int x, int y);
-void keyUpFunc(unsigned char key, int x, int y);
-void deselect(int mode);
-
-void mouseFunc(int button, int state, int x, int y);
-void mouseDrag(int x, int y);
-void mousePassiveMotion(int x, int y);
-void updateMouseCoords(int x, int y);
-void initialize();
-void draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat scale);
-void printUsage();
-void printParam();
-void drawAxis();
-int audioCallback( void * outputBuffer, void * inputBuffer, unsigned int numFrames, double streamTime,RtAudioStreamStatus status, void * userData);
-void cleaningFunction();
-
-
 
 
 //--------------------------------------------------------------------------------
 // Cleanup code
 //--------------------------------------------------------------------------------
 
-void cleaningFunction(){
+void ofApp::cleaningFunction(){
     try {
         theAudio->stopStream();
         theAudio->closeStream();
@@ -196,12 +83,12 @@ int audioCallback( void * outputBuffer, void * inputBuffer, unsigned int numFram
     SAMPLE * in = (SAMPLE *)inputBuffer;
     
     memset(out, 0, sizeof(SAMPLE)*numFrames*MY_CHANNELS );
-    if (menuFlag == false){
-        for(int i = 0; i < grainCloud->size(); i++){
-            grainCloud->at(i)->nextBuffer(out, numFrames);
+    if (thisApp->menuFlag == false){
+        for(int i = 0; i < thisApp->grainCloud->size(); i++){
+            thisApp->grainCloud->at(i)->nextBuffer(out, numFrames);
         }
     }
-    GTime::instance().sec += numFrames*samp_time_sec;
+    GTime::instance().sec += numFrames*thisApp->samp_time_sec;
     // cout << GTime::instance().sec<<endl;
     return 0;
 }
@@ -211,7 +98,7 @@ int audioCallback( void * outputBuffer, void * inputBuffer, unsigned int numFram
 // name: drawAxis()
 // desc: draw 3d axis
 //-----------------------------------------------------------------------------
-void drawAxis()
+void ofApp::drawAxis()
 {
     //PUSH -- //store state
     glPushMatrix();
@@ -246,7 +133,7 @@ void drawAxis()
 // Display simple string
 // desc: from sndpeek source - Ge Wang, et al
 //-----------------------------------------------------------------------------
-void draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat scale = 1.0f )
+void ofApp::draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat scale = 1.0f )
 {
     GLint len = strlen( str ), i;
     
@@ -264,7 +151,7 @@ void draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat sca
 //-----------------------------------------------------------------------------
 // Show usage on screen.  TODO:  add usage info
 //-----------------------------------------------------------------------------
-void printUsage(){
+void ofApp::printUsage(){
     float smallSize = 0.03f;
     float mediumSize = 0.04f;
     glLineWidth(2.0f);
@@ -287,7 +174,7 @@ void printUsage(){
 }
 
 
-void printParam(){
+void ofApp::printParam(){
     if ((numClouds > 0) && (selectedCloud >=0)){
         GrainClusterVis * theCloudVis= grainCloudVis->at(selectedCloud);
         GrainCluster * theCloud = grainCloud->at(selectedCloud);
@@ -469,7 +356,7 @@ void printParam(){
 
 
 //update mouse coords based on mousemovement
-void updateMouseCoords(int x, int y){
+void ofApp::updateMouseCoords(int x, int y){
     mouseX = x+position.x;
     mouseY = y+position.y;
 }
@@ -481,7 +368,7 @@ void updateMouseCoords(int x, int y){
 
 
 //handle deselections
-void deselect(int shapeType){
+void ofApp::deselect(int shapeType){
     switch (shapeType){
         case CLOUD:
             if (selectedCloud >=0){
@@ -507,6 +394,9 @@ void ofApp::setup(){
     
     screenWidth = ofGetWidth();
     screenHeight = ofGetHeight();
+    
+    ofDirectory g_audioDir(g_audioPath);
+    g_audioPath = g_audioDir.path();
     
     //init random number generator
     srand(time(NULL));
@@ -579,7 +469,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    
 }
 
 //--------------------------------------------------------------
