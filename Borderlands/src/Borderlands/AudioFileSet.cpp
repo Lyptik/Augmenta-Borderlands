@@ -187,6 +187,8 @@ int AudioFileSet::loadFileSet(string localPath)
         
         //close the directory that we've been navigating
         closedir (dir);
+        
+        return 0;
     } else {
         /* could not open directory */
         perror ("");
