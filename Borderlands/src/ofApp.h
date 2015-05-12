@@ -112,6 +112,8 @@ class ofApp : public ofBaseApp{
         long lastDragX = veryHighNumber;
         long lastDragY = veryHighNumber;
         
+        //keyboard modifier key
+        int modkey = -1;
         
         //--------------------------------------------------------------------------------
         // FUNCTION PROTOTYPES

@@ -532,11 +532,20 @@ void ofApp::keyPressed(int key){
     static float upDownMoveSpeed = 10.0f;
     
     static bool negativeFlag = false;//for negative value entry
-    int modkey = glutGetModifiers();
     
     //cout << "special key" << key <<endl;
     
     switch (key){
+        case OF_KEY_SHIFT:
+            modkey = OF_KEY_SHIFT;
+            break;
+        case OF_KEY_ALT:
+            modkey = OF_KEY_ALT;
+            break;
+        case OF_KEY_CONTROL:
+            modkey = OF_KEY_CONTROL;
+            break;
+            
         case OF_KEY_LEFT:
             //move to the left
             position.x -=  sidewaysMoveSpeed;
@@ -709,7 +718,7 @@ void ofApp::keyPressed(int key){
                 if (currentParam != SPATIALIZE){
                     currentParam = SPATIALIZE;
                 }else{
-                    if (modkey == GLUT_ACTIVE_SHIFT){
+                    if (modkey == OF_KEY_SHIFT){
                         if (selectedCloud >=0){
                             int theSpat = grainCloud->at(selectedCloud)->getSpatialMode();
                             grainCloud->at(selectedCloud)->setSpatialMode(theSpat - 1,-1);
@@ -731,7 +740,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != OVERLAP){
                 currentParam = OVERLAP;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         float theOver =  grainCloud->at(selectedCloud)->getOverlap();
                         grainCloud->at(selectedCloud)->setOverlap(theOver - 0.01f);
@@ -759,7 +768,7 @@ void ofApp::keyPressed(int key){
                 if (currentParam != DIRECTION){
                     currentParam = DIRECTION;
                 }else{
-                    if (modkey == GLUT_ACTIVE_SHIFT){
+                    if (modkey == OF_KEY_SHIFT){
                         if (selectedCloud >=0){
                             int theDir = grainCloud->at(selectedCloud)->getDirection();
                             grainCloud->at(selectedCloud)->setDirection(theDir - 1);
@@ -791,7 +800,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != WINDOW){
                 currentParam = WINDOW;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         int theWin = grainCloud->at(selectedCloud)->getWindowType();
                         grainCloud->at(selectedCloud)->setWindowType(theWin - 1);
@@ -814,7 +823,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != VOLUME){
                 currentParam = VOLUME;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         float theVol = grainCloud->at(selectedCloud)->getVolumeDb();
                         grainCloud->at(selectedCloud)->setVolumeDb(theVol - 0.5f);
@@ -840,7 +849,7 @@ void ofApp::keyPressed(int key){
             paramString = "";
             deselect(RECT);
             if (grainCloud != NULL){
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (grainCloud->size() > 0){
                         grainCloud->pop_back();
                         grainCloudVis->pop_back();
@@ -887,7 +896,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != NUMGRAINS){
                 currentParam = NUMGRAINS;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         if (grainCloud)
                             grainCloud->at(selectedCloud)->removeGrain();
@@ -910,7 +919,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != DURATION){
                 currentParam = DURATION;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         float theDur = grainCloud->at(selectedCloud)->getDurationMs();
                         grainCloud->at(selectedCloud)->setDurationMs(theDur - 5.0f);
@@ -934,7 +943,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != P_LFO_FREQ){
                 currentParam = P_LFO_FREQ;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         float theLFOFreq = grainCloud->at(selectedCloud)->getPitchLFOFreq();
                         grainCloud->at(selectedCloud)->setPitchLFOFreq(theLFOFreq - 0.01f);
@@ -954,7 +963,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != P_LFO_AMT){
                 currentParam = P_LFO_AMT;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         float theLFOAmt = grainCloud->at(selectedCloud)->getPitchLFOAmount();
                         grainCloud->at(selectedCloud)->setPitchLFOAmount(theLFOAmt - 0.001f);
@@ -995,7 +1004,7 @@ void ofApp::keyPressed(int key){
             if (currentParam != PITCH){
                 currentParam = PITCH;
             }else{
-                if (modkey == GLUT_ACTIVE_SHIFT){
+                if (modkey == OF_KEY_SHIFT){
                     if (selectedCloud >=0){
                         float thePitch =  grainCloud->at(selectedCloud)->getPitch();
                         grainCloud->at(selectedCloud)->setPitch(thePitch - 0.01f);
@@ -1043,6 +1052,12 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
     
     switch (key) {
+        case OF_KEY_SHIFT:
+        case OF_KEY_ALT:
+        case OF_KEY_CONTROL:
+            modkey = -1;
+            break;
+            
         case 'a':
             break;
         case 'R':
