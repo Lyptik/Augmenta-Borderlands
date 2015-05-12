@@ -166,17 +166,23 @@ void ofApp::printUsage(){
     glColor4f(theA,theA,theA,theA);
     draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth,(float)screenHeight/2.0f, 0.5f,"BORDERLANDS",(float)screenWidth*0.1f);
     
-    theA = 0.6f + 0.2*sin(0.9*PI*GTime::instance().sec);
+    theA = 0.6f + 0.2*sin(1.0*PI*GTime::instance().sec);
     float insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth + 10.0,(float)screenHeight/2.0f + 30.0, 0.5f,"CLICK TO START",(float)screenWidth*0.04f);
+    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth + 10.0,(float)screenHeight/2.0f - 30.0, 0.5f,"CLICK TO START",(float)screenWidth*0.04f);
     
-    theA = 0.6f + 0.2*sin(1.0*PI*GTime::instance().sec);
+    theA = 0.6f + 0.2*sin(0.9*PI*GTime::instance().sec);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth+10.0,(float)screenHeight/2.0f + 50.0, 0.5f,"ESCAPE TO QUIT",(float)screenWidth*0.04f);
+    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth+10.0,(float)screenHeight/2.0f - 50.0, 0.5f,"ESCAPE TO QUIT",(float)screenWidth*0.04f);
+    
+    theA = 0.6f + 0.2*sin(0.8*PI*GTime::instance().sec);
+    insColor = theA*0.4f;
+    glColor4f(insColor,insColor,insColor,theA);
+    //key info
+    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth+10.0,(float)screenHeight/2.0f - 70.0, 0.5f,"H FOR HELP",(float)screenWidth*0.04f);
     
 }
 
@@ -399,7 +405,8 @@ void ofApp::deselect(int shapeType){
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    thisApp = this;
+    ofSetWindowTitle("Augmenta Borderlands");
+    
     
     screenWidth = ofGetWidth();
     screenHeight = ofGetHeight();
@@ -483,11 +490,21 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
-    ofBackground(ofColor::black);
+
     
     // Draw fbo
-    m_fbo.begin();
+    drawVisuals();
+    
+    if(showHelpMenu){
+        drawHelp();
+    }
+    
+}
+
+//--------------------------------------------------------------
+void ofApp::drawVisuals(){
+    
+    ofBackground(ofColor::black);
     
     ofPushMatrix();
     
@@ -518,11 +535,64 @@ void ofApp::draw(){
     }
     
     ofPopMatrix();
-    
-    m_fbo.end();
-    
-    m_fbo.draw(0,0,ofGetWidth(),ofGetHeight());
+}
 
+//--------------------------------------------------------------
+void ofApp::drawHelp(){
+    
+    ofSetColor(ofColor::white);
+    ofDrawBitmapString(" Controls\n"
+                       "------------------------------------------------------------------------\n"
+                       "\n"
+                       "Entry/Exit\n"
+                       "------------\n"
+                       "ESC	        Quit\n"
+                       "? key	        Hide/Show Title Screen\n"
+                       "o key		Toggle fullscreen/windowed modes\n"
+                       "\n"
+                       "\n"
+                       "Rectangles\n"
+                       "------------\n"
+                       "Left click	Select\n"
+                       "Drag	        Move\n"
+                       "TAB key	        Cycle selection of overlapping rectangles under mouse\n"
+                       "R key + drag	Resize\n"
+                       "F key	        Flip orientation\n"
+                       "\n"
+                       "\n"
+                       "Cloud Addition and Selection\n"
+                       "------------\n"
+                       "G key (+shift)	Add (remove) cloud to/from end of collection\n"
+                       "Delete key	Remove selected cloud\n"
+                       "Left click	Select\n"
+                       "Drag	        Move\n"
+                       "\n"
+                       "\n"
+                       "Cloud Parameters\n"
+                       "------------\n"
+                       "After selecting a cloud, parameters associated with the granular synthesis can be edited.\n"
+                       "Most parameters involve keyboard interfacing. Select the key corresponding to the mode,\n"
+                       "then press it again to change the value. In some cases, numeric keys are used to enter\n"
+                       "specific values. In parameters associated with grain motion, the mouse is used.\n"
+                       "V key (+shift)	  Add (remove) voices\n"
+                       "A key	          Toggle cloud on/off\n"
+                       "D key (+shift)	  Increment (decrement) duration\n"
+                       "D key + numbers	  Enter duration value (ms) - press Enter to accept\n"
+                       "S key (+shift)	  Increment (decrement) overlap\n"
+                       "S key + numbers	  Enter overlap value - press Enter to accept\n"
+                       "Z key (+shift)	  Increment (decrement) pitch\n"
+                       "Z key + numbers	  Enter pitch value - press Enter to accept\n"
+                       "W key	          Change window type (HANNING, TRIANGLE, EXPDEC, REXPDEC, SINC, RANDOM)\n"
+                       "W key +\n"
+                       "1 through 6	  Jump to specific window type\n"
+                       "F key	          Switch grain direction (FORWARD, BACKWARD, RANDOM)\n"
+                       "R key	          Enable mouse control of XY extent of grain position randomness\n"
+                       "X key	          Enable mouse control of X extent of grain position randomness\n"
+                       "Y key	          Enable mouse control of Y extent of grain position randomness\n"
+                       "T key             Switch spatialization modes\n"
+                       "L key (+shift)    Adjust playback rate LFO frequency\n"
+                       "K key (+shift)	  Adjust playback rate LFO amplitude\n"
+                       "B key (+shift)	  Adjust cloud volume in dB", 10, 32);
 }
 
 //--------------------------------------------------------------
@@ -978,6 +1048,7 @@ void ofApp::keyPressed(int key){
             break;
         case 'H':
         case 'h':
+            showHelpMenu = true;
             break;
         case ' '://add delete
             
@@ -1065,6 +1136,10 @@ void ofApp::keyReleased(int key){
             dragMode = MOVE;
             lastDragX = veryHighNumber;
             lastDragY = veryHighNumber;
+            break;
+        case 'h':
+        case 'H':
+            showHelpMenu = false;
             break;
         default:
             break;

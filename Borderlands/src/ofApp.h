@@ -114,7 +114,9 @@ class ofApp : public ofBaseApp{
         
         //keyboard modifier key
         int modkey = -1;
-        
+    
+        //flag for help menu display
+        bool showHelpMenu = false;
         //--------------------------------------------------------------------------------
         // FUNCTION PROTOTYPES
         //--------------------------------------------------------------------------------
@@ -136,6 +138,8 @@ class ofApp : public ofBaseApp{
         void printUsage();
         void printParam();
         void drawAxis();
-        
+        void drawVisuals();
+        void drawHelp();
+    
         void cleaningFunction();
 };
