@@ -34,7 +34,7 @@
 // In setup(), the openStream method wait a pointer on a callback function which
 // respond to typedef RtAudioCallback defined in RTAudio.h, and the callback must access member variables 
 // So we can't provide a pointer on this class in parameter, and we can't make the callback static
-ofApp* thisApp;
+ofApp* g_thisApp;
 
 using namespace std;
 
@@ -90,12 +90,12 @@ int audioCallback( void * outputBuffer, void * inputBuffer, unsigned int numFram
     SAMPLE * in = (SAMPLE *)inputBuffer;
     
     memset(out, 0, sizeof(SAMPLE)*numFrames*MY_CHANNELS );
-    if (thisApp->menuFlag == false){
-        for(int i = 0; i < thisApp->grainCloud->size(); i++){
-            thisApp->grainCloud->at(i)->nextBuffer(out, numFrames);
+    if (g_thisApp->menuFlag == false){
+        for(int i = 0; i < g_thisApp->grainCloud->size(); i++){
+            g_thisApp->grainCloud->at(i)->nextBuffer(out, numFrames);
         }
     }
-    GTime::instance().sec += numFrames*thisApp->samp_time_sec;
+    GTime::instance().sec += numFrames*g_thisApp->samp_time_sec;
     // cout << GTime::instance().sec<<endl;
     return 0;
 }
@@ -407,6 +407,7 @@ void ofApp::setup(){
     
     ofSetWindowTitle("Augmenta Borderlands");
     
+    g_thisApp = this;
     
     screenWidth = ofGetWidth();
     screenHeight = ofGetHeight();
