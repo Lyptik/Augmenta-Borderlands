@@ -1302,10 +1302,10 @@ void ofApp::mouseDragged(int x, int y, int button){
                         int thresh = 0;
                         //check motion mag
                         if (xDiff < -thresh){
-                            newWidth = newWidth * 0.8 + 0.2*(newWidth * (1.1 + abs(xDiff/50.0)));
+                            newWidth = newWidth * 0.8 + 0.2*(newWidth * (0.85 - abs(xDiff/50.0)));
                         }else{
                             if (xDiff > thresh)
-                                newWidth = newWidth * 0.8 + 0.2*(newWidth * (0.85 - abs(xDiff/50.0)));
+                                newWidth = newWidth * 0.8 + 0.2*(newWidth * (1.1 + abs(xDiff/50.0)));
                         }
                         if (yDiff > thresh){
                             newHeight = newHeight * 0.8 + 0.2*(newHeight * (1.1 + abs(yDiff/50.0)));
