@@ -16,6 +16,9 @@
 //graphics and audio related
 #include "Borderlands/GrainCluster.h"
 
+#ifdef MAC_OS_X_VERSION_10_6
+#include "ofxSyphon.h"
+#endif
 
 int audioCallback( void * outputBuffer, void * inputBuffer, unsigned int numFrames, double streamTime,RtAudioStreamStatus status, void * userData);
 
@@ -117,6 +120,11 @@ class ofApp : public ofBaseApp{
     
         //flag for help menu display
         bool showHelpMenu = false;
+    
+        #ifdef MAC_OS_X_VERSION_10_6
+        ofxSyphonServer syphonServer;
+        #endif
+    
         //--------------------------------------------------------------------------------
         // FUNCTION PROTOTYPES
         //--------------------------------------------------------------------------------

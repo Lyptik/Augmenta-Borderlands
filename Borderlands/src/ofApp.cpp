@@ -414,6 +414,13 @@ void ofApp::setup(){
     ofDirectory g_audioDir(g_audioPath);
     g_audioPath = g_audioDir.path();
     
+    // TODO : Change to value from xml (beware nothing to do with window size)
+    m_fbo.allocate(ofGetWidth(), ofGetHeight());
+    
+    #ifdef MAC_OS_X_VERSION_10_6
+    syphonServer.setName("Borderlands");
+    #endif
+    
     //init random number generator
     srand(time(NULL));
     //start time
@@ -491,19 +498,39 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+    //ofEnableAlphaBlending();
     
     // Draw fbo
+    //m_fbo.begin();
     drawVisuals();
+    //m_fbo.end();
     
     if(showHelpMenu){
         drawHelp();
     }
     
+    //ofDisableAlphaBlending();
+    
+
+    //glEnable(GL_BLEND);
+	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    
+    // Draw visuals
+    //ofSetColor(ofColor::white); // Needed !
+    //m_fbo.draw(0,0,ofGetWidth(),ofGetHeight());
+
+    // publish fbo to syphon
+    #ifdef MAC_OS_X_VERSION_10_6
+    syphonServer.publishTexture(&m_fbo.getTextureReference());
+    #endif
+    
+    //glDisable(GL_BLEND);
 }
 
 //--------------------------------------------------------------
 void ofApp::drawVisuals(){
     
+    //ofClear(ofColor::white);
     ofBackground(ofColor::black);
     
     ofPushMatrix();
