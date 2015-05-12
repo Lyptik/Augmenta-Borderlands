@@ -57,6 +57,8 @@ class ofApp : public ofBaseApp{
         string paramString = "";
         //desired audio buffer size
         unsigned int g_buffSize = 1024;
+        // load sounds
+        AudioFileSet* newFileMgr = NULL;
         //audio files
         vector <AudioFile *> * mySounds = NULL;
         //audio file visualization objects

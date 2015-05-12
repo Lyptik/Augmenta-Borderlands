@@ -52,6 +52,8 @@ void ofApp::cleaningFunction(){
     } catch (RtError &err) {
         err.printMessage();
     }
+    if (newFileMgr != NULL)
+        delete newFileMgr;
     if (mySounds != NULL)
         delete mySounds;
     if (theAudio !=NULL)
@@ -419,14 +421,14 @@ void ofApp::setup(){
     
     
     // load sounds
-    AudioFileSet newFileMgr;
+    newFileMgr = new AudioFileSet();
     
-    if (newFileMgr.loadFileSet(g_audioPath) == 1){
+    if (newFileMgr->loadFileSet(g_audioPath) == 1){
         cleaningFunction();
         return 0;
     }
     
-    mySounds = newFileMgr.getFileVector();
+    mySounds = newFileMgr->getFileVector();
     cout << "Sounds loaded successfully..." << endl;
     
     
