@@ -236,7 +236,6 @@ private:
     bool isOn,isSelected;
     bool addFlag,removeFlag;
     double startTime;
-    unsigned int screenWidth,screenHeight;
     
     float xRandExtent, yRandExtent;
     

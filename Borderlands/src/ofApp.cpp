@@ -38,8 +38,6 @@ ofApp* g_thisApp;
 
 using namespace std;
 
-unsigned int screenWidth, screenHeight;
-
 
 //--------------------------------------------------------------------------------
 // Cleanup code
@@ -116,12 +114,12 @@ void ofApp::drawAxis()
     //x axis
     glColor4f(1,0,0,0.9);
     glVertex3f(0,0,0);
-    glVertex3f(screenWidth,0,0);
+    glVertex3f(ofGetWidth(),0,0);
     
     //x axis
     glColor4f(0,1,0,0.9);
     glVertex3f(0,0,0);
-    glVertex3f(0,screenHeight,0);
+    glVertex3f(0,ofGetHeight(),0);
     
     //z axis
     glColor4f(0,0,1,0.7);
@@ -145,7 +143,7 @@ void ofApp::draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfl
     GLint len = strlen( str ), i;
     
     glPushMatrix();
-    glTranslatef( x, screenHeight-y, z );
+    glTranslatef( x, ofGetHeight()-y, z );
     glScalef( .001f * scale, -.001f * scale, .001f * scale );
     
     for( i = 0; i < len; i++ )
@@ -164,25 +162,25 @@ void ofApp::printUsage(){
     glLineWidth(2.0f);
     float theA = 0.6f + 0.2*sin(0.8*PI*GTime::instance().sec);
     glColor4f(theA,theA,theA,theA);
-    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth,(float)screenHeight/2.0f, 0.5f,"BORDERLANDS",(float)screenWidth*0.1f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth(),(float)ofGetHeight()/2.0f, 0.5f,"BORDERLANDS",(float)ofGetWidth()*0.1f);
     
     theA = 0.6f + 0.2*sin(1.0*PI*GTime::instance().sec);
     float insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth + 10.0,(float)screenHeight/2.0f - 30.0, 0.5f,"CLICK TO START",(float)screenWidth*0.04f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth() + 10.0,(float)ofGetHeight()/2.0f - 30.0, 0.5f,"CLICK TO START",(float)ofGetWidth()*0.04f);
     
     theA = 0.6f + 0.2*sin(0.9*PI*GTime::instance().sec);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth+10.0,(float)screenHeight/2.0f - 50.0, 0.5f,"ESCAPE TO QUIT",(float)screenWidth*0.04f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 50.0, 0.5f,"ESCAPE TO QUIT",(float)ofGetWidth()*0.04f);
     
     theA = 0.6f + 0.2*sin(0.8*PI*GTime::instance().sec);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(screenWidth/2.0f + 0.2f*(float)screenWidth+10.0,(float)screenHeight/2.0f - 70.0, 0.5f,"H FOR HELP",(float)screenWidth*0.04f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 70.0, 0.5f,"H FOR HELP",(float)ofGetWidth()*0.04f);
     
 }
 
@@ -204,7 +202,7 @@ void ofApp::printParam(){
                 myValue = "Voices: ";
                 sinput << theCloud->getNumVoices();
                 myValue = myValue+ sinput.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
             case DURATION:
                 myValue = "Duration: ";
@@ -214,7 +212,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString + " ms";
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             case WINDOW:
@@ -242,19 +240,19 @@ void ofApp::printParam(){
                         break;
                 }
                 
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
             case MOTIONX:
                 myValue = "X: ";
                 sinput << theCloudVis->getXRandExtent();
                 myValue = myValue + sinput.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
             case MOTIONY:
                 myValue = "Y: ";
                 sinput << theCloudVis->getYRandExtent();
                 myValue = myValue + sinput.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
             case MOTIONXY:
                 myValue = "X,Y: ";
@@ -262,7 +260,7 @@ void ofApp::printParam(){
                 myValue = myValue + sinput.str() + ", ";
                 sinput2 << theCloudVis->getYRandExtent();
                 myValue = myValue + sinput2.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
                 
             case DIRECTION:
@@ -280,7 +278,7 @@ void ofApp::printParam(){
                         myValue = "";
                         break;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
                 
             case SPATIALIZE:
@@ -298,7 +296,7 @@ void ofApp::printParam(){
                         myValue = "";
                         break;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
             case VOLUME:
                 myValue = "Volume (dB): ";
@@ -308,7 +306,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 break;
             case OVERLAP:
                 myValue = "Overlap: ";
@@ -318,7 +316,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             case PITCH:
@@ -329,7 +327,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
                 
@@ -341,7 +339,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             case P_LFO_AMT:
@@ -352,7 +350,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (screenHeight-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             default:
@@ -408,9 +406,6 @@ void ofApp::setup(){
     ofSetWindowTitle("Augmenta Borderlands");
     
     g_thisApp = this;
-    
-    screenWidth = ofGetWidth();
-    screenHeight = ofGetHeight();
     
     ofDirectory g_audioDir(g_audioPath);
     g_audioPath = g_audioDir.path();
