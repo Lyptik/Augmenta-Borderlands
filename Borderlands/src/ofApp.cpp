@@ -216,8 +216,9 @@ void ofApp::draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfl
     glTranslatef( x, ofGetHeight()-y, z );
     glScalef( .001f * scale, -.001f * scale, .001f * scale );
     
-    for( i = 0; i < len; i++ )
-        glutStrokeCharacter( GLUT_STROKE_MONO_ROMAN, str[i] );
+    ofDrawBitmapString(str, 0, 0);
+    //for( i = 0; i < len; i++ )
+    //    glutStrokeCharacter( GLUT_STROKE_MONO_ROMAN, str[i] );
     
     glPopMatrix();
 }
