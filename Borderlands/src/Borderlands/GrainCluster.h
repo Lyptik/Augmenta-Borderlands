@@ -39,6 +39,7 @@
 #include <ctime>
 #include <Stk.h>
 
+#include "ofMain.h"
 #include "GrainVoice.h"
 #include "theglobals.h"
 #include "Window.h"
@@ -235,7 +236,6 @@ private:
     bool isOn,isSelected;
     bool addFlag,removeFlag;
     double startTime;
-    unsigned int screenWidth,screenHeight;
     
     float xRandExtent, yRandExtent;
     

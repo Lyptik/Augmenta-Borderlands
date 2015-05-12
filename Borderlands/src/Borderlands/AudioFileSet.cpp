@@ -95,7 +95,7 @@ int AudioFileSet::loadFileSet(string localPath)
             
             
             //construct path
-            string myPath = localPath + theFileName;
+            string myPath = localPath + "/" +  theFileName;
             
             
             // temp struct that will hold the details of the file being read (sample rate, num channels. etc.)
@@ -187,6 +187,8 @@ int AudioFileSet::loadFileSet(string localPath)
         
         //close the directory that we've been navigating
         closedir (dir);
+        
+        return 0;
     } else {
         /* could not open directory */
         perror ("");

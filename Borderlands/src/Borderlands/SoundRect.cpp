@@ -45,17 +45,14 @@ SoundRect::~SoundRect()
 //constructor 
 SoundRect::SoundRect(){
     
-    screenWidth =  glutGet(GLUT_SCREEN_WIDTH);
-    screenHeight = glutGet(GLUT_SCREEN_HEIGHT);
-    
     //initializtion
     init();
     
     float xBorder = 100.0;
     float yBorder = 50.0;
     //translation coordinates
-    rX = xBorder + ((float)rand()/RAND_MAX) * (screenWidth - xBorder * 2.0);
-    rY = yBorder + ((float)rand()/RAND_MAX) * (screenHeight - yBorder * 2.0);
+    rX = xBorder + ((float)rand()/RAND_MAX) * (ofGetWidth() - xBorder * 2.0);
+    rY = yBorder + ((float)rand()/RAND_MAX) * (ofGetHeight() - yBorder * 2.0);
     
     //min w and h dim
     minDim = 60.0f;
@@ -64,7 +61,7 @@ SoundRect::SoundRect(){
     float scaleF = 0.5;
     
     //box corners
-    setWidthHeight(minDim + scaleF*((float)rand()/RAND_MAX)*screenWidth, minDim + scaleF*((float)rand()/RAND_MAX)*screenHeight);  
+    setWidthHeight(minDim + scaleF*((float)rand()/RAND_MAX)*ofGetWidth(), minDim + scaleF*((float)rand()/RAND_MAX)*ofGetHeight());
     
     //set orientation
     if (randf() < 0.5)
@@ -244,9 +241,9 @@ void SoundRect::updateCorners(float width, float height){
 void SoundRect::setUps(){
     float sizeFactor = 10.0f;
     if (orientation == true)
-        ups = (float) screenWidth/rWidth;
+        ups = (float) ofGetWidth()/rWidth;
     else
-        ups = (float) screenHeight/rHeight;
+        ups = (float) ofGetHeight()/rHeight;
     
     if (ups < 1)
         ups = 1;

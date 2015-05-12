@@ -33,15 +33,8 @@
 
 #include "theglobals.h"
 //#include "pt2d.h"
-//graphics includes
-#ifdef __MACOSX_CORE__
-#include <GLUT/glut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#endif
 
+#include "ofMain.h"
 
 #include <iostream>
 #include <math.h>
@@ -115,7 +108,6 @@ protected:
     
 private:
     unsigned int myId;
-    unsigned int screenWidth,screenHeight;
     float rWidth,rHeight;
     float rtop,rbot,rleft,rright;
     float rX, rY,rZ;

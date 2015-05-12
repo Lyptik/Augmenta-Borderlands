@@ -14,6 +14,16 @@
 
 Here is a fork of Borderlands using ofxAugmenta and putting some modifications
 
+OF : 0.8.4
+
+tested on OSX 10.9
+
+External addons dependency :
+
+ofxLibsndfileRecorder
+ofxSyphon
+ofxAugmenta
+
 //------------------------------------------------------------------------
 // Acknowledgement
 //------------------------------------------------------------------------
