@@ -39,6 +39,7 @@
 #include <ctime>
 #include <Stk.h>
 
+#include "ofMain.h"
 #include "GrainVoice.h"
 #include "theglobals.h"
 #include "Window.h"

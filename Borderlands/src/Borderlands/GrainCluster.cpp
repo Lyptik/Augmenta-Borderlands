@@ -589,8 +589,8 @@ GrainClusterVis::~GrainClusterVis(){
 GrainClusterVis::GrainClusterVis(float x, float y, unsigned int numVoices,vector<SoundRect*>*rects)
 {
     //get screen width and height
-    screenWidth = glutGet(GLUT_SCREEN_WIDTH);
-    screenHeight = glutGet(GLUT_SCREEN_HEIGHT);
+    screenWidth = ofGetWidth();
+    screenHeight = ofGetHeight();
     
     startTime = GTime::instance().sec;
     //cout << "cluster started at : " << startTime << " sec " << endl;

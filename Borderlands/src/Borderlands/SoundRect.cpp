@@ -45,8 +45,8 @@ SoundRect::~SoundRect()
 //constructor 
 SoundRect::SoundRect(){
     
-    screenWidth =  glutGet(GLUT_SCREEN_WIDTH);
-    screenHeight = glutGet(GLUT_SCREEN_HEIGHT);
+    screenWidth =  (unsigned int) ofGetWidth();
+    screenHeight = (unsigned int) ofGetHeight();
     
     //initializtion
     init();
