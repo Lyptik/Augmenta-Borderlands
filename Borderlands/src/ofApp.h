@@ -40,11 +40,11 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
         //grain cloud audio objects
-        vector<GrainCluster *> * grainCloud = NULL;
+        vector<GrainCluster *> * grainCloud;
         //global time increment - samples per second
         //global time is incremented in audio callback
         const double samp_time_sec = (double) 1.0 / (double)MY_SRATE;
-        bool menuFlag = true;
+        bool menuFlag;
     
     private:
         ofFbo m_fbo; // frame buffer object
@@ -53,28 +53,28 @@ class ofApp : public ofBaseApp{
         // Shared Data Structures, Global parameters
         //-----------------------------------------------------------------------------
         //audio system
-        MyRtAudio * theAudio = NULL;
+        MyRtAudio * theAudio;
         //library path
-        string g_audioPath = string("./loops/");
+        string g_audioPath;
         //parameter string
-        string paramString = "";
+        string paramString;
         //desired audio buffer size
-        unsigned int g_buffSize = 1024;
+        unsigned int g_buffSize;
         // load sounds
-        AudioFileSet* newFileMgr = NULL;
+        AudioFileSet* newFileMgr;
         //audio files
-        vector <AudioFile *> * mySounds = NULL;
+        vector <AudioFile *> * mySounds;
         //audio file visualization objects
-        vector <SoundRect *> * soundViews = NULL;
+        vector <SoundRect *> * soundViews;
         //grain cloud visualization objects
         vector<GrainClusterVis *> * grainCloudVis;
         //cloud counter
-        unsigned int numClouds = 0;
+        unsigned int numClouds;
         
         
         //Initial camera movement vars
         //my position
-        ofPoint position = ofPoint(0.0,0.0,0.0f);
+        ofPoint position;
         
         
         //ENUMS
@@ -82,44 +82,44 @@ class ofApp : public ofBaseApp{
         enum{RECT,CLOUD};
         enum{MOVE,RESIZE};
         //default selection mode
-        int selectionMode = CLOUD;
-        int dragMode = MOVE;
-        bool resizeDir = false; //for rects
+        int selectionMode;
+        int dragMode;
+        bool resizeDir; //for rects
         //rubber band select params
-        int rb_anchor_x = -1;
-        int rb_anchor_y = -1;
+        int rb_anchor_x;
+        int rb_anchor_y;
         
         //not used yet - for multiple selection
-        vector<int> * selectionIndices = new vector<int>;
+        vector<int> * selectionIndices;
         
         //selection helper vars
-        int selectedCloud = -1;
-        int selectedRect = -1;
-        int selectionIndex = 0;
+        int selectedCloud;
+        int selectedRect;
+        int selectionIndex;
         
         //cloud parameter changing
         enum{NUMGRAINS,DURATION,WINDOW, MOTIONX, MOTIONY,MOTIONXY,DIRECTION,OVERLAP, PITCH, ANIMATE,P_LFO_FREQ,P_LFO_AMT,SPATIALIZE,VOLUME};
         //flag indicating parameter change
-        bool paramChanged = false;
-        unsigned int currentParam = NUMGRAINS;
-        double lastParamChangeTime = 0.0;
-        double tempParamVal = -1.0;
+        bool paramChanged;
+        unsigned int currentParam;
+        double lastParamChangeTime;
+        double tempParamVal;
         
         
         
         
         //mouse coordinate initialization
-        int mouseX = -1;
-        int mouseY = -1;
-        long veryHighNumber = 50000000;
-        long lastDragX = veryHighNumber;
-        long lastDragY = veryHighNumber;
+        int mouseX;
+        int mouseY;
+        long veryHighNumber;
+        long lastDragX;
+        long lastDragY;
         
         //keyboard modifier key
-        int modkey = -1;
+        int modkey;
     
         //flag for help menu display
-        bool showHelpMenu = false;
+        bool showHelpMenu;
     
         #ifdef MAC_OS_X_VERSION_10_6
         ofxSyphonServer syphonServer;
@@ -128,7 +128,9 @@ class ofApp : public ofBaseApp{
         //--------------------------------------------------------------------------------
         // FUNCTION PROTOTYPES
         //--------------------------------------------------------------------------------
-        
+    
+        void init();
+    
         void idleFunc();
         void displayFunc();
         void reshape(int w, int h);

@@ -40,6 +40,76 @@ using namespace std;
 
 
 //--------------------------------------------------------------------------------
+// Initialization
+//--------------------------------------------------------------------------------
+
+void ofApp::init(){
+    //grain cloud audio objects
+    grainCloud = NULL;
+    menuFlag = true;
+
+    //audio system
+    theAudio = NULL;
+    //library path
+    g_audioPath = string("./loops/");
+    //parameter string
+    paramString = "";
+    //desired audio buffer size
+    g_buffSize = 1024;
+    // load sounds
+    newFileMgr = NULL;
+    //audio files
+    mySounds = NULL;
+    //audio file visualization objects
+    soundViews = NULL;
+    //grain cloud visualization objects
+    grainCloudVis = NULL;
+    //cloud counter
+    numClouds = 0;
+    
+    //Initial camera movement vars
+    //my position
+    position = ofPoint(0.0,0.0,0.0f);
+    
+    
+    //ENUMS
+    //default selection mode
+    selectionMode = CLOUD;
+    dragMode = MOVE;
+    resizeDir = false; //for rects
+    //rubber band select params
+    rb_anchor_x = -1;
+    rb_anchor_y = -1;
+    
+    //not used yet - for multiple selection
+    selectionIndices = new vector<int>;
+    
+    //selection helper vars
+    selectedCloud = -1;
+    selectedRect = -1;
+    selectionIndex = 0;
+    
+    //flag indicating parameter change
+    paramChanged = false;
+    currentParam = NUMGRAINS;
+    lastParamChangeTime = 0.0;
+    tempParamVal = -1.0;
+
+    //mouse coordinate initialization
+    mouseX = -1;
+    mouseY = -1;
+    veryHighNumber = 50000000;
+    lastDragX = veryHighNumber;
+    lastDragY = veryHighNumber;
+    
+    //keyboard modifier key
+    modkey = -1;
+    
+    //flag for help menu display
+    showHelpMenu = false;
+}
+
+//--------------------------------------------------------------------------------
 // Cleanup code
 //--------------------------------------------------------------------------------
 
@@ -402,6 +472,8 @@ void ofApp::deselect(int shapeType){
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    init();
     
     ofSetWindowTitle("Augmenta Borderlands");
     
