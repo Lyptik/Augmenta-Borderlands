@@ -1437,7 +1437,7 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
     //create visualization
     grainCloudVis->push_back(new GrainClusterVis(posX,posY,numVoices,soundViews));
     //select new cloud
-    grainCloudVis->at(idx)->setSelectState(true);
+    grainCloudVis->at(idx)->setSelectState(false);
     //register visualization with audio
     grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
     //grainCloud->at(idx)->toggleActive();
