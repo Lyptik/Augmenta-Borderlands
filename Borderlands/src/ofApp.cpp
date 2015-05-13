@@ -1028,7 +1028,7 @@ void ofApp::keyPressed(int key){
             deselect(RECT);
             if (grainCloud != NULL){
                 if (modkey == OF_KEY_SHIFT){
-                    if (grainCloud->size() > 0){
+                    /*if (grainCloud->size() > 0){
                         grainCloud->pop_back();
                         grainCloudVis->pop_back();
                         numClouds-=1;
@@ -1036,13 +1036,13 @@ void ofApp::keyPressed(int key){
                     }
                     if (numClouds == 0){
                         selectedCloud = -1;
-                    }/*else{
+                    }else{
                         //still have a cloud so select
                         selectedCloud = numClouds-1;
                         grainCloudVis->at(selectedCloud)->setSelectState(true);
-                    }*/
+                    }
                     break;
-                    
+                    */
                 }else{
                     int numVoices = 8;//initial number of voices
                     int idx = grainCloud->size();
