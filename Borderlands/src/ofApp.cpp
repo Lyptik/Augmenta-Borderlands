@@ -274,7 +274,7 @@ void ofApp::printParam(){
                 myValue = "Voices: ";
                 sinput << theCloud->getNumVoices();
                 myValue = myValue+ sinput.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
             case DURATION:
                 myValue = "Duration: ";
@@ -284,7 +284,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString + " ms";
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             case WINDOW:
@@ -312,19 +312,19 @@ void ofApp::printParam(){
                         break;
                 }
                 
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
             case MOTIONX:
                 myValue = "X: ";
                 sinput << theCloudVis->getXRandExtent();
                 myValue = myValue + sinput.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
             case MOTIONY:
                 myValue = "Y: ";
                 sinput << theCloudVis->getYRandExtent();
                 myValue = myValue + sinput.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
             case MOTIONXY:
                 myValue = "X,Y: ";
@@ -332,7 +332,7 @@ void ofApp::printParam(){
                 myValue = myValue + sinput.str() + ", ";
                 sinput2 << theCloudVis->getYRandExtent();
                 myValue = myValue + sinput2.str();
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
                 
             case DIRECTION:
@@ -350,7 +350,7 @@ void ofApp::printParam(){
                         myValue = "";
                         break;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
                 
             case SPATIALIZE:
@@ -368,7 +368,7 @@ void ofApp::printParam(){
                         myValue = "";
                         break;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
             case VOLUME:
                 myValue = "Volume (dB): ";
@@ -378,7 +378,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
             case OVERLAP:
                 myValue = "Overlap: ";
@@ -388,7 +388,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             case PITCH:
@@ -399,7 +399,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
                 
@@ -411,7 +411,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             case P_LFO_AMT:
@@ -422,7 +422,7 @@ void ofApp::printParam(){
                 }else{
                     myValue = myValue + paramString;
                 }
-                draw_string((GLfloat)mouseX,(GLfloat) (ofGetHeight()-mouseY),0.0,myValue.c_str(),100.0f);
+                draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
             default:
