@@ -165,4 +165,6 @@ class ofApp : public ofBaseApp{
     
         GrainCluster* getGrainCloudWithPID(int pid);
         int getIndexOfGrainCloudWithPID(int pid);
+    
+    bool belongsToAugmenta(int pid);
 };

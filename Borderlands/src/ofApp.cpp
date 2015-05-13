@@ -1203,7 +1203,7 @@ void ofApp::keyPressed(int key){
             break;
         case 127://delete selected
             if (paramString == ""){
-                if (selectedCloud >=0){
+                if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
                     grainCloudVis->erase(grainCloudVis->begin() + selectedCloud);
                     selectedCloud = -1;
@@ -1490,4 +1490,14 @@ int ofApp::getIndexOfGrainCloudWithPID(int pid){
             return i;
     }
     return -1;
+}
+
+bool ofApp::belongsToAugmenta(int pid){
+    vector<Augmenta::Person *> people = augmentaReceiver.getPeople();
+    
+    for(int i=0; i<people.size(); i++){
+        if(people[i]->pid == pid)
+            return true;
+    }
+    return false;
 }
