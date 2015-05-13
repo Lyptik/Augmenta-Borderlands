@@ -1462,6 +1462,9 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
         
         int index = getIndexOfGrainCloudWithPID(pid);
         
+        if(selectedCloud == index)
+            deselect(CLOUD);
+        
         grainCloud->erase(grainCloud->begin() + index);
         grainCloudVis->erase(grainCloudVis->begin() + index);
         
