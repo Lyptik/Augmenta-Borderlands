@@ -1036,28 +1036,28 @@ void ofApp::keyPressed(int key){
                     }
                     if (numClouds == 0){
                         selectedCloud = -1;
-                    }else{
+                    }/*else{
                         //still have a cloud so select
                         selectedCloud = numClouds-1;
                         grainCloudVis->at(selectedCloud)->setSelectState(true);
-                    }
+                    }*/
                     break;
                     
                 }else{
                     int numVoices = 8;//initial number of voices
                     int idx = grainCloud->size();
-                    if (selectedCloud >=0){
+                    /*if (selectedCloud >=0){
                         if (numClouds > 0){
                             grainCloudVis->at(selectedCloud)->setSelectState(false);
                         }
                     }
-                    selectedCloud = idx;
+                    selectedCloud = idx;*/
                     //create audio
                     grainCloud->push_back(new GrainCluster(mySounds,numVoices));
                     //create visualization
                     grainCloudVis->push_back(new GrainClusterVis(mouseX,mouseY,numVoices,soundViews));
                     //select new cloud
-                    grainCloudVis->at(idx)->setSelectState(true);
+                    grainCloudVis->at(idx)->setSelectState(false);
                     //register visualization with audio
                     grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
                     //grainCloud->at(idx)->toggleActive();
