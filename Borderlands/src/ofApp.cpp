@@ -1429,7 +1429,7 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
     int posY = ofGetHeight() * augmentaEvent.person->centroid.y;
     
     // Create a new grain based on person
-    int numVoices = 8;//initial number of voices
+    int numVoices = 4;//initial number of voices
     int idx = grainCloud->size();
     
     //create audio
