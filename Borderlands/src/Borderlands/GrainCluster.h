@@ -71,8 +71,11 @@ public:
     //destructor
     virtual ~GrainCluster();
     
-    //constructor
+    //constructors
     GrainCluster(vector<AudioFile *> *soundSet, float theNumVoices);
+    GrainCluster(int pid, vector<AudioFile *> *soundSet, float theNumVoices);
+    
+    void init(vector<AudioFile*> * soundSet, float theNumVoices);
     
     //compute next buffer of audio (accumulate from grains)
     void nextBuffer(double * accumBuff, unsigned int numFrames);
@@ -125,6 +128,7 @@ public:
     
     //register visualization 
     void registerVis(GrainClusterVis * myVis);
+    GrainClusterVis* getRegisteredVis(){ return myVis; };
     
     //turn on/off
     void toggleActive();

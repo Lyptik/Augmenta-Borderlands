@@ -16,6 +16,8 @@
 //graphics and audio related
 #include "Borderlands/GrainCluster.h"
 
+#include "ofxAugmenta.h"
+
 #ifdef MAC_OS_X_VERSION_10_6
 #include "ofxSyphon.h"
 #endif
@@ -39,6 +41,11 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
+        // Augmenta event listeners
+        void onPersonEntered( Augmenta::EventArgs & augmentaEvent );
+        void onPersonUpdated( Augmenta::EventArgs & augmentaEvent );
+        void onPersonWillLeave( Augmenta::EventArgs & augmentaEvent );
+    
         //grain cloud audio objects
         vector<GrainCluster *> * grainCloud;
         //global time increment - samples per second
@@ -48,6 +55,9 @@ class ofApp : public ofBaseApp{
     
     private:
         ofFbo m_fbo; // frame buffer object
+    
+        // Augmenta object to receive tracking information
+        Augmenta::Receiver augmentaReceiver;
     
         //-----------------------------------------------------------------------------
         // Shared Data Structures, Global parameters
@@ -152,4 +162,7 @@ class ofApp : public ofBaseApp{
         void drawHelp();
     
         void cleaningFunction();
+    
+        GrainCluster* getGrainCloudWithPID(int pid);
+        int getIndexOfGrainCloudWithPID(int pid);
 };

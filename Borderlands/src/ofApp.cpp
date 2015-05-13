@@ -29,6 +29,7 @@
 //  Created by Christopher Carlson on 11/13/11.
 //
 
+#define OSC_PORT 12000
 
 // Global variable containing pointer on instance of this class, used for callback function
 // In setup(), the openStream method wait a pointer on a callback function which
@@ -474,14 +475,25 @@ void ofApp::deselect(int shapeType){
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    // Initialize Borderlands variables
     init();
     
     ofSetWindowTitle("Augmenta Borderlands");
     
+    // Global pointer to this instance of Borderlands
     g_thisApp = this;
     
+    // Initialize path to loops
     ofDirectory g_audioDir(g_audioPath);
     g_audioPath = g_audioDir.path();
+    
+    // Connect augmenta receiver
+    try {
+        augmentaReceiver.connect(OSC_PORT);
+    } catch (std::exception&e) {
+        std::cerr << "Error : " << e.what() << endl;
+    }
+    ofxAddAugmentaListeners(this);  // for augmenta events
     
     // TODO : Change to value from xml (beware nothing to do with window size)
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
@@ -1406,4 +1418,73 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+//--------------------------------------------------------------
+// Augmenta Events
+//--------------------------------------------------------------
+void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
+    // Translate relative position of the person (between 0 & 1) to a screen position in pixels
+    int posX = ofGetWidth() * augmentaEvent.person->centroid.x;
+    int posY = ofGetHeight() * augmentaEvent.person->centroid.y;
+    
+    // Create a new grain based on person
+    int numVoices = 8;//initial number of voices
+    int idx = grainCloud->size();
+    
+    //create audio
+    grainCloud->push_back(new GrainCluster(augmentaEvent.person->pid, mySounds,numVoices));
+    //create visualization
+    grainCloudVis->push_back(new GrainClusterVis(posX,posY,numVoices,soundViews));
+    //select new cloud
+    grainCloudVis->at(idx)->setSelectState(true);
+    //register visualization with audio
+    grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
+    //grainCloud->at(idx)->toggleActive();
+    numClouds+=1;
+}
+
+void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
+    // Translate relative position of the person (between 0 & 1) to a screen position in pixels
+    int posX = ofGetWidth() * augmentaEvent.person->centroid.x;
+    int posY = ofGetHeight() * augmentaEvent.person->centroid.y;
+    
+    // Update grain's position with person associated
+    grainCloudVis->at(getIndexOfGrainCloudWithPID(augmentaEvent.person->pid))->updateCloudPosition(posX,posY);
+}
+
+void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
+    int pid = augmentaEvent.person->pid;
+    
+    if (grainCloud->size() > 0){
+        //GrainCluster* grainCloudToDelete = getGrainCloudWithPID(pid);
+        //GrainClusterVis* grainCloudVisToDelete = grainCloudToDelete->getRegisteredVis();
+        
+        int index = getIndexOfGrainCloudWithPID(pid);
+        
+        grainCloud->erase(grainCloud->begin() + index);
+        grainCloudVis->erase(grainCloudVis->begin() + index);
+        
+        // TO FIX ? Do not delete grain cloud, because GrainVoice Destructor delete the sounds and singleton Window
+        //delete grainCloudVisToDelete;
+        //delete grainCloudToDelete;
+        
+        numClouds-=1;
+    }
+}
+
+GrainCluster* ofApp::getGrainCloudWithPID(int pid){
+    for(int i=0; i<grainCloud->size(); i++){
+        if(grainCloud->at(i)->getId() == pid)
+            return grainCloud->at(i);
+    }
+    return NULL;
+}
+
+int ofApp::getIndexOfGrainCloudWithPID(int pid){
+    for(int i=0; i<grainCloud->size(); i++){
+        if(grainCloud->at(i)->getId() == pid)
+            return i;
+    }
+    return -1;
 }

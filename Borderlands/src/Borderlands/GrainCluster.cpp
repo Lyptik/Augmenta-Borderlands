@@ -54,10 +54,23 @@ GrainCluster::~GrainCluster()
 //Constructor
 GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices)
 {
-  //initialize mutext
-    myLock = new Mutex();
+    init(soundSet, theNumVoices);
+    
     //cluster id
     myId = ++clusterId;
+}
+
+GrainCluster::GrainCluster(int pid, vector<AudioFile*> * soundSet, float theNumVoices)
+{
+    init(soundSet, theNumVoices);
+
+    //cluster id
+    myId = pid;
+}
+
+void GrainCluster::init(vector<AudioFile*> * soundSet, float theNumVoices){
+    //initialize mutext
+    myLock = new Mutex();
     
     //playback bool to make sure we precisely time grain triggers
     awaitingPlay = false;
@@ -79,11 +92,11 @@ GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices)
     
     //intialize timer
     local_time = 0;
-
+    
     //default duration (ms)
     duration = 500.0;
-
-    //default pitch 
+    
+    //default pitch
     pitch = 1.0f;
     
     //default window type
@@ -100,15 +113,15 @@ GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices)
     }
     
     currentAroundChan = 1;
-    stereoSide = 0; 
+    stereoSide = 0;
     side = 1;
-
+    
     
     spatialMode = UNITY;
     channelLocation = -1;
     
     myDirMode = RANDOM_DIR;
- 
+    
     //create grain voice vector
     myGrains = new vector<GrainVoice *>;
     
@@ -117,19 +130,19 @@ GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices)
     {
         myGrains->push_back(new GrainVoice( theSounds, duration, pitch));
     }
-
+    
     //set volume of cloud to unity
     setVolumeDb(0.0);
     
     //set overlap (default to full overlap)
     setOverlap(1.0f);
     
-//    //direction 
-//    setDirection(RANDOM_DIR);
+    //    //direction
+    //    setDirection(RANDOM_DIR);
     
     //initialize trigger time (samples)
-    bang_time = duration * MY_SRATE * (double) 0.001 / overlap;    
-
+    bang_time = duration * MY_SRATE * (double) 0.001 / overlap;
+    
     //load grains
     for (int i = 0; i < myGrains->size(); i++){
         myGrains->at(i)->setDurationMs(duration);
@@ -137,11 +150,7 @@ GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices)
     
     //state - (user can remove cloud from "play" for editing)
     isActive = true;
-    
-
-    
 }
-
 
 //register controller for communication with view
 void GrainCluster::registerVis(GrainClusterVis * vis){
