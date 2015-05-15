@@ -46,6 +46,8 @@
 #include "Thread.h"
 #include "SoundRect.h"
 
+#include "ofxXmlSettings.h"
+
 //direction modes
 enum {FORWARD, BACKWARD, RANDOM_DIR};
 
@@ -72,10 +74,11 @@ public:
     virtual ~GrainCluster();
     
     //constructors
-    GrainCluster(vector<AudioFile *> *soundSet, float theNumVoices);
-    GrainCluster(int pid, vector<AudioFile *> *soundSet, float theNumVoices);
+    GrainCluster(vector<AudioFile *> *soundSet, float theNumVoices, ofxXmlSettings settings);
+    GrainCluster(int pid, vector<AudioFile *> *soundSet, float theNumVoices, ofxXmlSettings settings);
     
     void init(vector<AudioFile*> * soundSet, float theNumVoices);
+    void initWithSettings(ofxXmlSettings settings);
     
     //compute next buffer of audio (accumulate from grains)
     void nextBuffer(double * accumBuff, unsigned int numFrames);

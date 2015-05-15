@@ -47,16 +47,21 @@ using namespace std;
 void ofApp::init(){
     //grain cloud audio objects
     grainCloud = NULL;
-    menuFlag = true;
+    if(settings.getValue("appSettings:showStartMenu", "") == "true")
+        menuFlag = true;
+    else if(settings.getValue("appSettings:showStartMenu", "") == "false")
+        menuFlag = false;
+    else
+        menuFlag = true;
 
     //audio system
     theAudio = NULL;
     //library path
-    g_audioPath = string("./loops/");
+    g_audioPath = settings.getValue("appSettings:audioPath", "./loops/");
     //parameter string
     paramString = "";
     //desired audio buffer size
-    g_buffSize = 1024;
+    g_buffSize = settings.getValue("appSettings:bufferSize", 1024);
     // load sounds
     newFileMgr = NULL;
     //audio files
@@ -475,6 +480,9 @@ void ofApp::deselect(int shapeType){
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    // Load settings file
+    settings.loadFile("settings.xml");
+    
     // Initialize Borderlands variables
     init();
     
@@ -489,7 +497,7 @@ void ofApp::setup(){
     
     // Connect augmenta receiver
     try {
-        augmentaReceiver.connect(OSC_PORT);
+        augmentaReceiver.connect(settings.getValue("appSettings:oscPort", OSC_PORT));
     } catch (std::exception&e) {
         std::cerr << "Error : " << e.what() << endl;
     }
@@ -499,7 +507,7 @@ void ofApp::setup(){
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
     
     #ifdef MAC_OS_X_VERSION_10_6
-    syphonServer.setName("Borderlands");
+    syphonServer.setName(settings.getValue("appSettings:syphonServerName", "Borderlands"));
     #endif
     
     //init random number generator
@@ -1044,7 +1052,7 @@ void ofApp::keyPressed(int key){
                     break;
                     */
                 }else{
-                    int numVoices = 8;//initial number of voices
+                    int numVoices = settings.getValue("cloudSettings:numVoices", 8);//initial number of voices
                     int idx = grainCloud->size();
                     /*if (selectedCloud >=0){
                         if (numClouds > 0){
@@ -1053,7 +1061,7 @@ void ofApp::keyPressed(int key){
                     }
                     selectedCloud = idx;*/
                     //create audio
-                    grainCloud->push_back(new GrainCluster(mySounds,numVoices));
+                    grainCloud->push_back(new GrainCluster(mySounds,numVoices, settings));
                     //create visualization
                     grainCloudVis->push_back(new GrainClusterVis(mouseX,mouseY,numVoices,soundViews));
                     //select new cloud
@@ -1429,11 +1437,11 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
     int posY = ofGetHeight() * augmentaEvent.person->centroid.y;
     
     // Create a new grain based on person
-    int numVoices = 4;//initial number of voices
+    int numVoices = settings.getValue("cloudSettings:numVoices", 8);//initial number of voices
     int idx = grainCloud->size();
     
     //create audio
-    grainCloud->push_back(new GrainCluster(augmentaEvent.person->pid, mySounds,numVoices));
+    grainCloud->push_back(new GrainCluster(augmentaEvent.person->pid, mySounds,numVoices, settings));
     //create visualization
     grainCloudVis->push_back(new GrainClusterVis(posX,posY,numVoices,soundViews));
     //select new cloud

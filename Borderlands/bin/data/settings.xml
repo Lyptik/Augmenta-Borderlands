@@ -1,0 +1,23 @@
+<!-- Global app settings -->
+<appSettings>
+    <showStartMenu>true</showStartMenu> 			<!-- show start menu at Borderlands launch (true or false) -->
+    <audioPath>./loops/</audioPath> 				<!-- path to the audio loops (relative to data folder) -->
+    <bufferSize>1024</bufferSize> 					<!-- buffer size -->
+
+    <oscPort>12000</oscPort> 						<!-- OSC port for Augmenta -->
+    <syphonServerName>Borderlands</syphonServerName>
+</appSettings>
+
+<!-- Default settings for each cloud -->
+<cloudSettings>
+    <numVoices>4</numVoices> 						<!-- voice number -->
+    <duration>500</duration> 						<!-- duration (ms) -->
+    <overlap>1.0</overlap> 							<!-- overlap (between 0 and 1) -->
+    <pitch>1.0</pitch> 								<!-- pitch -->
+    <windowType>HANNING</windowType> 				<!-- window type (HANNING, TRIANGLE, EXPDEC, REXPDEC, SINC, RANDOM) -->
+    <grainDirection>RANDOM</grainDirection> 		<!-- grain direction (FORWARD, BACKWARD, RANDOM) -->
+    <spatializationMode>UNITY</spatializationMode> 	<!-- spatialization mode (UNITY, STEREO, AROUND) -->
+    <pitchLFOFreq>0.01</pitchLFOFreq> 				<!-- playback rate LFO frequency -->
+    <pitchLFOAmount>0.0</pitchLFOAmount> 			<!-- playback rate LFO amplitude -->
+    <volume>0.0</volume> 							<!-- cloud volume in dB -->
+</cloudSettings>

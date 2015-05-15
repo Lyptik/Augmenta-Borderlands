@@ -16,7 +16,10 @@
 //graphics and audio related
 #include "Borderlands/GrainCluster.h"
 
+//augmenta
 #include "ofxAugmenta.h"
+//xml settings
+#include "ofxXmlSettings.h"
 
 #ifdef MAC_OS_X_VERSION_10_6
 #include "ofxSyphon.h"
@@ -58,6 +61,9 @@ class ofApp : public ofBaseApp{
     
         // Augmenta object to receive tracking information
         Augmenta::Receiver augmentaReceiver;
+    
+        // XML Settings
+        ofxXmlSettings settings;
     
         //-----------------------------------------------------------------------------
         // Shared Data Structures, Global parameters

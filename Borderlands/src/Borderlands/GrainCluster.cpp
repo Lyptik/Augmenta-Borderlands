@@ -52,23 +52,28 @@ GrainCluster::~GrainCluster()
 
 
 //Constructor
-GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices)
+GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices, ofxXmlSettings settings)
 {
     init(soundSet, theNumVoices);
+    initWithSettings(settings);
     
     //cluster id
     myId = ++clusterId;
 }
 
-GrainCluster::GrainCluster(int pid, vector<AudioFile*> * soundSet, float theNumVoices)
+GrainCluster::GrainCluster(int pid, vector<AudioFile*> * soundSet, float theNumVoices, ofxXmlSettings settings)
 {
     init(soundSet, theNumVoices);
+    initWithSettings(settings);
 
     //cluster id
     myId = pid;
 }
 
 void GrainCluster::init(vector<AudioFile*> * soundSet, float theNumVoices){
+    //initialize visuals
+    myVis = NULL;
+    
     //initialize mutext
     myLock = new Mutex();
     
@@ -150,6 +155,46 @@ void GrainCluster::init(vector<AudioFile*> * soundSet, float theNumVoices){
     
     //state - (user can remove cloud from "play" for editing)
     isActive = true;
+}
+
+void GrainCluster::initWithSettings(ofxXmlSettings settings){
+    setDurationMs(settings.getValue("cloudSettings:duration", duration));
+    setOverlap(settings.getValue("cloudSettings:overlap", overlap));
+    setPitch(settings.getValue("cloudSettings:pitch", pitch));
+    
+    string winTypeSetting = settings.getValue("cloudSettings:windowType", "");
+    if(winTypeSetting == "HANNING" || winTypeSetting == "hanning")
+        setWindowType(HANNING);
+    else if(winTypeSetting == "TRIANGLE" || winTypeSetting == "triangle")
+        setWindowType(TRIANGLE);
+    else if(winTypeSetting == "EXPDEC" || winTypeSetting == "expdec")
+        setWindowType(EXPDEC);
+    else if(winTypeSetting == "REXPDEC" || winTypeSetting == "rexpdec")
+        setWindowType(REXPDEC);
+    else if(winTypeSetting == "SINC" || winTypeSetting == "sinc")
+        setWindowType(SINC);
+    else if(winTypeSetting == "RANDOM" || winTypeSetting == "random")
+        setWindowType(RANDOM_WIN);
+    
+    string grainDirSetting = settings.getValue("cloudSettings:grainDirection", "");
+    if(grainDirSetting == "FORWARD" || winTypeSetting == "forward")
+        setDirection(FORWARD);
+    else if(grainDirSetting == "BACKWARD" || winTypeSetting == "backward")
+        setDirection(BACKWARD);
+    else if(grainDirSetting == "RANDOM" || winTypeSetting == "random")
+        setDirection(RANDOM_DIR);
+    
+    string spatModeSetting = settings.getValue("cloudSettings:spatializationMode", "");
+    if(spatModeSetting == "UNITY" || winTypeSetting == "unity")
+        setSpatialMode(UNITY, -1);
+    else if(spatModeSetting == "STEREO" || winTypeSetting == "stereo")
+        setSpatialMode(STEREO, -1);
+    else if(spatModeSetting == "AROUND" || winTypeSetting == "around")
+        setSpatialMode(AROUND, -1);
+    
+    setPitchLFOFreq(settings.getValue("cloudSettings:pitchLFOFreq", pitchLFOFreq));
+    setPitchLFOAmount(settings.getValue("cloudSettings:pitchLFOAmount", pitchLFOAmount));
+    setVolumeDb(settings.getValue("cloudSettings:volume", volumeDb));
 }
 
 //register controller for communication with view
