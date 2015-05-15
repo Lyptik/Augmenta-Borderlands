@@ -4,8 +4,14 @@
     <audioPath>./loops/</audioPath> 				<!-- path to the audio loops (relative to data folder) -->
     <bufferSize>1024</bufferSize> 					<!-- buffer size -->
 
+    <!-- Augmenta relative settings -->
     <oscPort>12000</oscPort> 						<!-- OSC port for Augmenta -->
     <syphonServerName>Borderlands</syphonServerName>
+
+    <!-- Voice limiter function : distribute voices in scene according to the voicesLimit to prevent sound crashes -->
+    <useVoiceLimiter>true</useVoiceLimiter> 		<!-- enable the voice limiter function (true or false) -->
+    <voicesLimit>160</voicesLimit> 					<!-- limit the total number of voices in the scene. Use this parameter to prevent sound crashes -->
+    <maxVoicesPerCloud>10</maxVoicesPerCloud> 		<!-- maximum number of voices per cloud when voiceLimiter is active -->
 </appSettings>
 
 <!-- Default settings for each cloud -->

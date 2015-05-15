@@ -113,6 +113,14 @@ void ofApp::init(){
     
     //flag for help menu display
     showHelpMenu = false;
+    
+    //flag for voice limiter function
+    if(settings.getValue("appSettings:useVoiceLimiter", "") == "true")
+        voiceLimiterActive = true;
+    else if(settings.getValue("appSettings:useVoiceLimiter", "") == "false")
+        voiceLimiterActive = false;
+    else
+        voiceLimiterActive = false;
 }
 
 //--------------------------------------------------------------------------------
@@ -1450,6 +1458,10 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
     grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
     //grainCloud->at(idx)->toggleActive();
     numClouds+=1;
+    
+    //update voices with voice limiter
+    if(voiceLimiterActive)
+        voiceLimiter();
 }
 
 void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
@@ -1482,6 +1494,10 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
         
         numClouds-=1;
     }
+    
+    //update voices with voice limiter
+    if(voiceLimiterActive)
+        voiceLimiter();
 }
 
 GrainCluster* ofApp::getGrainCloudWithPID(int pid){
@@ -1508,4 +1524,43 @@ bool ofApp::belongsToAugmenta(int pid){
             return true;
     }
     return false;
+}
+
+void ofApp::voiceLimiter(){
+    // Get parameters defined in settings
+    int voicesLimit = settings.getValue("appSettings:voicesLimit", 150);
+    int maxVoicesPerCloud = settings.getValue("appSettings:maxVoicesPerCloud", 10);
+    
+    // Distribute the voices in clouds
+    float voicesPerCloud = (float)voicesLimit / (float)grainCloud->size();
+    
+    // There is not enough clouds to reach the limit : we set voices to the max limit per cloud
+    if(voicesPerCloud >= maxVoicesPerCloud){
+        for(int i=0; i<grainCloud->size(); i++){
+            grainCloud->at(i)->setGrains(maxVoicesPerCloud);
+        }
+    }
+    // There is enough clouds to reach the limit, but there is not more clouds than the limit : number of voices is an integer between 1 and the voicesPerCloud limit
+    else if(voicesPerCloud < maxVoicesPerCloud && voicesPerCloud >= 1){
+        for(int i=0; i<grainCloud->size(); i++){
+            grainCloud->at(i)->setGrains((int)voicesPerCloud);
+        }
+    }
+    // There is more clouds than the limit : some clouds will not have any voice
+    else if(voicesPerCloud < 1){
+        int remainingVoices = voicesLimit;
+        for(int i=0; i<grainCloud->size(); i++){
+            if(remainingVoices == 0)
+                break;
+            
+            // Distribute voices randomly
+            if((float)std::rand()/RAND_MAX < voicesPerCloud){
+                grainCloud->at(i)->setGrains(1);
+                remainingVoices--;
+            }
+            else{
+                grainCloud->at(i)->setGrains(0);
+            }
+        }
+    }
 }

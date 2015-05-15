@@ -137,6 +137,9 @@ class ofApp : public ofBaseApp{
         //flag for help menu display
         bool showHelpMenu;
     
+        //flag for voice limiter function
+        bool voiceLimiterActive;
+    
         #ifdef MAC_OS_X_VERSION_10_6
         ofxSyphonServer syphonServer;
         #endif
@@ -172,5 +175,7 @@ class ofApp : public ofBaseApp{
         GrainCluster* getGrainCloudWithPID(int pid);
         int getIndexOfGrainCloudWithPID(int pid);
     
-    bool belongsToAugmenta(int pid);
+        bool belongsToAugmenta(int pid);
+    
+        void voiceLimiter();
 };

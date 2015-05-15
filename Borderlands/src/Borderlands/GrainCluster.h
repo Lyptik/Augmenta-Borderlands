@@ -110,6 +110,7 @@ public:
     //add/remove grain voice
     void addGrain();
     void removeGrain();
+    void setGrains(int num);
     
     //set window type
     void setWindowType(int windowType);
@@ -209,6 +210,8 @@ public:
     
     //render
     void draw();
+    //get grains 
+    vector<GrainVis*> * getGrainsVis();
     //get playback position in registered rectangles and return to grain cloud
     void getTriggerPos(unsigned int idx, double * playPos, double * playVols,float dur);
     //move grains
@@ -249,7 +252,6 @@ private:
     float freq;
     float gcX, gcY;
     float selRad, lambda, maxSelRad, minSelRad,targetRad;
-    unsigned int numGrains;
     
     //grain voice visualizations
     vector<GrainVis*> * myGrainsV;

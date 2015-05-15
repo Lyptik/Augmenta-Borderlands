@@ -251,6 +251,53 @@ void GrainCluster::removeGrain(){
     myVis->removeGrain();
 }
 
+void GrainCluster::setGrains(int num){
+    int grainsToAdd = num - myGrains->size();
+    if(grainsToAdd > 0){
+        for(int i=0; i<grainsToAdd; i++){
+            myGrains->push_back(new GrainVoice(theSounds,duration,pitch));
+            myVis->addGrain();
+            
+            int idx = myGrains->size()-1;
+            myGrains->at(idx)->setWindow(windowType);
+            switch (myDirMode) {
+                case FORWARD:
+                    myGrains->at(idx)->setDirection(1.0);
+                    break;
+                case BACKWARD:
+                    myGrains->at(idx)->setDirection(-1.0);
+                    break;
+                case RANDOM_DIR:
+                    if (randf()>0.5)
+                        myGrains->at(idx)->setDirection(1.0);
+                    else
+                        myGrains->at(idx)->setDirection(-1.0);
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            myGrains->at(idx)->setVolume(normedVol);
+            numVoices += 1;
+        }
+        
+        setOverlap(overlapNorm);
+    }
+    else if(grainsToAdd < 0){
+        myGrains->erase(myGrains->end() + grainsToAdd, myGrains->end());
+        myVis->getGrainsVis()->erase(myVis->getGrainsVis()->end() + grainsToAdd, myVis->getGrainsVis()->end());
+        
+        if (nextGrain >= myGrains->size()-1){
+            nextGrain = 0;
+        }
+        setOverlap(overlapNorm);
+    }
+    else if(num == 0){
+        myGrains->clear();
+        myVis->getGrainsVis()->clear();
+    }
+}
 
 //return id for grain cluster
 unsigned int GrainCluster::getId(){
@@ -435,7 +482,7 @@ void GrainCluster::nextBuffer(double * accumBuff,unsigned int numFrames)
     
     if (removeFlag == true){
         myLock->lock();
-        if (myGrains->size() > 1){
+        if (myGrains->size() > 0){
              if (nextGrain >= myGrains->size()-1){
                  nextGrain = 0;
              }
@@ -675,8 +722,6 @@ GrainClusterVis::GrainClusterVis(float x, float y, unsigned int numVoices,vector
     {
         myGrainsV->push_back(new GrainVis(gcX,gcY));
     }
-
-    numGrains = numVoices;
     
     
     //visualization stuff
@@ -698,6 +743,10 @@ float GrainClusterVis::getX(){
 //return cluster y
 float GrainClusterVis::getY(){
     return gcY;
+}
+
+vector<GrainVis*> * GrainClusterVis::getGrainsVis(){
+    return myGrainsV;
 }
 
 void GrainClusterVis::draw()
@@ -737,7 +786,7 @@ void GrainClusterVis::draw()
     glPushMatrix();
     //update grain motion;
     //Individual voices
-     for (int i = 0; i < numGrains; i++){
+     for (int i = 0; i < myGrainsV->size(); i++){
        myGrainsV->at(i)->draw();
      }
     glPopMatrix();
@@ -817,7 +866,7 @@ void GrainClusterVis::updateCloudPosition(float x, float y){
 
 void  GrainClusterVis::updateGrainPosition(int idx, float x, float y)
 {
-    if (idx < numGrains)
+    if (idx < myGrainsV->size())
         myGrainsV->at(idx)->moveTo(x,y);
 }
 
@@ -841,17 +890,15 @@ void GrainClusterVis::addGrain()
 {
 //    addFlag = true;
     myGrainsV->push_back(new GrainVis(gcX,gcY));
-    numGrains= myGrainsV->size();
 }
 
 //remove a grain from the cloud (visualization only)
 void GrainClusterVis::removeGrain()
 {
     //    removeFlag = true;
-    if (numGrains > 1){
+    if (myGrainsV->size() > 1){
         //delete object
         myGrainsV->pop_back();
-        numGrains = myGrainsV->size();
     }
     
 }
