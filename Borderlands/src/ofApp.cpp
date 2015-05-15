@@ -686,7 +686,7 @@ void ofApp::drawHelp(){
                        "\n"
                        "Cloud Addition and Selection\n"
                        "------------\n"
-                       "G key (+shift)	Add (remove) cloud to/from end of collection\n"
+                       "G key       Add cloud to end of collection\n"
                        "Delete key	Remove selected cloud\n"
                        "Left click	Select\n"
                        "Drag	        Move\n"
@@ -698,6 +698,8 @@ void ofApp::drawHelp(){
                        "Most parameters involve keyboard interfacing. Select the key corresponding to the mode,\n"
                        "then press it again to change the value. In some cases, numeric keys are used to enter\n"
                        "specific values. In parameters associated with grain motion, the mouse is used.\n"
+                       "\n"
+                       "M key             Toggle voice limiter function on/off\n"
                        "V key (+shift)	  Add (remove) voices\n"
                        "A key	          Toggle cloud on/off\n"
                        "D key (+shift)	  Increment (decrement) duration\n"
@@ -1217,7 +1219,8 @@ void ofApp::keyPressed(int key){
         case '_':
             paramString.insert(0,"-");
             break;
-        case 127://delete selected
+        case OF_KEY_DEL:
+        case OF_KEY_BACKSPACE:
             if (paramString == ""){
                 if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
@@ -1236,6 +1239,10 @@ void ofApp::keyPressed(int key){
             if (selectedCloud >=0){
                 grainCloud->at(selectedCloud)->toggleActive();
             }
+            break;
+        case 'M':
+        case 'm':
+            voiceLimiterActive = !voiceLimiterActive;
             break;
             
         default:
