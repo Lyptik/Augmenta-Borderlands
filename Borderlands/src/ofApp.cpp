@@ -719,6 +719,15 @@ void ofApp::drawHelp(){
                        "L key (+shift)    Adjust playback rate LFO frequency\n"
                        "K key (+shift)	  Adjust playback rate LFO amplitude\n"
                        "B key (+shift)	  Adjust cloud volume in dB", 10, 32);
+    
+    if(voiceLimiterActive){
+        ofSetColor(ofColor::green);
+        ofDrawBitmapString("Voice Limiter ON", 800, 32);
+    }
+    else{
+        ofSetColor(ofColor::yellow);
+        ofDrawBitmapString("Voice Limiter OFF", 800, 32);
+    }
 }
 
 //--------------------------------------------------------------
