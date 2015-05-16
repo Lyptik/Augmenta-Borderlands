@@ -77,7 +77,7 @@
 # add a runtime path to search for those shared libraries, since they aren't 
 # incorporated directly into the final executable application binary.
 # TODO: should this be a default setting?
-# PROJECT_LDFLAGS=-Wl,-rpath=./libs
+PROJECT_LDFLAGS=-Wl,-rpath=./libs -lasound -lpthread -ljack -lstdc++ -lglut -lGL -lGLU -lm -lsndfile
 
 ################################################################################
 # PROJECT DEFINES
@@ -105,7 +105,7 @@
 #
 #   Note: Leave a leading space when adding list items with the += operator
 ################################################################################
-# PROJECT_CFLAGS = 
+PROJECT_CFLAGS = -D__LINUX_ALSASEQ__ -D__UNIX_JACK__  -DOSC_HOST_LITTLE_ENDIAN -c 
 
 ################################################################################
 # PROJECT OPTIMIZATION CFLAGS

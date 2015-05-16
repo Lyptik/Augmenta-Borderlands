@@ -33,6 +33,8 @@
 
 #include <stdlib.h>
 
+namespace borderlands {
+
 class GTime{
 public:
     static GTime & instance();
@@ -46,5 +48,7 @@ private:
     
     
 };
+
+}
 
 #endif

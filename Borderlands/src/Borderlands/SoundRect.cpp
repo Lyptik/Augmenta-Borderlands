@@ -111,7 +111,7 @@ void SoundRect::init(){
     lastY = 0;
     
     //get start time
-    startTime = GTime::instance().sec;
+    startTime = borderlands::GTime::instance().sec;
     //set id
     //myId = ++boxId;
     
@@ -344,12 +344,12 @@ void SoundRect::draw(){
 //        lambda = 0.999;
 //    }
 //    
-    //colA = 0.18f + 0.1f*sin(0.5f*PI*GTime::instance().sec + aPhase);
+    //colA = 0.18f + 0.1f*sin(0.5f*PI*borderlands::GTime::instance().sec + aPhase);
 
     //draw rectangle
     glColor4f(colR,colG,colB,colA);
     
-    //    double theTime = (GTime::instance().sec-startTime);
+    //    double theTime = (borderlands::GTime::instance().sec-startTime);
     //    rX += 0.1*sin(2*PI*0.12*theTime);
     //    rY += 0.5*sin(2*PI*0.1*theTime);
     //    updateCorners(rWidth,rHeight);

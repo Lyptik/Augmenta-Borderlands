@@ -109,7 +109,7 @@ GrainVoice::GrainVoice(vector<AudioFile *> * soundSet,float durationMs,float the
     queuedWindowType = windowType;
     
     //window type is hanning
-    window = Window::Instance().getWindow(windowType);
+    window = borderlands::Window::Instance().getWindow(windowType);
 
     //grain volume
     localAtten = 1.0;
@@ -289,7 +289,7 @@ void GrainVoice::updateParams()
     windowType = queuedWindowType;
     
     //switch window
-    window = Window::Instance().getWindow(windowType);
+    window = borderlands::Window::Instance().getWindow(windowType);
 
     //double value, but eliminate fractional component - 
     winDurationSamps = ceil(duration * MY_SRATE * (double) 0.001);
@@ -556,7 +556,7 @@ GrainVis::GrainVis(float x, float y){
     onSize = 30.0f;
     isOn = false;
     firstTrigger = false;
-    startTime = GTime::instance().sec;
+    startTime = borderlands::GTime::instance().sec;
     triggerTime = 0.0;
     //TODO:  colors
     
@@ -566,7 +566,7 @@ GrainVis::GrainVis(float x, float y){
 //draw method
 void GrainVis::draw()
 {
-    double t_sec = GTime::instance().sec - triggerTime;
+    double t_sec = borderlands::GTime::instance().sec - triggerTime;
     if (firstTrigger == true){
         //slew size
         double mult = 0.0;
@@ -613,7 +613,7 @@ void GrainVis::trigger(float theDur){
     if (firstTrigger == false)
         firstTrigger = true;
     durSec = theDur*0.001;
-    triggerTime = GTime::instance().sec;
+    triggerTime = borderlands::GTime::instance().sec;
     
 }
 

@@ -28,17 +28,18 @@
 //
 
 #include "GTime.h"
+
     
-GTime::~GTime(){
+borderlands::GTime::~GTime(){
 
 }
 
-GTime::GTime(){
+borderlands::GTime::GTime(){
     sec  = (double) 0.0;
 
 }
 
-GTime & GTime::instance(){
+borderlands::GTime & borderlands::GTime::instance(){
     static GTime * theInst = NULL;
     if (theInst == NULL)
         theInst = new GTime();

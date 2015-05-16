@@ -41,7 +41,13 @@
 
 using namespace std;
 
+
 enum {HANNING, TRIANGLE, EXPDEC, REXPDEC, SINC, RANDOM_WIN};
+
+namespace borderlands {
+
+
+
 
 class Window
 {
@@ -80,6 +86,6 @@ private:
  
 };
 
-
+}
 
 #endif
