@@ -29,8 +29,6 @@
 //  Created by Christopher Carlson on 11/13/11.
 //
 
-#define OSC_PORT 12000
-
 // Global variable containing pointer on instance of this class, used for callback function
 // In setup(), the openStream method wait a pointer on a callback function which
 // respond to typedef RtAudioCallback defined in RTAudio.h, and the callback must access member variables 
@@ -38,7 +36,6 @@
 ofApp* g_thisApp;
 
 using namespace std;
-
 
 //--------------------------------------------------------------------------------
 // Initialization
@@ -54,6 +51,13 @@ void ofApp::init(){
     else
         menuFlag = true;
 
+    if(settings.getValue("appSettings:showCursor", "") == "true")
+        showCursor = true;
+    else if(settings.getValue("appSettings:showCursor", "") == "false")
+        showCursor = false;
+    else
+        showCursor = true;
+    
     //audio system
     theAudio = NULL;
     //library path
@@ -76,7 +80,6 @@ void ofApp::init(){
     //Initial camera movement vars
     //my position
     position = ofPoint(0.0,0.0,0.0f);
-    
     
     //ENUMS
     //default selection mode
@@ -155,9 +158,6 @@ void ofApp::cleaningFunction(){
         delete selectionIndices;
     }
 }
-
-
-
 
 //================================================================================
 //   Audio Callback
@@ -268,7 +268,6 @@ void ofApp::printUsage(){
     draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 70.0, 0.5f,"H FOR HELP",(float)ofGetWidth()*0.04f);
     
 }
-
 
 void ofApp::printParam(){
     if ((numClouds > 0) && (selectedCloud >=0)){
@@ -488,6 +487,9 @@ void ofApp::deselect(int shapeType){
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    // Hide cursor
+    ofHideCursor(); // Bug in of 0.8.4, even if we want to show cursor we have to go through that
+    
     // Load settings file
     settings.loadFile("settings.xml");
     
@@ -505,7 +507,7 @@ void ofApp::setup(){
     
     // Connect augmenta receiver
     try {
-        augmentaReceiver.connect(settings.getValue("appSettings:oscPort", OSC_PORT));
+        augmentaReceiver.connect(settings.getValue("appSettings:oscPort", 12000));
     } catch (std::exception&e) {
         std::cerr << "Error : " << e.what() << endl;
     }
@@ -659,6 +661,11 @@ void ofApp::drawVisuals(){
     }
     
     ofPopMatrix();
+    
+    // Draw cursor
+    if(showCursor){
+        ofCircle(mouseX, mouseY, 10);
+    }
 }
 
 //--------------------------------------------------------------
@@ -1288,8 +1295,8 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y){
-    updateMouseCoords(x,y);
     
+    updateMouseCoords(x,y);
     
     if (selectedCloud >=0){
         switch (currentParam) {
@@ -1306,6 +1313,8 @@ void ofApp::mouseMoved(int x, int y){
                 break;
         }
     }
+    
+    //ofShowCursor(); // Hotfix of 0.8.4 bug if you want to show real cursor
 }
 
 //--------------------------------------------------------------

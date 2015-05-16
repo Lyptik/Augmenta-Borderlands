@@ -121,12 +121,6 @@ class ofApp : public ofBaseApp{
         double lastParamChangeTime;
         double tempParamVal;
         
-        
-        
-        
-        //mouse coordinate initialization
-        int mouseX;
-        int mouseY;
         long veryHighNumber;
         long lastDragX;
         long lastDragY;
@@ -136,6 +130,9 @@ class ofApp : public ofBaseApp{
     
         //flag for help menu display
         bool showHelpMenu;
+    
+        //flag for showing cursor
+        bool showCursor;
     
         //flag for voice limiter function
         bool voiceLimiterActive;
