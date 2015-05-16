@@ -5,7 +5,7 @@
     <bufferSize>1024</bufferSize> 					<!-- buffer size -->
 
     <!-- Augmenta relative settings -->
-    <oscPort>12000</oscPort> 						<!-- OSC port for Augmenta -->
+    <oscPort>8080</oscPort> 						<!-- OSC port for Augmenta -->
     <syphonServerName>Borderlands</syphonServerName>
 
     <!-- Voice limiter function : distribute voices in scene according to the voicesLimit to prevent sound crashes -->
