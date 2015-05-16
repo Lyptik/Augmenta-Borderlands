@@ -29,7 +29,7 @@
 
 #include "Window.h"
 
-
+using namespace borderlands;
 
 //destructor
 Window::~Window(){
@@ -62,7 +62,7 @@ int Window::numWindows(){
     return 6;
 }
 
-Window & Window::Instance()
+borderlands::Window & Window::Instance()
 {
     static Window * theWindow = NULL;
     if (theWindow == NULL)

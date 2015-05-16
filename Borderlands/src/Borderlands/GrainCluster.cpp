@@ -217,15 +217,15 @@ bool GrainCluster::getActiveState(){
 
 //set window type
 void GrainCluster::setWindowType(int winType){
-    int numWins = Window::Instance().numWindows();
+    int numWins = borderlands::Window::Instance().numWindows();
     windowType = winType % numWins;
     
     if (windowType < 0){
-        windowType = Window::Instance().numWindows()-1;
+        windowType = borderlands::Window::Instance().numWindows()-1;
     }
     if (windowType == RANDOM_WIN){
         for (int i = 0; i < myGrains->size();i++){
-            myGrains->at(i)->setWindow((int)floor(randf()*Window::Instance().numWindows()-1));
+            myGrains->at(i)->setWindow((int)floor(randf()*borderlands::Window::Instance().numWindows()-1));
         }
     }else{
 
@@ -534,7 +534,7 @@ void GrainCluster::nextBuffer(double * accumBuff,unsigned int numFrames)
                 
                 //get next pitch (using LFO) -  eventually generalize to an applyLFOs method (if LFO control will be exerted over multiple params)
                 if ((pitchLFOAmount > 0.0f) && (pitchLFOFreq > 0.0f)){
-                    float nextPitch = fabs(pitch + pitchLFOAmount * sin(2*PI*pitchLFOFreq*GTime::instance().sec));
+                    float nextPitch = fabs(pitch + pitchLFOAmount * sin(2*PI*pitchLFOFreq*borderlands::GTime::instance().sec));
                     myGrains->at(nextGrain)->setPitch(nextPitch);
                 }
                 
@@ -690,7 +690,7 @@ GrainClusterVis::~GrainClusterVis(){
 GrainClusterVis::GrainClusterVis(float x, float y, unsigned int numVoices,vector<SoundRect*>*rects)
 {
     
-    startTime = GTime::instance().sec;
+    startTime = borderlands::GTime::instance().sec;
     //cout << "cluster started at : " << startTime << " sec " << endl;
     gcX = x;
     gcY = y;
@@ -753,7 +753,7 @@ void GrainClusterVis::draw()
 {
     
     
-    double t_sec = GTime::instance().sec  - startTime ;
+    double t_sec = borderlands::GTime::instance().sec  - startTime ;
     //cout << t_sec << endl;
     
     //if ((g_time -last_gtime) > 50){
