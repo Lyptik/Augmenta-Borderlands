@@ -529,10 +529,6 @@ void ofApp::setup(){
     // initialize graphics
     //initialize();
     
-    
-    
-    
-    
     // load sounds
     newFileMgr = new AudioFileSet();
     
@@ -543,8 +539,6 @@ void ofApp::setup(){
     
     mySounds = newFileMgr->getFileVector();
     cout << "Sounds loaded successfully..." << endl;
-    
-    
     
     //create visual representation of sounds
     soundViews = new vector<SoundRect *>;
@@ -557,8 +551,6 @@ void ofApp::setup(){
     //init grain cloud vector and corresponding view vector
     grainCloud = new vector<GrainCluster *>;
     grainCloudVis = new vector<GrainClusterVis *>;
-    
-    
     
     //-------------Audio Configuration-----------//
     
