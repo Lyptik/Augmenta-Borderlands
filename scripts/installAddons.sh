@@ -44,7 +44,8 @@ case `uname` in
 
   Linux)
 	sudo apt-get update &&
-	sudo apt-get install libsndfile1-dev
+	sudo apt-get install libsndfile1-dev &&
+	sudo service pulseaudio disable
 	;;
 esac
 
