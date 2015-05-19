@@ -1,32 +1,52 @@
-//------------------------------------------------------------------------------
-//
-//     BORDERLANDS:  An interactive granular sampler.  
-//          Version 0.04
-//------------------------------------------------------------------------------
-//  Project website:
-//     http::/ccrma.stanford.edu/~carlsonc/256a/Borderlands/index.html
-//
-//
-// Copyright (C) 2011  Christopher Carlson
-// carlsonc@ccrma.stanford.edu
-// www.modulationindex.com
-//
+# Augmenta Borderlands
 
-Here is a fork of Borderlands using ofxAugmenta and putting some modifications
+This is a fork of Christopher Carlson's Borderlands interactive granular sampler
 
-OF : 0.8.4
+Original code is hosted here : https://github.com/Lyptik/Borderlands
 
-tested on OSX 10.9
+Project website:
+	http::/ccrma.stanford.edu/~carlsonc/256a/Borderlands/index.html
 
-External addons dependency :
+## Features
 
-ofxLibsndfileRecorder
-ofxSyphon
-ofxAugmenta
+This fork adds this following features :
 
-//------------------------------------------------------------------------
-// Acknowledgement
-//------------------------------------------------------------------------
+	- Augmenta integration for real-time tracking adaptation (see : https://github.com/Theoriz/Augmenta)
+	- Openframeworks integration
+	- Syphon integration
+	- Linux and OSX multiplatform code (potentially windows)
+	- MultiTouch interface with Linux and ginn
+	- Scaling algorithm
+	- XML settings
+	- Install scripts
+	- Documentation
+	- Many more...
+
+## Install
+
+Use the instal script in the scripts folder
+
+## Use
+
+In linux you need to start the jack server.
+
+This command works on Ubuntu 14.04.2 in a gnome3 environment (with jackd2)
+
+	jackd -P70 -p16 -t2000 -d alsa -dhw:1 -p 128 -n 3 -r 44100 -s
+
+You might need to change it depending on your hardware sound card configuration
+
+This code was developped and tested on OSX 10.10 with Of 0.8.4 and on Linux Ubuntu 14.04.2 with Of 0.8.4
+
+## Credits
+
+Copyright (C) 2015 Théoriz Studio
+contact@theoriz.com
+www.theoriz.com
+
+Copyright (C) 2011  Christopher Carlson
+carlsonc@ccrma.stanford.edu
+www.modulationindex.com
 
 Libraries included in Borderlands:
 Synthesis Toolkit
@@ -35,7 +55,6 @@ https://ccrma.stanford.edu/software/stk/
 RtAudio is used for real-time audio I/O
 http://www.music.mcgill.ca/~gary/rtaudio/
 
-Thanks to Ge Wang and Jorge Herrera for their guidance through the initial stages
-of this project.  Thanks to Mike Rotondo his help in my early brainstorming discussions.
-Thanks to Tarik Barri for encouraging me to pursue the idea and for suggesting the 
-use of the second dimension of the sound rectangles!
+Openframeworks
+http://openframeworks.cc/
+
