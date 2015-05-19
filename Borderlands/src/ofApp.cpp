@@ -558,8 +558,6 @@ void ofApp::setup(){
     
     ofxAddAugmentaListeners(this);  // for augmenta events
     
-    augmentaReceiver.getInteractiveArea()->set(interactiveArea.x, interactiveArea.y, interactiveArea.width, interactiveArea.height);
-    
     // TODO : Change to value from xml (beware nothing to do with window size)
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
     
@@ -696,8 +694,13 @@ void ofApp::drawVisuals(){
         if ( (selectedCloud >= 0) || (selectedRect >= 0) )
             printParam();
         
-        //print interactive area
-        augmentaReceiver.getInteractiveArea()->draw();
+        //draw interactive area
+        ofPushStyle();
+        ofNoFill();
+        ofSetColor(ofColor::red);
+        ofSetLineWidth(3);
+        ofRect(interactiveArea.x*ofGetWidth(), interactiveArea.y*ofGetHeight(), interactiveArea.width*ofGetWidth(), interactiveArea.height*ofGetHeight());
+        ofPopStyle();
     }else{
         printUsage();
         
@@ -1510,9 +1513,9 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 // Augmenta Events
 //--------------------------------------------------------------
 void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
-    // Translate relative position of the person (between 0 & 1) to a screen position in pixels
-    int posX = ofGetWidth() * augmentaEvent.person->centroid.x;
-    int posY = ofGetHeight() * augmentaEvent.person->centroid.y;
+    // Translate relative position of the person (between 0 & 1) to a screen position in pixels, restricted to the interactive area
+    int posX = ofGetWidth() * (augmentaEvent.person->centroid.x * interactiveArea.width + interactiveArea.x);
+    int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
     
     // Create a new grain based on person
     int idx = grainCloud->size();
@@ -1534,9 +1537,9 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
 }
 
 void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
-    // Translate relative position of the person (between 0 & 1) to a screen position in pixels
-    int posX = ofGetWidth() * augmentaEvent.person->centroid.x;
-    int posY = ofGetHeight() * augmentaEvent.person->centroid.y;
+    // Translate relative position of the person (between 0 & 1) to a screen position in pixels, restricted to the interactive area
+    int posX = ofGetWidth() * (augmentaEvent.person->centroid.x * interactiveArea.width + interactiveArea.x);
+    int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
     
     // Update grain's position with person associated
     grainCloudVis->at(getIndexOfGrainCloudWithPID(augmentaEvent.person->pid))->updateCloudPosition(posX,posY);
