@@ -14,9 +14,9 @@
     <createSoundsOutside>true</createSoundsOutside> 		<!-- if set to true, the sounds will be created outside the interactive area defined below
     															 on Borderlands launch. Else (false), the sounds are created randomly in the window. -->
     <interactiveAreaOriginX>0.2</interactiveAreaOriginX> 	<!-- origin on X axis for interactive area, relative to window size (0 = left, 1 = right) -->
-    <interactiveAreaOriginY>0.2</interactiveAreaOriginY> 	<!-- origin on Y axis for interactive area, relative to window size (0 = top, 1 = bottom) -->
+    <interactiveAreaOriginY>0.1</interactiveAreaOriginY> 	<!-- origin on Y axis for interactive area, relative to window size (0 = top, 1 = bottom) -->
     <interactiveAreaWidth>0.6</interactiveAreaWidth> 		<!-- width of interactive area, relative to window size (0 = no size, 1 = screen width) -->
-    <interactiveAreaHeight>0.6</interactiveAreaHeight> 		<!-- heigth interactive area, relative to window size (0 = no size, 1 = screen height) -->
+    <interactiveAreaHeight>0.8</interactiveAreaHeight> 		<!-- heigth interactive area, relative to window size (0 = no size, 1 = screen height) -->
 
     <!-- Voice limiter function : distribute voices in scene according to the voicesLimit to prevent sound crashes -->
     <useVoiceLimiter>true</useVoiceLimiter> 		<!-- enable the voice limiter function (true or false) -->

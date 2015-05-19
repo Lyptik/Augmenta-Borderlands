@@ -106,25 +106,25 @@ SoundRect::SoundRect(ofRectangle interactiveArea){
     //translation coordinates
     
     // Position top left point
-    topLeft.x = RandomFloat(0.0f, 1.0f - border.x);
+    topLeft.y = RandomFloat(0.0f, 1.0f - border.y);
     // if at the left or at the right of the interactive area
-    if (topLeft.x <= interactiveArea.x - border.x || topLeft.x >= interactiveArea.x + interactiveArea.width)
-        topLeft.y = RandomFloat(0.0f, 1.0f - border.y);
+    if (topLeft.y <= interactiveArea.y - border.y || topLeft.y >= interactiveArea.y + interactiveArea.height)
+        topLeft.x = RandomFloat(0.0f, 1.0f - border.x);
     
     // if there isn't enough space on top of interactive area
-    else if(interactiveArea.y <= border.y){
-        topLeft.y = RandomFloat(interactiveArea.y + interactiveArea.height, 1.0f - border.y);
+    else if(interactiveArea.x <= border.x){
+        topLeft.x = RandomFloat(interactiveArea.x + interactiveArea.width, 1.0f - border.x);
     }
     // if there isn't enough space on bottom of interactive area
-    else if(interactiveArea.y + interactiveArea.height >= 1.0f){
-        topLeft.y = RandomFloat(0.0f, interactiveArea.y - border.y);
+    else if(interactiveArea.x + interactiveArea.width >= 1.0f){
+        topLeft.x = RandomFloat(0.0f, interactiveArea.x - border.x);
     }
     // else, it is on top or bottom of the interactive area
     else
-        if (randf() < 0.5 && interactiveArea.y > border.y)
-            topLeft.y = RandomFloat(0.0f, interactiveArea.y - border.y);
+        if (randf() < 0.5 && interactiveArea.x > border.x)
+            topLeft.x = RandomFloat(0.0f, interactiveArea.x - border.x);
         else
-            topLeft.y = RandomFloat(interactiveArea.y + interactiveArea.height, 1.0f - border.y);
+            topLeft.x = RandomFloat(interactiveArea.x + interactiveArea.width, 1.0f - border.x);
     
     
     // Position bottom right point to have scaler
