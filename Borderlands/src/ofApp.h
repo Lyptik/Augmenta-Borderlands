@@ -65,6 +65,8 @@ class ofApp : public ofBaseApp{
         int oscPort;
         // OSC debug message
         string oscPortDisplayMessage;
+        // Augmenta interactive area
+        ofRectangle interactiveArea;
     
         // XML Settings
         ofxXmlSettings settings;

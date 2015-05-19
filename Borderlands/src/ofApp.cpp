@@ -119,6 +119,7 @@ void ofApp::init(){
     //initial number of voices when a new grain is created
     numVoices = 8;
     
+    interactiveArea = ofRectangle(0.0f, 0.0f, 1.0f, 1.0f);
     oscPort = 12000;
     syphonServerName = string("Borderlands");
 }
@@ -155,6 +156,11 @@ void ofApp::loadSettings(){
     maxVoicesPerCloud = settings.getValue("appSettings:maxVoicesPerCloud", maxVoicesPerCloud);
     
     numVoices = settings.getValue("cloudSettings:numVoices", numVoices);
+    
+    interactiveArea = ofRectangle(settings.getValue("appSettings:interactiveAreaOriginX", interactiveArea.x),
+                                  settings.getValue("appSettings:interactiveAreaOriginY", interactiveArea.y),
+                                  settings.getValue("appSettings:interactiveAreaWidth", interactiveArea.width),
+                                  settings.getValue("appSettings:interactiveAreaHeight", interactiveArea.height));
     
     oscPort = settings.getValue("appSettings:oscPort", oscPort);
     syphonServerName = settings.getValue("appSettings:syphonServerName", syphonServerName);
@@ -552,6 +558,8 @@ void ofApp::setup(){
     
     ofxAddAugmentaListeners(this);  // for augmenta events
     
+    augmentaReceiver.getInteractiveArea()->set(interactiveArea.x, interactiveArea.y, interactiveArea.width, interactiveArea.height);
+    
     // TODO : Change to value from xml (beware nothing to do with window size)
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
     
@@ -687,6 +695,9 @@ void ofApp::drawVisuals(){
         //print current param if editing
         if ( (selectedCloud >= 0) || (selectedRect >= 0) )
             printParam();
+        
+        //print interactive area
+        augmentaReceiver.getInteractiveArea()->draw();
     }else{
         printUsage();
         
