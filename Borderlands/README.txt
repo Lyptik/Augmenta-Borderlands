@@ -36,6 +36,8 @@ This command works on Ubuntu 14.04.2 in a gnome3 environment (with jackd2)
 
 You might need to change it depending on your hardware sound card configuration
 
+This code was developped and tested on OSX 10.10 with Of 0.8.4 and on Linux Ubuntu 14.04.2 with Of 0.8.4
+
 ## Credits
 
 Copyright (C) 2015 Théoriz Studio
