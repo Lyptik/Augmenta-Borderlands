@@ -61,6 +61,8 @@ class ofApp : public ofBaseApp{
     
         // Augmenta object to receive tracking information
         Augmenta::Receiver augmentaReceiver;
+        // OSC Port to receive Augmenta Data
+        int oscPort;
     
         // XML Settings
         ofxXmlSettings settings;
@@ -137,8 +139,16 @@ class ofApp : public ofBaseApp{
         //flag for voice limiter function
         bool voiceLimiterActive;
     
+        //voice limiter variables
+        int voicesLimit;
+        int maxVoicesPerCloud;
+    
+        //initial number of voices when a new grain is created
+        int numVoices;
+    
         #ifdef MAC_OS_X_VERSION_10_6
         ofxSyphonServer syphonServer;
+        string syphonServerName;
         #endif
     
         //--------------------------------------------------------------------------------
@@ -146,6 +156,7 @@ class ofApp : public ofBaseApp{
         //--------------------------------------------------------------------------------
     
         void init();
+        void loadSettings();
     
         void idleFunc();
         void displayFunc();

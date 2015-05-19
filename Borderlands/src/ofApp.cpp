@@ -44,28 +44,19 @@ using namespace std;
 void ofApp::init(){
     //grain cloud audio objects
     grainCloud = NULL;
-    if(settings.getValue("appSettings:showStartMenu", "") == "true")
-        menuFlag = true;
-    else if(settings.getValue("appSettings:showStartMenu", "") == "false")
-        menuFlag = false;
-    else
-        menuFlag = true;
+    
+    menuFlag = true;
 
-    if(settings.getValue("appSettings:showCursor", "") == "true")
-        showCursor = true;
-    else if(settings.getValue("appSettings:showCursor", "") == "false")
-        showCursor = false;
-    else
-        showCursor = true;
+    showCursor = true;
     
     //audio system
     theAudio = NULL;
     //library path
-    g_audioPath = settings.getValue("appSettings:audioPath", "./loops/");
+    g_audioPath = string("./loops/");
     //parameter string
     paramString = "";
     //desired audio buffer size
-    g_buffSize = settings.getValue("appSettings:bufferSize", 1024);
+    g_buffSize = 1024;
     // load sounds
     newFileMgr = NULL;
     //audio files
@@ -118,12 +109,53 @@ void ofApp::init(){
     showHelpMenu = false;
     
     //flag for voice limiter function
+    voiceLimiterActive = false;
+    
+    //voice limiter variables
+    voicesLimit = 150;
+    maxVoicesPerCloud = 10;
+    
+    //initial number of voices when a new grain is created
+    numVoices = 8;
+    
+    oscPort = 12000;
+    syphonServerName = string("Borderlands");
+}
+
+void ofApp::loadSettings(){
+    
+    if(settings.getValue("appSettings:showStartMenu", "") == "true")
+        menuFlag = true;
+    else if(settings.getValue("appSettings:showStartMenu", "") == "false")
+        menuFlag = false;
+    //else, default value defined in init()
+    
+    if(settings.getValue("appSettings:showCursor", "") == "true")
+        showCursor = true;
+    else if(settings.getValue("appSettings:showCursor", "") == "false")
+        showCursor = false;
+    //else, default value defined in init()
+    
+    //library path
+    g_audioPath = settings.getValue("appSettings:audioPath", g_audioPath);
+    
+    //desired audio buffer size
+    g_buffSize = (unsigned int)settings.getValue("appSettings:bufferSize", (int)g_buffSize);
+    
+    //flag for voice limiter function
     if(settings.getValue("appSettings:useVoiceLimiter", "") == "true")
         voiceLimiterActive = true;
     else if(settings.getValue("appSettings:useVoiceLimiter", "") == "false")
         voiceLimiterActive = false;
-    else
-        voiceLimiterActive = false;
+    //else, default value defined in init()
+    
+    voicesLimit = settings.getValue("appSettings:voicesLimit", voicesLimit);
+    maxVoicesPerCloud = settings.getValue("appSettings:maxVoicesPerCloud", maxVoicesPerCloud);
+    
+    numVoices = settings.getValue("cloudSettings:numVoices", numVoices);
+    
+    oscPort = settings.getValue("appSettings:oscPort", oscPort);
+    syphonServerName = settings.getValue("appSettings:syphonServerName", syphonServerName);
 }
 
 //--------------------------------------------------------------------------------
@@ -493,8 +525,10 @@ void ofApp::setup(){
     // Load settings file
     settings.loadFile("settings.xml");
     
-    // Initialize Borderlands variables
+    // Initialize Borderlands variables with default values
     init();
+    // If needed, override default variables with values defined in settings.xml
+    loadSettings();
     
     ofSetWindowTitle("Augmenta Borderlands");
     
@@ -507,7 +541,7 @@ void ofApp::setup(){
     
     // Connect augmenta receiver
     try {
-        augmentaReceiver.connect(settings.getValue("appSettings:oscPort", 12000));
+        augmentaReceiver.connect(oscPort);
     } catch (std::exception&e) {
         std::cerr << "Error : " << e.what() << endl;
     }
@@ -517,7 +551,7 @@ void ofApp::setup(){
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
     
     #ifdef MAC_OS_X_VERSION_10_6
-    syphonServer.setName(settings.getValue("appSettings:syphonServerName", "Borderlands"));
+    syphonServer.setName(syphonServerName);
     #endif
     
     //init random number generator
@@ -1070,7 +1104,6 @@ void ofApp::keyPressed(int key){
                     break;
                     */
                 }else{
-                    int numVoices = settings.getValue("cloudSettings:numVoices", 8);//initial number of voices
                     int idx = grainCloud->size();
                     /*if (selectedCloud >=0){
                         if (numClouds > 0){
@@ -1462,7 +1495,6 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
     int posY = ofGetHeight() * augmentaEvent.person->centroid.y;
     
     // Create a new grain based on person
-    int numVoices = settings.getValue("cloudSettings:numVoices", 8);//initial number of voices
     int idx = grainCloud->size();
     
     //create audio
@@ -1544,10 +1576,6 @@ bool ofApp::belongsToAugmenta(int pid){
 }
 
 void ofApp::voiceLimiter(){
-    // Get parameters defined in settings
-    int voicesLimit = settings.getValue("appSettings:voicesLimit", 150);
-    int maxVoicesPerCloud = settings.getValue("appSettings:maxVoicesPerCloud", 10);
-    
     // Distribute the voices in clouds
     float voicesPerCloud = (float)voicesLimit / (float)grainCloud->size();
     
