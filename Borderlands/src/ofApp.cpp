@@ -119,6 +119,7 @@ void ofApp::init(){
     //initial number of voices when a new grain is created
     numVoices = 8;
     
+    generateOutsideInteractiveArea = false;
     interactiveArea = ofRectangle(0.0f, 0.0f, 1.0f, 1.0f);
     oscPort = 12000;
     syphonServerName = string("Borderlands");
@@ -156,6 +157,13 @@ void ofApp::loadSettings(){
     maxVoicesPerCloud = settings.getValue("appSettings:maxVoicesPerCloud", maxVoicesPerCloud);
     
     numVoices = settings.getValue("cloudSettings:numVoices", numVoices);
+    
+    
+    if(settings.getValue("appSettings:createSoundsOutside", "") == "true")
+        generateOutsideInteractiveArea = true;
+    else if(settings.getValue("appSettings:createSoundsOutside", "") == "false")
+        generateOutsideInteractiveArea = false;
+    //else, default value defined in init()
     
     interactiveArea = ofRectangle(settings.getValue("appSettings:interactiveAreaOriginX", interactiveArea.x),
                                   settings.getValue("appSettings:interactiveAreaOriginY", interactiveArea.y),
@@ -589,7 +597,10 @@ void ofApp::setup(){
     soundViews = new vector<SoundRect *>;
     for (int i = 0; i < mySounds->size(); i++)
     {
-        soundViews->push_back(new SoundRect(interactiveArea));
+        if(generateOutsideInteractiveArea)
+            soundViews->push_back(new SoundRect(interactiveArea));
+        else
+            soundViews->push_back(new SoundRect());
         soundViews->at(i)->associateSound(mySounds->at(i)->wave,mySounds->at(i)->frames,mySounds->at(i)->channels);
     }
     

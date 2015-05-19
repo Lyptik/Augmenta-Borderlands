@@ -8,6 +8,11 @@
     <!-- Augmenta relative settings -->
     <oscPort>12000</oscPort> 							<!-- OSC port for Augmenta -->
     <syphonServerName>Borderlands</syphonServerName>
+
+    <!-- Interactive area : scale augmenta data received to the specified area
+         to have some free space around and store safely the sounds you don't want to play -->
+    <createSoundsOutside>true</createSoundsOutside> 		<!-- if set to true, the sounds will be created outside the interactive area defined below
+    															 on Borderlands launch. Else (false), the sounds are created randomly in the window. -->
     <interactiveAreaOriginX>0.2</interactiveAreaOriginX> 	<!-- origin on X axis for interactive area, relative to window size (0 = left, 1 = right) -->
     <interactiveAreaOriginY>0.2</interactiveAreaOriginY> 	<!-- origin on Y axis for interactive area, relative to window size (0 = top, 1 = bottom) -->
     <interactiveAreaWidth>0.6</interactiveAreaWidth> 		<!-- width of interactive area, relative to window size (0 = no size, 1 = screen width) -->
