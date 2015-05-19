@@ -122,7 +122,10 @@ void ofApp::init(){
     generateOutsideInteractiveArea = false;
     interactiveArea = ofRectangle(0.0f, 0.0f, 1.0f, 1.0f);
     oscPort = 12000;
+#ifdef MAC_OS_X_VERSION_10_6
     syphonServerName = string("Borderlands");
+#endif
+    
 }
 
 void ofApp::loadSettings(){
@@ -171,7 +174,9 @@ void ofApp::loadSettings(){
                                   settings.getValue("appSettings:interactiveAreaHeight", interactiveArea.height));
     
     oscPort = settings.getValue("appSettings:oscPort", oscPort);
+#ifdef MAC_OS_X_VERSION_10_6
     syphonServerName = settings.getValue("appSettings:syphonServerName", syphonServerName);
+#endif
 }
 
 //--------------------------------------------------------------------------------
