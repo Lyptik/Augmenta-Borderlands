@@ -707,9 +707,11 @@ void ofApp::drawVisuals(){
         
         //draw interactive area
         ofPushStyle();
+        ofSetColor(200, 235, 255, 40);
+        ofSetLineWidth(2);
+        ofRect(interactiveArea.x*ofGetWidth(), interactiveArea.y*ofGetHeight(), interactiveArea.width*ofGetWidth(), interactiveArea.height*ofGetHeight());
         ofNoFill();
-        ofSetColor(ofColor::red);
-        ofSetLineWidth(3);
+        ofSetColor(200, 235, 255, 140);
         ofRect(interactiveArea.x*ofGetWidth(), interactiveArea.y*ofGetHeight(), interactiveArea.width*ofGetWidth(), interactiveArea.height*ofGetHeight());
         ofPopStyle();
     }else{
