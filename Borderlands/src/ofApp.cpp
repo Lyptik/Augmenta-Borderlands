@@ -589,7 +589,7 @@ void ofApp::setup(){
     soundViews = new vector<SoundRect *>;
     for (int i = 0; i < mySounds->size(); i++)
     {
-        soundViews->push_back(new SoundRect());
+        soundViews->push_back(new SoundRect(interactiveArea));
         soundViews->at(i)->associateSound(mySounds->at(i)->wave,mySounds->at(i)->frames,mySounds->at(i)->channels);
     }
     

@@ -32,6 +32,14 @@
 
 #include "SoundRect.h"
 
+// returns a float between a and b
+float RandomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
+
 
 //destructor
 SoundRect::~SoundRect()
@@ -70,6 +78,115 @@ SoundRect::SoundRect(){
         orientation = false;
     
     
+    
+    //waveform display upsampling
+    setUps();
+    
+    //set color of rect
+    randColor();
+}
+
+//constructor creating soundRect outside the interactive area
+SoundRect::SoundRect(ofRectangle interactiveArea){
+    
+    //initializtion
+    init();
+    
+    //min w and h dim
+    minDim = 60.0f;
+    
+    //margin around rect
+    float margin = 10.0f;
+    
+    ofPoint topLeft = ofPoint(0.0f, 0.0f);
+    ofPoint bottomRight = ofPoint(1.0f, 1.0f);
+    ofPoint border = ofPoint((minDim+margin) / ofGetWidth(), (minDim+margin) / ofGetWidth());
+    ofPoint minDimPt = ofPoint(minDim/ofGetWidth(), minDim/ofGetHeight());
+    
+    //translation coordinates
+    
+    // Position top left point
+    topLeft.x = RandomFloat(0.0f, 1.0f - border.x);
+    // if at the left or at the right of the interactive area
+    if (topLeft.x <= interactiveArea.x - border.x || topLeft.x >= interactiveArea.x + interactiveArea.width)
+        topLeft.y = RandomFloat(0.0f, 1.0f - border.y);
+    
+    // if there isn't enough space on top of interactive area
+    else if(interactiveArea.y <= border.y){
+        topLeft.y = RandomFloat(interactiveArea.y + interactiveArea.height, 1.0f - border.y);
+    }
+    // if there isn't enough space on bottom of interactive area
+    else if(interactiveArea.y + interactiveArea.height >= 1.0f){
+        topLeft.y = RandomFloat(0.0f, interactiveArea.y - border.y);
+    }
+    // else, it is on top or bottom of the interactive area
+    else
+        if (randf() < 0.5 && interactiveArea.y > border.y)
+            topLeft.y = RandomFloat(0.0f, interactiveArea.y - border.y);
+        else
+            topLeft.y = RandomFloat(interactiveArea.y + interactiveArea.height, 1.0f - border.y);
+    
+    
+    // Position bottom right point to have scaler
+    // LEFT
+    if(topLeft.x < interactiveArea.x - border.x){
+        // top-left
+        if(topLeft.y < interactiveArea.y - border.y){
+            bottomRight.x = RandomFloat(topLeft.x+minDimPt.x, 1.0f);
+            // bottom right is at right of interactive area
+            if(bottomRight.x >= interactiveArea.x){
+                bottomRight.y = RandomFloat(topLeft.y+minDimPt.y, interactiveArea.y);
+            }
+            else{
+                bottomRight.y = RandomFloat(topLeft.y+minDimPt.y, 1.0f);
+            }
+        }
+        // bottom-left
+        else if(topLeft.y > interactiveArea.y + interactiveArea.height){
+            bottomRight.x = RandomFloat(topLeft.x+minDimPt.x, 1.0f);
+            bottomRight.y = RandomFloat(topLeft.y+minDimPt.y, 1.0f);
+        }
+        // middle-left
+        else{
+            bottomRight.x = RandomFloat(topLeft.x+minDimPt.x, interactiveArea.x);
+            bottomRight.y = RandomFloat(topLeft.y+minDimPt.y, 1.0f);
+        }
+    }
+    // RIGHT
+    // top-right, middle-right and bottom-right
+    else if(topLeft.x > interactiveArea.x + interactiveArea.width){
+        bottomRight.x = RandomFloat(topLeft.x+minDimPt.x, 1.0f);
+        bottomRight.y = RandomFloat(topLeft.y+minDimPt.y, 1.0f);
+    }
+    // TOP and BOTTOM
+    else{
+        bottomRight.x = RandomFloat(topLeft.x+minDimPt.x, 1.0f);
+        // top
+        if(topLeft.y < interactiveArea.y - border.y){
+            bottomRight.y = RandomFloat(topLeft.y+minDimPt.y, interactiveArea.y);
+        }
+        // bottom
+        else{
+            bottomRight.y = RandomFloat(topLeft.y+minDimPt.y, 1.0f);
+        }
+    }
+    
+    //box corners
+    // rX and rY are origin coordinates : middle of topLeft -> bottomRight
+    rX = (topLeft.x + bottomRight.x)/2 * ofGetWidth();
+    rY = (topLeft.y + bottomRight.y)/2 * ofGetHeight();
+    // compute width and height with distance between topLeft and bottomRight components
+    rWidth = (bottomRight.x - topLeft.x) * ofGetWidth();
+    rHeight = (bottomRight.y - topLeft.y) * ofGetHeight();
+    
+    setWidthHeight(rWidth, rHeight);
+    
+    //set orientation
+    if (randf() < 0.5){
+        orientation = true; //sideways
+    }else{
+        orientation = false;
+    }
     
     //waveform display upsampling
     setUps();

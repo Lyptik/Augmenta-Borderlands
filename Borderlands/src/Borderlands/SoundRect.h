@@ -60,6 +60,7 @@ public:
     
     //constructor (default)
     SoundRect();
+    SoundRect(ofRectangle interactiveArea);
     
     //other object initialization code
     void init();
