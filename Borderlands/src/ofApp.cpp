@@ -52,6 +52,7 @@ void ofApp::init(){
     //audio system
     theAudio = NULL;
     //library path
+    drawAudioPath = string("data/loops/");
     g_audioPath = string("./loops/");
     //parameter string
     paramString = "";
@@ -137,6 +138,7 @@ void ofApp::loadSettings(){
     //else, default value defined in init()
     
     //library path
+    drawAudioPath = string("data/") + settings.getValue("appSettings:audioPath", g_audioPath);
     g_audioPath = settings.getValue("appSettings:audioPath", g_audioPath);
     
     //desired audio buffer size
@@ -540,11 +542,14 @@ void ofApp::setup(){
     g_audioPath = g_audioDir.path();
     
     // Connect augmenta receiver
+    oscPortDisplayMessage = "Listening to OSC on port " + ofToString(oscPort);
     try {
         augmentaReceiver.connect(oscPort);
     } catch (std::exception&e) {
         std::cerr << "Error : " << e.what() << endl;
+        oscPortDisplayMessage = "Could not bind to port " + ofToString(oscPort) + " !";
     }
+    
     ofxAddAugmentaListeners(this);  // for augmenta events
     
     // TODO : Change to value from xml (beware nothing to do with window size)
@@ -684,6 +689,10 @@ void ofApp::drawVisuals(){
             printParam();
     }else{
         printUsage();
+        
+        ofSetColor(ofColor::white);
+        ofDrawBitmapString("Load your .aiff or .wav files in the "+drawAudioPath+" folder.", 10, 30);
+        ofDrawBitmapString(oscPortDisplayMessage, 10, 50);
     }
     
     ofPopMatrix();

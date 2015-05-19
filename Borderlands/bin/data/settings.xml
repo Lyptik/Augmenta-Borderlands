@@ -2,7 +2,7 @@
 <appSettings>
     <showStartMenu>true</showStartMenu> 			<!-- show start menu at Borderlands launch (true or false) -->
     <showCursor>false</showCursor>                   <!-- show cursor -->
-    <audioPath>./loops/</audioPath> 				<!-- path to the audio loops (relative to data folder) -->
+    <audioPath>loops/</audioPath> 				<!-- path to the audio loops (relative to data folder) -->
     <bufferSize>1024</bufferSize> 					<!-- buffer size -->
 
     <!-- Augmenta relative settings -->

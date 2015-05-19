@@ -63,6 +63,8 @@ class ofApp : public ofBaseApp{
         Augmenta::Receiver augmentaReceiver;
         // OSC Port to receive Augmenta Data
         int oscPort;
+        // OSC debug message
+        string oscPortDisplayMessage;
     
         // XML Settings
         ofxXmlSettings settings;
@@ -73,6 +75,7 @@ class ofApp : public ofBaseApp{
         //audio system
         MyRtAudio * theAudio;
         //library path
+        string drawAudioPath; // for start screen
         string g_audioPath;
         //parameter string
         string paramString;
