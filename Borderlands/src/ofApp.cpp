@@ -304,7 +304,7 @@ void ofApp::printUsage(){
     glLineWidth(2.0f);
     float theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec);
     glColor4f(theA,theA,theA,theA);
-    draw_string(0.2f*(float)ofGetWidth()/2,(float)ofGetHeight()/2.0f, 0.5f,"BORDERLANDS",160);
+    draw_string(0.2f*(float)ofGetWidth()/2,(float)ofGetHeight()/2.0f, 0.5f,"AUGMENTA BORDERLANDS",160);
     
     theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-1);
     float insColor = theA*0.4f;
