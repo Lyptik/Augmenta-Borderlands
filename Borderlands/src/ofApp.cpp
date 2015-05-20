@@ -1671,15 +1671,18 @@ void ofApp::voiceLimiter(){
         int remainingVoices = voicesLimit;
         for(int i=0; i<grainCloud->size(); i++){
             if(remainingVoices == 0)
-                break;
-            
-            // Distribute voices randomly
-            if((float)std::rand()/RAND_MAX < voicesPerCloud){
-                grainCloud->at(i)->setGrains(1);
-                remainingVoices--;
-            }
-            else{
                 grainCloud->at(i)->setGrains(0);
+            else{
+                // Distribute voices randomly
+                float probability = (float)remainingVoices / (float)(grainCloud->size()-i);
+                
+                if((float)std::rand()/RAND_MAX <= probability){
+                    grainCloud->at(i)->setGrains(1);
+                    remainingVoices--;
+                }
+                else{
+                    grainCloud->at(i)->setGrains(0);
+                }
             }
         }
     }
