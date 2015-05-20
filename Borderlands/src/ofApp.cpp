@@ -302,28 +302,34 @@ void ofApp::printUsage(){
     float smallSize = 0.03f;
     float mediumSize = 0.04f;
     glLineWidth(2.0f);
-    float theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec);
+    float theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec);
     glColor4f(theA,theA,theA,theA);
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth(),(float)ofGetHeight()/2.0f, 0.5f,"BORDERLANDS",160);
+    draw_string(0.2f*(float)ofGetWidth()/2,(float)ofGetHeight()/2.0f, 0.5f,"BORDERLANDS",160);
     
-    theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec-1);
+    theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-1);
     float insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth() + 10.0,(float)ofGetHeight()/2.0f - 40.0, 0.5f,"CLICK TO START",96);
+    string folderPath = "LOAD .AIFF OR .WAV IN "+drawAudioPath+" FOLDER";
+    draw_string(0.2f*(float)ofGetWidth()/2+20.0,(float)ofGetHeight()/2.0f - 40.0, 0.5f, (char*)folderPath.c_str(),96);
     
-    theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec-2);
+    theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-2);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 65.0, 0.5f,"ESCAPE TO QUIT",96);
+    draw_string(0.2f*(float)ofGetWidth()/2+20.0,(float)ofGetHeight()/2.0f - 65.0, 0.5f,"CLICK TO START",96);
     
-    theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec-3);
+    theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-3);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 90.0, 0.5f,"H FOR HELP",96);
+    draw_string(0.2f*(float)ofGetWidth()/2+20.0,(float)ofGetHeight()/2.0f - 90.0, 0.5f,"ESCAPE TO QUIT",96);
     
+    theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-4);
+    insColor = theA*0.4f;
+    glColor4f(insColor,insColor,insColor,theA);
+    //key info
+    draw_string(0.2f*(float)ofGetWidth()/2+20.0,(float)ofGetHeight()/2.0f - 115.0, 0.5f,"H FOR HELP",96);
 }
 
 void ofApp::printParam(){
@@ -731,7 +737,6 @@ void ofApp::drawVisuals(){
         printUsage();
         
         ofSetColor(ofColor::white);
-        ofDrawBitmapString("Load your .aiff or .wav files in the "+drawAudioPath+" folder.", 10, 30);
         ofDrawBitmapString(oscPortDisplayMessage, 10, 50);
     }
     
