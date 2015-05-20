@@ -561,6 +561,14 @@ void ofApp::setup(){
     // If needed, override default variables with values defined in settings.xml
     loadSettings();
     
+#ifdef DEV_MODE
+    // Override settings for dev use
+    fullscreen = false;
+    showCursor = true;
+    
+#endif
+    
+    
     ofSetFullscreen(fullscreen);
     ofSetWindowTitle("Augmenta Borderlands");
     
