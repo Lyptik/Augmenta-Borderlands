@@ -30,6 +30,8 @@
 #ifndef GRAINVOICE_H
 #define GRAINVOICE_H
 
+#include "ofMain.h"
+
 #include "theglobals.h"
 #include "AudioFileSet.h"
 #include "Window.h"

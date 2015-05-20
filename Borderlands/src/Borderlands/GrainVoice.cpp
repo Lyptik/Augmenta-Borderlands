@@ -595,7 +595,7 @@ void GrainVis::draw()
     
     //end disk version
     
-    
+    /*
     //point version (preferred - better quality)
     float prevSize = 1.0f;
     glGetFloatv(GL_POINT_SIZE,&prevSize);
@@ -605,7 +605,10 @@ void GrainVis::draw()
     glEnd();
     glPointSize(prevSize);
     //    //end point version
-    
+    */
+    //openframeworks version 
+    ofCircle(gX, gY, mySize/2);
+    //    //end openframeworks version
 }
 
 void GrainVis::trigger(float theDur){
