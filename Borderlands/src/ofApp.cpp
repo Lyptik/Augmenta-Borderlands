@@ -287,11 +287,9 @@ void ofApp::draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfl
     
     glPushMatrix();
     glTranslatef( x, ofGetHeight()-y, z );
-    glScalef( .001f * scale, -.001f * scale, .001f * scale );
+    glScalef( .001f * scale, .001f * scale, .001f * scale );
     
-    ofDrawBitmapString(str, 0, 0);
-    //for( i = 0; i < len; i++ )
-    //    glutStrokeCharacter( GLUT_STROKE_MONO_ROMAN, str[i] );
+    myFont.drawString(str, 0, 0);
     
     glPopMatrix();
 }
@@ -304,27 +302,27 @@ void ofApp::printUsage(){
     float smallSize = 0.03f;
     float mediumSize = 0.04f;
     glLineWidth(2.0f);
-    float theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec);
+    float theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec);
     glColor4f(theA,theA,theA,theA);
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth(),(float)ofGetHeight()/2.0f, 0.5f,"BORDERLANDS",(float)ofGetWidth()*0.1f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth(),(float)ofGetHeight()/2.0f, 0.5f,"BORDERLANDS",160);
     
-    theA = 0.6f + 0.2*sin(1.0*PI*borderlands::GTime::instance().sec);
+    theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec-1);
     float insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth() + 10.0,(float)ofGetHeight()/2.0f - 30.0, 0.5f,"CLICK TO START",(float)ofGetWidth()*0.04f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth() + 10.0,(float)ofGetHeight()/2.0f - 40.0, 0.5f,"CLICK TO START",96);
     
-    theA = 0.6f + 0.2*sin(0.9*PI*borderlands::GTime::instance().sec);
+    theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec-2);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 50.0, 0.5f,"ESCAPE TO QUIT",(float)ofGetWidth()*0.04f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 65.0, 0.5f,"ESCAPE TO QUIT",96);
     
-    theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec);
+    theA = 0.6f + 0.2*sin(PI*borderlands::GTime::instance().sec-3);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
-    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 70.0, 0.5f,"H FOR HELP",(float)ofGetWidth()*0.04f);
+    draw_string(ofGetWidth()/2.0f + 0.2f*(float)ofGetWidth()+10.0,(float)ofGetHeight()/2.0f - 90.0, 0.5f,"H FOR HELP",96);
     
 }
 
@@ -584,6 +582,9 @@ void ofApp::setup(){
     #ifdef MAC_OS_X_VERSION_10_6
     syphonServer.setName(syphonServerName);
     #endif
+    
+    // Load font
+    myFont.loadFont(OF_TTF_MONO, 128);
     
     //init random number generator
     srand(time(NULL));

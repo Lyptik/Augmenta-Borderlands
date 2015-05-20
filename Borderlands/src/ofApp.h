@@ -59,6 +59,8 @@ class ofApp : public ofBaseApp{
     private:
         ofFbo m_fbo; // frame buffer object
     
+        ofTrueTypeFont myFont; // font used for print parameters
+    
         bool fullscreen;
     
         // Augmenta object to receive tracking information
