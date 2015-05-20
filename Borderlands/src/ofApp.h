@@ -59,6 +59,8 @@ class ofApp : public ofBaseApp{
     private:
         ofFbo m_fbo; // frame buffer object
     
+        bool fullscreen;
+    
         // Augmenta object to receive tracking information
         Augmenta::Receiver augmentaReceiver;
         // OSC Port to receive Augmenta Data

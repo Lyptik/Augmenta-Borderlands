@@ -1,5 +1,6 @@
 <!-- Global app settings -->
 <appSettings>
+    <fullscreen>true</fullscreen> 					<!-- does Borderlands start in fullscreen or not (true or false) -->
     <showStartMenu>true</showStartMenu> 			<!-- show start menu at Borderlands launch (true or false) -->
     <showCursor>false</showCursor> 					<!-- show cursor -->
     <audioPath>loops/</audioPath> 					<!-- path to the audio loops (relative to data folder) -->

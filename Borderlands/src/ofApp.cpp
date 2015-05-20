@@ -45,8 +45,8 @@ void ofApp::init(){
     //grain cloud audio objects
     grainCloud = NULL;
     
+    fullscreen = false;
     menuFlag = true;
-
     showCursor = true;
     
     //audio system
@@ -129,6 +129,12 @@ void ofApp::init(){
 }
 
 void ofApp::loadSettings(){
+    
+    if(settings.getValue("appSettings:fullscreen", "") == "true")
+        fullscreen = true;
+    else if(settings.getValue("appSettings:fullscreen", "") == "false")
+        fullscreen = false;
+    //else, default value defined in init()
     
     if(settings.getValue("appSettings:showStartMenu", "") == "true")
         menuFlag = true;
@@ -551,6 +557,7 @@ void ofApp::setup(){
     // If needed, override default variables with values defined in settings.xml
     loadSettings();
     
+    ofSetFullscreen(fullscreen);
     ofSetWindowTitle("Augmenta Borderlands");
     
     // Global pointer to this instance of Borderlands
@@ -987,7 +994,10 @@ void ofApp::keyPressed(int key){
             
         case 'O':
         case 'o':
-            ofToggleFullscreen();
+            fullscreen = !fullscreen;
+            ofSetFullscreen(fullscreen);
+            if(!fullscreen)
+                ofSetWindowTitle("Augmenta Borderlands");
             break;
             
         case 'T':
