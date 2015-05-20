@@ -33,7 +33,7 @@
     <pitch>1.0</pitch> 								<!-- pitch -->
     <windowType>HANNING</windowType> 				<!-- window type (HANNING, TRIANGLE, EXPDEC, REXPDEC, SINC, RANDOM) -->
     <grainDirection>RANDOM</grainDirection> 		<!-- grain direction (FORWARD, BACKWARD, RANDOM) -->
-    <spatializationMode>UNITY</spatializationMode> 	<!-- spatialization mode (UNITY, STEREO, AROUND) -->
+    <spatializationMode>STEREO</spatializationMode> 	<!-- spatialization mode (UNITY, STEREO, AROUND) -->
     <pitchLFOFreq>0.01</pitchLFOFreq> 				<!-- playback rate LFO frequency -->
     <pitchLFOAmount>0.0</pitchLFOAmount> 			<!-- playback rate LFO amplitude -->
     <volume>0.0</volume> 							<!-- cloud volume in dB -->
