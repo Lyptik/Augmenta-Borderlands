@@ -1596,9 +1596,19 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
         
         int index = getIndexOfGrainCloudWithPID(pid);
         
-        if(selectedCloud == index)
-            deselect(CLOUD);
-        
+        if(selectedCloud != -1){
+            int selectedCloudPid = grainCloud->at(selectedCloud)->getId();
+            
+            // if the person leaving is selected, we deselect it
+            if(selectedCloudPid == pid){
+                deselect(CLOUD);
+            }
+            // if an other person is selected and is after the person leaving in the vector, we update its index
+            else if(selectedCloud >= index){
+                selectedCloud--;
+            }
+        }
+
         grainCloud->erase(grainCloud->begin() + index);
         grainCloudVis->erase(grainCloudVis->begin() + index);
         
