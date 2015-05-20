@@ -201,12 +201,18 @@ void GrainCluster::initWithSettings(ofxXmlSettings settings){
 void GrainCluster::registerVis(GrainClusterVis * vis){
     myVis = vis;
     myVis->setDuration(duration);
+    setActiveState(isActive);
 }
 
 //turn on/off
 void GrainCluster::toggleActive(){
     isActive = !isActive;
+    myVis->setActiveState(isActive);
+}
 
+void GrainCluster::setActiveState(bool active){
+    isActive = active;
+    myVis->setActiveState(isActive);
 }
 
 bool GrainCluster::getActiveState(){
@@ -252,8 +258,23 @@ void GrainCluster::removeGrain(){
 }
 
 void GrainCluster::setGrains(int num){
+    isActive = true;
     int grainsToAdd = num - myGrains->size();
-    if(grainsToAdd > 0){
+    
+    if(num == 0){
+        setActiveState(false);
+        //myLock->lock();
+        //myGrains->clear();
+        //myVis->getGrainsVis()->clear();
+        nextGrain = 0;
+        numVoices = 0;
+        //setOverlap(overlapNorm);
+        //myLock->unlock();
+    }
+    else if(grainsToAdd > 0){
+        if(!isActive)
+            setActiveState(true);
+        
         for(int i=0; i<grainsToAdd; i++){
             myGrains->push_back(new GrainVoice(theSounds,duration,pitch));
             myVis->addGrain();
@@ -285,17 +306,20 @@ void GrainCluster::setGrains(int num){
         setOverlap(overlapNorm);
     }
     else if(grainsToAdd < 0){
+        if(!isActive)
+            setActiveState(true);
+        
+        myLock->lock();
         myGrains->erase(myGrains->end() + grainsToAdd, myGrains->end());
         myVis->getGrainsVis()->erase(myVis->getGrainsVis()->end() + grainsToAdd, myVis->getGrainsVis()->end());
         
         if (nextGrain >= myGrains->size()-1){
             nextGrain = 0;
         }
+        
+        numVoices = myGrains->size();
         setOverlap(overlapNorm);
-    }
-    else if(num == 0){
-        myGrains->clear();
-        myVis->getGrainsVis()->clear();
+        myLock->unlock();
     }
 }
 
@@ -482,7 +506,7 @@ void GrainCluster::nextBuffer(double * accumBuff,unsigned int numFrames)
     
     if (removeFlag == true){
         myLock->lock();
-        if (myGrains->size() > 0){
+        if (myGrains->size() > 1){
              if (nextGrain >= myGrains->size()-1){
                  nextGrain = 0;
              }
@@ -710,6 +734,8 @@ GrainClusterVis::GrainClusterVis(float x, float y, unsigned int numVoices,vector
     //select on instantiation
     isSelected = true;
     
+    isOn = true;
+    
     //pulse frequency
     freq = 1.0f;
     
@@ -734,6 +760,10 @@ GrainClusterVis::GrainClusterVis(float x, float y, unsigned int numVoices,vector
 
 void GrainClusterVis::setDuration(float dur){
     freq = 1000.0/dur;
+}
+
+void GrainClusterVis::setActiveState(bool isActive){
+    isOn = isActive;
 }
 
 //return cluster x
@@ -786,9 +816,12 @@ void GrainClusterVis::draw()
     glPushMatrix();
     //update grain motion;
     //Individual voices
-     for (int i = 0; i < myGrainsV->size(); i++){
-       myGrainsV->at(i)->draw();
-     }
+    
+    if(isOn){
+        for (int i = 0; i < myGrainsV->size(); i++){
+            myGrainsV->at(i)->draw();
+        }
+    }
     glPopMatrix();
     
     //end point version

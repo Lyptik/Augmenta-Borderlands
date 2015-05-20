@@ -136,6 +136,7 @@ public:
     
     //turn on/off
     void toggleActive();
+    void setActiveState(bool active);
     bool getActiveState();
 
     
@@ -240,6 +241,8 @@ public:
     
     //set the pulse duration (which determines the frequency of the pulse)
     void setDuration(float dur);
+    
+    void setActiveState(bool isActive);
     
 protected:
 private:
