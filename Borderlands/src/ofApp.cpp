@@ -735,9 +735,6 @@ void ofApp::drawVisuals(){
         ofPopStyle();
     }else{
         printUsage();
-        
-        ofSetColor(ofColor::white);
-        ofDrawBitmapString(oscPortDisplayMessage, 10, 50);
     }
     
     ofPopMatrix();
@@ -815,6 +812,9 @@ void ofApp::drawHelp(){
         ofSetColor(ofColor::yellow);
         ofDrawBitmapString("Voice Limiter OFF", 800, 32);
     }
+    
+    ofSetColor(ofColor::white);
+    ofDrawBitmapString(oscPortDisplayMessage, 800, 50);
 }
 
 //--------------------------------------------------------------
