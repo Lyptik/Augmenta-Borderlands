@@ -58,7 +58,7 @@ GrainCluster::GrainCluster(vector<AudioFile*> * soundSet, float theNumVoices, of
     initWithSettings(settings);
     
     //cluster id
-    myId = ++clusterId;
+    myId = --clusterId;
 }
 
 GrainCluster::GrainCluster(int pid, vector<AudioFile*> * soundSet, float theNumVoices, ofxXmlSettings settings)

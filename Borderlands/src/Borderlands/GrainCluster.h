@@ -62,7 +62,7 @@ class GrainCluster;
 class GrainClusterVis;
 
 //ids
-static unsigned int clusterId = 0;
+static int clusterId = -1;
 
 
 //class interface
