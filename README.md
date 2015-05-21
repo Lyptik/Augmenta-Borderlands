@@ -38,9 +38,13 @@ You might need to change it depending on your hardware sound card configuration
 
 This code was developped and tested on OSX 10.10 with Of 0.8.4 and on Linux Ubuntu 14.04.2 with Of 0.8.4
 
+## Notes
+
+Performance obtained with Jackd2 on Linux are far more efficient than OSX and iPad version
+
 ## Credits
 
-Copyright (C) 2015 Théoriz Studio
+Copyright (C) 2015 ThÃ©oriz Studio
 contact@theoriz.com
 www.theoriz.com
 
