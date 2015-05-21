@@ -1545,19 +1545,22 @@ void ofApp::mousePressed(int x, int y, int button){
     }
     
     
-    // Check if we click several times on the upper left corner
-    // and toggle fullscreen.
+    // Check if we click several times on the upper left corner and toggle fullscreen.
     // This to be able to quit fullscreen app when only in touch
-    if(mousePressedCounter >= CLIC_COUNTER_TOGGLE - 2){ // -2 is to be coherent with defined CLIC_COUNTER_TOGGLE
-        toggleFullscreen();
-        mousePressedCounter = 0;
-    }
-    else if(x < CLIC_COUNTER_AREA_SIZE && y < CLIC_COUNTER_AREA_SIZE && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED ){
-        mousePressedCounter ++;
+    if(x < CLIC_COUNTER_AREA_SIZE && y < CLIC_COUNTER_AREA_SIZE){
+        if(mousePressedCounter == 0 || (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED)
+            mousePressedCounter ++;
+        else
+            mousePressedCounter = 1;
     }
     else{
         mousePressedCounter = 0;
     }
+    if(mousePressedCounter >= CLIC_COUNTER_TOGGLE){
+        toggleFullscreen();
+        mousePressedCounter = 0;
+    }
+    
     
     // Must be the last thing to do
     lastClickFrame = ofGetFrameNum();
