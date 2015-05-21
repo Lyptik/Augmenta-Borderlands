@@ -29,6 +29,10 @@
 //  Created by Christopher Carlson on 11/13/11.
 //
 
+#define CLIC_COUNTER_AREA_SIZE 150
+#define CLIC_COUNTER_TOGGLE 5
+#define DOUBLE_CLICK_SPEED 20
+
 // Global variable containing pointer on instance of this class, used for callback function
 // In setup(), the openStream method wait a pointer on a callback function which
 // respond to typedef RtAudioCallback defined in RTAudio.h, and the callback must access member variables 
@@ -99,6 +103,7 @@ void ofApp::init(){
     //mouse coordinate initialization
     mouseX = -1;
     mouseY = -1;
+    mousePressedCounter = 0;
     veryHighNumber = 50000000;
     lastDragX = veryHighNumber;
     lastDragY = veryHighNumber;
@@ -754,6 +759,14 @@ void ofApp::drawVisuals(){
 }
 
 //--------------------------------------------------------------
+void ofApp::toggleFullscreen(){
+    fullscreen = !fullscreen;
+    ofSetFullscreen(fullscreen);
+    if(!fullscreen)
+        ofSetWindowTitle("Augmenta Borderlands");
+}
+
+//--------------------------------------------------------------
 void ofApp::drawHelp(){
     
     ofSetColor(ofColor::white);
@@ -1008,10 +1021,7 @@ void ofApp::keyPressed(int key){
             
         case 'O':
         case 'o':
-            fullscreen = !fullscreen;
-            ofSetFullscreen(fullscreen);
-            if(!fullscreen)
-                ofSetWindowTitle("Augmenta Borderlands");
+            toggleFullscreen();
             break;
             
         case 'T':
@@ -1529,6 +1539,25 @@ void ofApp::mousePressed(int x, int y, int button){
         }
         
     }
+    
+    
+    // Check if we click several times on the upper left corner
+    // and toggle fullscreen.
+    // This to be able to quit fullscreen app when only in touch
+    if(mousePressedCounter >= CLIC_COUNTER_TOGGLE - 2){ // -2 is to be coherent with defined CLIC_COUNTER_TOGGLE
+        toggleFullscreen();
+        mousePressedCounter = 0;
+    }
+    else if(x < CLIC_COUNTER_AREA_SIZE && y < CLIC_COUNTER_AREA_SIZE && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED ){
+        mousePressedCounter ++;
+    }
+    else{
+        mousePressedCounter = 0;
+    }
+    ofLog(OF_LOG_NOTICE, "click count : "+ofToString(mousePressedCounter));
+    
+    // Must be the last thing to do
+    lastClickFrame = ofGetFrameNum();
 }
 
 //--------------------------------------------------------------

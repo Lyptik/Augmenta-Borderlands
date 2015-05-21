@@ -136,7 +136,9 @@ class ofApp : public ofBaseApp{
         long veryHighNumber;
         long lastDragX;
         long lastDragY;
-        
+        unsigned int mousePressedCounter;
+        unsigned int lastClickFrame;
+    
         //keyboard modifier key
         int modkey;
     
@@ -187,6 +189,7 @@ class ofApp : public ofBaseApp{
         void drawAxis();
         void drawVisuals();
         void drawHelp();
+        void toggleFullscreen();
     
         void cleaningFunction();
     
