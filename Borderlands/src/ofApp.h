@@ -177,7 +177,8 @@ class ofApp : public ofBaseApp{
         void keyboardFunc(unsigned char key, int x, int y);
         void keyUpFunc(unsigned char key, int x, int y);
         void deselect(int mode);
-        
+    
+        void mouseDoubleClicked();
         void mouseFunc(int button, int state, int x, int y);
         void mouseDrag(int x, int y);
         void mousePassiveMotion(int x, int y);

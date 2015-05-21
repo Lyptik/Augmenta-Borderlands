@@ -1486,6 +1486,10 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+    if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED){
+        mouseDoubleClicked();
+    }
+    
     //look for selections if button is down
     if ((button == OF_MOUSE_BUTTON_1) || (button == OF_MOUSE_BUTTON_2)){
         
@@ -1563,6 +1567,24 @@ void ofApp::mousePressed(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
 
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseDoubleClicked(){
+    // Create a cloud, only if there is no other cloud selected (allow other future behavior on double click on a selected cloud)
+    if(selectedCloud == -1){
+        int idx = grainCloud->size();
+        //create audio
+        grainCloud->push_back(new GrainCluster(mySounds,numVoices, settings));
+        //create visualization
+        grainCloudVis->push_back(new GrainClusterVis(mouseX,mouseY,numVoices,soundViews));
+        //select new cloud
+        grainCloudVis->at(idx)->setSelectState(false);
+        //register visualization with audio
+        grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
+        //grainCloud->at(idx)->toggleActive();
+        numClouds+=1;
+    }
 }
 
 //--------------------------------------------------------------
