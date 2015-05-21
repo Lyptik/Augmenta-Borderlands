@@ -1558,7 +1558,6 @@ void ofApp::mousePressed(int x, int y, int button){
     else{
         mousePressedCounter = 0;
     }
-    ofLog(OF_LOG_NOTICE, "click count : "+ofToString(mousePressedCounter));
     
     // Must be the last thing to do
     lastClickFrame = ofGetFrameNum();
