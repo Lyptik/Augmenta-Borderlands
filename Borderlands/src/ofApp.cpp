@@ -1486,9 +1486,12 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED){
+    // Double-click check
+    // check if mousePressedCounter = 0 to prevent creating cloud if clicking in toggleFullscreen area (see above)
+    if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED && mousePressedCounter == 0){
         mouseDoubleClicked();
     }
+    
     
     //look for selections if button is down
     if ((button == OF_MOUSE_BUTTON_1) || (button == OF_MOUSE_BUTTON_2)){
@@ -1562,6 +1565,7 @@ void ofApp::mousePressed(int x, int y, int button){
     }
     
     
+    // Get the frame number of this click.
     // Must be the last thing to do
     lastClickFrame = ofGetFrameNum();
 }
