@@ -513,6 +513,75 @@ void ofApp::printParam(){
 }
 
 
+void ofApp::drawDiscParam(float angle, string paramString, float parameterValue, float paramRangeMin, float paramRangeMax){
+    float paramDiscMinDist = 80;   // minimal distance between parameter disc and cloud
+    float paramDiscMaxDist = 160;   // maximal distance between parameter disc and cloud
+    
+    ostringstream parameterValueStr;
+    parameterValueStr << parameterValue;
+    float newParameterValue = convertValueRange(parameterValue, paramRangeMin, paramRangeMax, paramDiscMinDist, paramDiscMaxDist);
+   
+    ofPushStyle();
+    ofPushMatrix();
+    
+        ofRotate(angle);
+    
+        ofPushMatrix();
+            ofTranslate(newParameterValue, 0);
+            ofRotate(-angle);
+            // Parameter circle referential
+        
+            // outline
+            ofSetColor(70, 70, 255, 150);
+            gluDisk(gluNewQuadric(), 27, 30, 128, 2);
+            // fill
+            ofSetColor(70, 70, 255, 50);
+            ofCircle(0, 0, 30);
+        
+            ofSetColor(ofColor::white);
+            ofDrawBitmapString(paramString, -20, -2, 0);
+            ofDrawBitmapString(parameterValueStr.str(), -20, 12, 0);
+        
+        ofPopMatrix();
+    
+        ofLine(20, 0, newParameterValue -35, 0);
+    
+    ofPopMatrix();
+    ofPopStyle();
+}
+
+void ofApp::drawParam(){
+    ofPushMatrix();
+    ofPushStyle();
+    
+    if ((numClouds > 0) && (selectedCloud >=0)){
+        GrainClusterVis * theCloudVis= grainCloudVis->at(selectedCloud);
+        GrainCluster * theCloud = grainCloud->at(selectedCloud);
+        float cloudX = theCloudVis->getX();
+        float cloudY = theCloudVis->getY();
+        
+        float parameterValue = 0; // current parameter value
+        
+        ofTranslate(cloudX, cloudY);
+        ofPushMatrix();
+        ofPushStyle();
+            // Cloud referential
+        
+            // PITCH
+            drawDiscParam(-90, "Pitch", theCloud->getPitch(), 0.0f, 3.0f);
+        
+            // DURATION
+            drawDiscParam(-45, "Dur", theCloud->getDurationMs(), 1.0f, 1000.0f);
+        
+        ofPopStyle();
+        ofPopMatrix();
+    }
+    
+    ofPopStyle();
+    ofPopMatrix();
+}
+
+
 //================================================================================
 //   INTERACTION/GLUT
 //================================================================================
@@ -734,8 +803,10 @@ void ofApp::drawVisuals(){
         }
         
         //print current param if editing
-        if ( (selectedCloud >= 0) || (selectedRect >= 0) )
+        if ( (selectedCloud >= 0) || (selectedRect >= 0) ){
             printParam();
+            drawParam();
+        }
         
         //draw interactive area
         ofPushStyle();
@@ -1743,4 +1814,12 @@ void ofApp::voiceLimiter(){
             }
         }
     }
+}
+
+// Convert a value in a range to another new range
+float ofApp::convertValueRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax){
+    float oldRange = (oldMax - oldMin);
+    float newRange = (newMax - newMin);
+    float newValue = (((oldValue - oldMin) * newRange) / oldRange) + newMin;
+    return newValue;
 }

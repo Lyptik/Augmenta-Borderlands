@@ -187,6 +187,8 @@ class ofApp : public ofBaseApp{
         void draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat scale);
         void printUsage();
         void printParam();
+        void drawDiscParam(float angle, string paramString, float parameterValue, float paramRangeMin, float paramRangeMax);
+        void drawParam();
         void drawAxis();
         void drawVisuals();
         void drawHelp();
@@ -200,4 +202,6 @@ class ofApp : public ofBaseApp{
         bool belongsToAugmenta(int pid);
     
         void voiceLimiter();
+    
+        float convertValueRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax);
 };
