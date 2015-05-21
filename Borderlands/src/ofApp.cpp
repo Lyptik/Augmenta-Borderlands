@@ -93,6 +93,7 @@ void ofApp::init(){
     selectedCloud = -1;
     selectedRect = -1;
     selectionIndex = 0;
+    editMode = -1;
     
     //flag indicating parameter change
     paramChanged = false;
@@ -805,7 +806,9 @@ void ofApp::drawVisuals(){
         //print current param if editing
         if ( (selectedCloud >= 0) || (selectedRect >= 0) ){
             printParam();
-            drawParam();
+            if(editMode != -1){
+                drawParam();
+            }
         }
         
         //draw interactive area
@@ -1560,7 +1563,7 @@ void ofApp::mousePressed(int x, int y, int button){
     // Double-click check
     // check if mousePressedCounter = 0 to prevent creating cloud if clicking in toggleFullscreen area (see above)
     if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED && mousePressedCounter == 0){
-        mouseDoubleClicked();
+        mouseDoubleClicked(x, y, button);
     }
     
     
@@ -1618,6 +1621,11 @@ void ofApp::mousePressed(int x, int y, int button){
         
     }
     
+    // If current selected cloud is not the one we were editing, exit editMode
+    if(selectedCloud != editMode){
+        editMode = -1;
+    }
+    
     
     // Check if we click several times on the upper left corner and toggle fullscreen.
     // This to be able to quit fullscreen app when only in touch
@@ -1647,7 +1655,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDoubleClicked(){
+void ofApp::mouseDoubleClicked(int x, int y, int button){
     // Create a cloud, only if there is no other cloud selected (allow other future behavior on double click on a selected cloud)
     if(selectedCloud == -1){
         int idx = grainCloud->size();
@@ -1661,6 +1669,10 @@ void ofApp::mouseDoubleClicked(){
         grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
         //grainCloud->at(idx)->toggleActive();
         numClouds+=1;
+    }
+    // If a cloud is selected, enter edit mode to show its parameters
+    else if(selectedCloud != -1 && editMode == -1){
+        editMode = selectedCloud;
     }
 }
 
