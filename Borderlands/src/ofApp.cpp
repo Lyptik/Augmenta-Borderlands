@@ -94,6 +94,7 @@ void ofApp::init(){
     selectedRect = -1;
     selectionIndex = 0;
     editMode = -1;
+    isEditingParameter = false;
     
     //flag indicating parameter change
     paramChanged = false;
@@ -514,74 +515,6 @@ void ofApp::printParam(){
 }
 
 
-void ofApp::drawDiscParam(float angle, string paramString, float parameterValue, float paramRangeMin, float paramRangeMax){
-    float paramDiscMinDist = 80;   // minimal distance between parameter disc and cloud
-    float paramDiscMaxDist = 160;   // maximal distance between parameter disc and cloud
-    
-    ostringstream parameterValueStr;
-    parameterValueStr << parameterValue;
-    float newParameterValue = convertValueRange(parameterValue, paramRangeMin, paramRangeMax, paramDiscMinDist, paramDiscMaxDist);
-   
-    ofPushStyle();
-    ofPushMatrix();
-    
-        ofRotate(angle);
-    
-        ofPushMatrix();
-            ofTranslate(newParameterValue, 0);
-            ofRotate(-angle);
-            // Parameter circle referential
-        
-            // outline
-            ofSetColor(70, 70, 255, 150);
-            gluDisk(gluNewQuadric(), 27, 30, 128, 2);
-            // fill
-            ofSetColor(70, 70, 255, 50);
-            ofCircle(0, 0, 30);
-        
-            ofSetColor(ofColor::white);
-            ofDrawBitmapString(paramString, -20, -2, 0);
-            ofDrawBitmapString(parameterValueStr.str(), -20, 12, 0);
-        
-        ofPopMatrix();
-    
-        ofLine(20, 0, newParameterValue -35, 0);
-    
-    ofPopMatrix();
-    ofPopStyle();
-}
-
-void ofApp::drawParam(){
-    ofPushMatrix();
-    ofPushStyle();
-    
-    if ((numClouds > 0) && (selectedCloud >=0)){
-        GrainClusterVis * theCloudVis= grainCloudVis->at(selectedCloud);
-        GrainCluster * theCloud = grainCloud->at(selectedCloud);
-        float cloudX = theCloudVis->getX();
-        float cloudY = theCloudVis->getY();
-        
-        float parameterValue = 0; // current parameter value
-        
-        ofTranslate(cloudX, cloudY);
-        ofPushMatrix();
-        ofPushStyle();
-            // Cloud referential
-        
-            // PITCH
-            drawDiscParam(-90, "Pitch", theCloud->getPitch(), 0.0f, 3.0f);
-        
-            // DURATION
-            drawDiscParam(-45, "Dur", theCloud->getDurationMs(), 1.0f, 1000.0f);
-        
-        ofPopStyle();
-        ofPopMatrix();
-    }
-    
-    ofPopStyle();
-    ofPopMatrix();
-}
-
 
 //================================================================================
 //   INTERACTION/GLUT
@@ -806,9 +739,9 @@ void ofApp::drawVisuals(){
         //print current param if editing
         if ( (selectedCloud >= 0) || (selectedRect >= 0) ){
             printParam();
-            if(editMode != -1){
-                drawParam();
-            }
+        }
+        if(editMode != -1){
+            grainCloud->at(editMode)->drawParameters();
         }
         
         //draw interactive area
@@ -1500,7 +1433,22 @@ void ofApp::mouseDragged(int x, int y, int button){
     
     if (selectedCloud >= 0){
         grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
-    }else{
+    }
+    else if(editMode != -1 && isEditingParameter){
+        if(lastDragX == veryHighNumber || lastDragY == veryHighNumber){
+            lastDragX = x;
+            lastDragY = y;
+        }
+        
+        xDiff = x - lastDragX;
+        yDiff = y - lastDragY;
+        
+        grainCloud->at(editMode)->updateParameter(xDiff, yDiff);
+        
+        lastDragX = x;
+        lastDragY = y;
+    }
+    else{
         
         switch (dragMode) {
             case MOVE:
@@ -1560,6 +1508,8 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+    isEditingParameter = false;
+    
     // Double-click check
     // check if mousePressedCounter = 0 to prevent creating cloud if clicking in toggleFullscreen area (see above)
     if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED && mousePressedCounter == 0){
@@ -1619,10 +1569,17 @@ void ofApp::mousePressed(int x, int y, int button){
             }
         }
         
+        
+        
+        //edit mode
+        if(editMode != -1){
+            isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
+        }
+        
     }
     
     // If current selected cloud is not the one we were editing, exit editMode
-    if(selectedCloud != editMode){
+    if(selectedCloud != editMode && !isEditingParameter){
         editMode = -1;
     }
     

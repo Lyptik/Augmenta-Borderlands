@@ -125,6 +125,7 @@ class ofApp : public ofBaseApp{
         int selectedRect;
         int selectionIndex;
         int editMode;
+        bool isEditingParameter;
     
         //cloud parameter changing
         enum{NUMGRAINS,DURATION,WINDOW, MOTIONX, MOTIONY,MOTIONXY,DIRECTION,OVERLAP, PITCH, ANIMATE,P_LFO_FREQ,P_LFO_AMT,SPATIALIZE,VOLUME};
@@ -188,8 +189,6 @@ class ofApp : public ofBaseApp{
         void draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat scale);
         void printUsage();
         void printParam();
-        void drawDiscParam(float angle, string paramString, float parameterValue, float paramRangeMin, float paramRangeMax);
-        void drawParam();
         void drawAxis();
         void drawVisuals();
         void drawHelp();
