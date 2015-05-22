@@ -384,8 +384,11 @@ void GrainCluster::updateBangTime(){
 
 //pitch
 void GrainCluster::setPitch(float targetPitch){
-    if (targetPitch < 0.0001){
-        targetPitch = 0.0001;
+    if (targetPitch < 0.05){
+        targetPitch = 0.05;
+    }
+    if(targetPitch > 6){
+        targetPitch = 6;
     }
     pitch = targetPitch;
     for (int i = 0; i < myGrains->size(); i++)
@@ -576,11 +579,9 @@ bool GrainCluster::selectParameter(int x, int y){
     for(int i = 0; i < parameterPositions.size(); i++){
         if(ofDist(x, y, parameterPositions.at(i)->x, parameterPositions.at(i)->y) <= 30 ){ // 30 is the radius of parameter visual representation
             parameterSelected = i;
-            std::cout << "parameter " << i << " selected !" << std::endl;
             return true;
         }
     }
-    std::cout << "no param selected" << std::endl;
     parameterSelected = -1;
     return false;
 }
