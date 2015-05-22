@@ -799,6 +799,8 @@ void ofApp::drawHelp(){
                        "Drag	        Move\n"
                        "TAB key	        Cycle selection of overlapping rectangles under mouse\n"
                        "R key + drag	Resize\n"
+                       "SPACE (+shift)	Resize in XY\n"
+                       "Arrows          Resize on X or Y axis separately\n"
                        "F key	        Flip orientation\n"
                        "\n"
                        "\n"
@@ -888,7 +890,10 @@ void ofApp::keyPressed(int key){
         case OF_KEY_CONTROL:
             modkey = OF_KEY_CONTROL;
             break;
-            
+        case OF_KEY_LEFT_CONTROL:
+            modkey = OF_KEY_LEFT_CONTROL;
+            break;
+/* Commented for presta to allow resize sounds with arrows
         case OF_KEY_LEFT:
             //move to the left
             position.x -=  sidewaysMoveSpeed;
@@ -902,15 +907,14 @@ void ofApp::keyPressed(int key){
         case OF_KEY_DOWN:
             //move backward
             position.y -= upDownMoveSpeed;
-            mouseY +=sidewaysMoveSpeed;
-            
+            mouseY +=sidewaysMoveSpeed;          
             break;
         case OF_KEY_UP:
             //move forward
             position.y += upDownMoveSpeed;
             mouseY -=sidewaysMoveSpeed;
             break;
-            
+*/ 
             
         case 9: //tab key
             
@@ -1322,9 +1326,9 @@ void ofApp::keyPressed(int key){
         case 'h':
             showHelpMenu = true;
             break;
-        case ' '://add delete
+        /*case ' '://add delete
             
-            break;
+            break;*/
             
         case 'X':
         case 'x':
@@ -1392,6 +1396,86 @@ void ofApp::keyPressed(int key){
         case 'm':
             voiceLimiterActive = !voiceLimiterActive;
             break;
+            
+        //Ubuntu Ginn events
+        case OF_KEY_UP:
+        {
+            if(selectedRect != -1){
+                float incrementFactorX = 0.0f;
+                float incrementFactorY = 50.0f;
+                    
+                float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
+                float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
+                
+                //update width and height
+                soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
+            }
+            break;
+        }
+        case OF_KEY_RIGHT:
+        {
+            if(selectedRect != -1){
+                float incrementFactorX = 50.0f;
+                float incrementFactorY = 0.0f;
+                
+                float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
+                float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
+                
+                //update width and height
+                soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
+            }
+            break;
+        }
+        case OF_KEY_DOWN:
+        {
+            if(selectedRect != -1){
+                float incrementFactorX = 0.0f;
+                float incrementFactorY = -50.0f;
+                
+                float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
+                float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
+                
+                //update width and height
+                soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
+            }
+            break;
+        }
+        case OF_KEY_LEFT:
+        {
+            if(selectedRect != -1){
+                float incrementFactorX = -50.0f;
+                float incrementFactorY = 0.0f;
+                
+                float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
+                float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
+                
+                //update width and height
+                soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
+            }
+            break;
+        }
+        case ' ':
+        {
+            if(selectedRect != -1){
+                float incrementFactorX;
+                float incrementFactorY;
+                if(modkey == OF_KEY_SHIFT){
+                    incrementFactorX = -50.0f;
+                    incrementFactorY = -50.0f;
+                }
+                else{
+                    incrementFactorX = 50.0f;
+                    incrementFactorY = 50.0f;
+                }
+                
+                float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
+                float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
+                
+                //update width and height
+                soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
+            }
+            break;
+        }
             
         default:
             break;
