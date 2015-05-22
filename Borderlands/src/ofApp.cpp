@@ -1450,73 +1450,74 @@ void ofApp::mouseDragged(int x, int y, int button){
     int xDiff = 0;
     int yDiff = 0;
     
-    if (selectedCloud >= 0 &&  !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
-        grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
-    }
-    else if(editMode != -1){
-        //check if finger is still on the parameter disc
-        isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
-        
-        if(isEditingParameter){
-            grainCloud->at(editMode)->updateParameter(x, y);
+    if(button == OF_MOUSE_BUTTON_1){
+        if (selectedCloud >= 0 &&  !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
+            grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
+        }
+        else if(editMode != -1){
+            //check if finger is still on the parameter disc
+            isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
+            
+            if(isEditingParameter){
+                grainCloud->at(editMode)->updateParameter(x, y);
+            }
+        }
+        else{
+            
+            switch (dragMode) {
+                case MOVE:
+                    if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
+                        
+                        if (selectedRect >=0){                    //movement case
+                            soundViews->at(selectedRect)->move(mouseX - lastDragX,mouseY - lastDragY);
+                        }
+                    }
+                    lastDragX = mouseX;
+                    lastDragY = mouseY;
+                    break;
+                    
+                case RESIZE:
+                    if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
+                        //cout << "drag ok" << endl;
+                        //for width height - use screen coords
+                        
+                        if (selectedRect >= 0){
+                            xDiff = x - lastDragX;
+                            yDiff = y - lastDragY;
+                            //get width and height
+                            float newWidth = soundViews->at(selectedRect)->getWidth();
+                            float newHeight = soundViews->at(selectedRect)->getHeight();
+                            
+                            int thresh = 0;
+                            //check motion mag
+                            if (xDiff < -thresh){
+                                newWidth = newWidth * 0.8 + 0.2*(newWidth * (0.85 - abs(xDiff/50.0)));
+                            }else{
+                                if (xDiff > thresh)
+                                    newWidth = newWidth * 0.8 + 0.2*(newWidth * (1.1 + abs(xDiff/50.0)));
+                            }
+                            if (yDiff > thresh){
+                                newHeight = newHeight * 0.8 + 0.2*(newHeight * (1.1 + abs(yDiff/50.0)));
+                            }else{
+                                if (yDiff < -thresh)
+                                    newHeight = newHeight * 0.8 + 0.2*(newHeight * (0.85 - abs(yDiff/50.0)));
+                            }
+                            
+                            //update width and height
+                            soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
+                            
+                        }
+                        
+                        
+                    }
+                    lastDragX = x;
+                    lastDragY = y;
+                    break;
+                default:
+                    break;
+            }
         }
     }
-    else{
-        
-        switch (dragMode) {
-            case MOVE:
-                if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
-                    
-                    if (selectedRect >=0){                    //movement case
-                        soundViews->at(selectedRect)->move(mouseX - lastDragX,mouseY - lastDragY);
-                    }
-                }
-                lastDragX = mouseX;
-                lastDragY = mouseY;
-                break;
-                
-            case RESIZE:
-                if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
-                    //cout << "drag ok" << endl;
-                    //for width height - use screen coords
-                    
-                    if (selectedRect >= 0){
-                        xDiff = x - lastDragX;
-                        yDiff = y - lastDragY;
-                        //get width and height
-                        float newWidth = soundViews->at(selectedRect)->getWidth();
-                        float newHeight = soundViews->at(selectedRect)->getHeight();
-                        
-                        int thresh = 0;
-                        //check motion mag
-                        if (xDiff < -thresh){
-                            newWidth = newWidth * 0.8 + 0.2*(newWidth * (0.85 - abs(xDiff/50.0)));
-                        }else{
-                            if (xDiff > thresh)
-                                newWidth = newWidth * 0.8 + 0.2*(newWidth * (1.1 + abs(xDiff/50.0)));
-                        }
-                        if (yDiff > thresh){
-                            newHeight = newHeight * 0.8 + 0.2*(newHeight * (1.1 + abs(yDiff/50.0)));
-                        }else{
-                            if (yDiff < -thresh)
-                                newHeight = newHeight * 0.8 + 0.2*(newHeight * (0.85 - abs(yDiff/50.0)));
-                        }
-                        
-                        //update width and height
-                        soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
-                        
-                    }
-                    
-                    
-                }
-                lastDragX = x;
-                lastDragY = y;
-                break;
-            default:
-                break;
-        }
-    }
-
 }
 
 //--------------------------------------------------------------
