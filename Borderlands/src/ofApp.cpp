@@ -1390,7 +1390,6 @@ void ofApp::keyPressed(int key){
                 if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
                     myLock->lock();
                     delete grainCloud->at(selectedCloud);
-                    delete grainCloudVis->at(selectedCloud);
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
                     grainCloudVis->erase(grainCloudVis->begin() + selectedCloud);
                     if(editMode == selectedCloud)
@@ -1852,7 +1851,6 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
 
         delete grainCloud->at(index);
 
-        delete grainCloudVis->at(index);
         grainCloud->erase(grainCloud->begin() + index);
         grainCloudVis->erase(grainCloudVis->begin() + index);
 
