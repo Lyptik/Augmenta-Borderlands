@@ -93,6 +93,8 @@ void ofApp::init(){
     selectedCloud = -1;
     selectedRect = -1;
     selectionIndex = 0;
+    editMode = -1;
+    isEditingParameter = false;
     
     //flag indicating parameter change
     paramChanged = false;
@@ -513,6 +515,7 @@ void ofApp::printParam(){
 }
 
 
+
 //================================================================================
 //   INTERACTION/GLUT
 //================================================================================
@@ -734,8 +737,12 @@ void ofApp::drawVisuals(){
         }
         
         //print current param if editing
-        if ( (selectedCloud >= 0) || (selectedRect >= 0) )
+        if ( (selectedCloud >= 0) || (selectedRect >= 0) ){
             printParam();
+        }
+        if(editMode != -1){
+            grainCloud->at(editMode)->drawParameters();
+        }
         
         //draw interactive area
         ofPushStyle();
@@ -772,6 +779,12 @@ void ofApp::drawHelp(){
     ofSetColor(ofColor::white);
     ofDrawBitmapString(" Controls\n"
                        "------------------------------------------------------------------------\n"
+                       "\n"
+                       "Touch Controls : \n"
+                       "Double tap to create a sound \n"
+                       "Double tap a cloud to show its parameters \n"
+                       "5 tap in top left corner to toggle fullscreen (usefull to exit app) \n"
+                       "\n"
                        "\n"
                        "Entry/Exit\n"
                        "------------\n"
@@ -825,6 +838,7 @@ void ofApp::drawHelp(){
                        "K key (+shift)	  Adjust playback rate LFO amplitude\n"
                        "B key (+shift)	  Adjust cloud volume in dB", 10, 32);
     
+    // Voice Limiter state
     if(voiceLimiterActive){
         ofSetColor(ofColor::green);
         ofDrawBitmapString("Voice Limiter ON", 800, 32);
@@ -834,8 +848,24 @@ void ofApp::drawHelp(){
         ofDrawBitmapString("Voice Limiter OFF", 800, 32);
     }
     
+    // OSC port
     ofSetColor(ofColor::white);
     ofDrawBitmapString(oscPortDisplayMessage, 800, 50);
+    
+    // Number of grains
+    std::stringstream number;
+    number << grainCloud->size();
+    ofDrawBitmapString(number.str()+" grains", 800, 68);
+    
+    int totalVoices = 0;
+    for(int i=0; i<grainCloud->size(); i++){
+        if(grainCloud->at(i)->getActiveState()){
+            totalVoices += grainCloud->at(i)->getNumVoices();
+        }
+    }
+    number.str("");
+    number << totalVoices;
+    ofDrawBitmapString(number.str()+" voices", 800, 86);
 }
 
 //--------------------------------------------------------------
@@ -1341,6 +1371,8 @@ void ofApp::keyPressed(int key){
                 if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
                     grainCloudVis->erase(grainCloudVis->begin() + selectedCloud);
+                    if(editMode == selectedCloud)
+                        editMode = -1;
                     selectedCloud = -1;
                     numClouds-=1;
                 }
@@ -1424,74 +1456,89 @@ void ofApp::mouseDragged(int x, int y, int button){
     int xDiff = 0;
     int yDiff = 0;
     
-    if (selectedCloud >= 0){
-        grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
-    }else{
-        
-        switch (dragMode) {
-            case MOVE:
-                if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
-                    
-                    if (selectedRect >=0){                    //movement case
-                        soundViews->at(selectedRect)->move(mouseX - lastDragX,mouseY - lastDragY);
-                    }
-                }
-                lastDragX = mouseX;
-                lastDragY = mouseY;
-                break;
-                
-            case RESIZE:
-                if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
-                    //cout << "drag ok" << endl;
-                    //for width height - use screen coords
-                    
-                    if (selectedRect >= 0){
-                        xDiff = x - lastDragX;
-                        yDiff = y - lastDragY;
-                        //get width and height
-                        float newWidth = soundViews->at(selectedRect)->getWidth();
-                        float newHeight = soundViews->at(selectedRect)->getHeight();
+    if(button == OF_MOUSE_BUTTON_1){
+        if (selectedCloud >= 0 &&  !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
+            grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
+        }
+        else if(editMode != -1){
+            //check if finger is still on the parameter disc
+            isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
+            
+            if(isEditingParameter){
+                grainCloud->at(editMode)->updateParameter(x, y);
+            }
+        }
+        else{
+            
+            switch (dragMode) {
+                case MOVE:
+                    if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
                         
-                        int thresh = 0;
-                        //check motion mag
-                        if (xDiff < -thresh){
-                            newWidth = newWidth * 0.8 + 0.2*(newWidth * (0.85 - abs(xDiff/50.0)));
-                        }else{
-                            if (xDiff > thresh)
-                                newWidth = newWidth * 0.8 + 0.2*(newWidth * (1.1 + abs(xDiff/50.0)));
+                        if (selectedRect >=0){                    //movement case
+                            soundViews->at(selectedRect)->move(mouseX - lastDragX,mouseY - lastDragY);
                         }
-                        if (yDiff > thresh){
-                            newHeight = newHeight * 0.8 + 0.2*(newHeight * (1.1 + abs(yDiff/50.0)));
-                        }else{
-                            if (yDiff < -thresh)
-                                newHeight = newHeight * 0.8 + 0.2*(newHeight * (0.85 - abs(yDiff/50.0)));
+                    }
+                    lastDragX = mouseX;
+                    lastDragY = mouseY;
+                    break;
+                    
+                case RESIZE:
+                    if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
+                        //cout << "drag ok" << endl;
+                        //for width height - use screen coords
+                        
+                        if (selectedRect >= 0){
+                            xDiff = x - lastDragX;
+                            yDiff = y - lastDragY;
+                            //get width and height
+                            float newWidth = soundViews->at(selectedRect)->getWidth();
+                            float newHeight = soundViews->at(selectedRect)->getHeight();
+                            
+                            int thresh = 0;
+                            //check motion mag
+                            if (xDiff < -thresh){
+                                newWidth = newWidth * 0.8 + 0.2*(newWidth * (0.85 - abs(xDiff/50.0)));
+                            }else{
+                                if (xDiff > thresh)
+                                    newWidth = newWidth * 0.8 + 0.2*(newWidth * (1.1 + abs(xDiff/50.0)));
+                            }
+                            if (yDiff > thresh){
+                                newHeight = newHeight * 0.8 + 0.2*(newHeight * (1.1 + abs(yDiff/50.0)));
+                            }else{
+                                if (yDiff < -thresh)
+                                    newHeight = newHeight * 0.8 + 0.2*(newHeight * (0.85 - abs(yDiff/50.0)));
+                            }
+                            
+                            //update width and height
+                            soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
+                            
                         }
                         
-                        //update width and height
-                        soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
                         
                     }
-                    
-                    
-                }
-                lastDragX = x;
-                lastDragY = y;
-                break;
-            default:
-                break;
+                    lastDragX = x;
+                    lastDragY = y;
+                    break;
+                default:
+                    break;
+            }
         }
     }
-
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED){
-        mouseDoubleClicked();
+    isEditingParameter = false;
+    
+    // Double-click check
+    // check if mousePressedCounter = 0 to prevent creating cloud if clicking in toggleFullscreen area (see above)
+    if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED && mousePressedCounter == 0){
+        mouseDoubleClicked(x, y, button);
     }
     
-    //look for selections if button is down
-    if ((button == OF_MOUSE_BUTTON_1) || (button == OF_MOUSE_BUTTON_2)){
+    
+    //look for selections if left button is down
+    if (button == OF_MOUSE_BUTTON_1){
         
         paramString = "";
         
@@ -1510,6 +1557,10 @@ void ofApp::mousePressed(int x, int y, int button){
         //first check grain clouds to see if we have selection
         for (int i = 0; i < grainCloudVis->size(); i++){
             if (grainCloudVis->at(i)->select(mouseX, mouseY) == true){
+                //if the grain is linked to augmenta and is inactive, we can't select it
+                if(belongsToAugmenta(grainCloud->at(i)->getId()) && ( !grainCloud->at(i)->getActiveState() || grainCloud->at(i)->getNumVoices() == 0 )){
+                    break;
+                }
                 grainCloudVis->at(i)->setSelectState(true);
                 selectedCloud = i;
                 break;
@@ -1542,35 +1593,57 @@ void ofApp::mousePressed(int x, int y, int button){
             }
         }
         
+        
+        
+        //edit mode
+        if(editMode != -1){
+            isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
+        }
+        
     }
     
+    // If current selected cloud is not the one we were editing, exit editMode
+    if(selectedCloud != editMode && !isEditingParameter){
+        editMode = -1;
+    }
     
-    // Check if we click several times on the upper left corner
-    // and toggle fullscreen.
+    // Show help with right click pressed
+    if(button == OF_MOUSE_BUTTON_3){
+        showHelpMenu = true;
+    }
+    
+    // Check if we click several times on the upper left corner and toggle fullscreen.
     // This to be able to quit fullscreen app when only in touch
-    if(mousePressedCounter >= CLIC_COUNTER_TOGGLE - 2){ // -2 is to be coherent with defined CLIC_COUNTER_TOGGLE
-        toggleFullscreen();
-        mousePressedCounter = 0;
-    }
-    else if(x < CLIC_COUNTER_AREA_SIZE && y < CLIC_COUNTER_AREA_SIZE && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED ){
-        mousePressedCounter ++;
+    if(x < CLIC_COUNTER_AREA_SIZE && y < CLIC_COUNTER_AREA_SIZE){
+        if(mousePressedCounter == 0 || (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED)
+            mousePressedCounter ++;
+        else
+            mousePressedCounter = 1;
     }
     else{
         mousePressedCounter = 0;
     }
-    ofLog(OF_LOG_NOTICE, "click count : "+ofToString(mousePressedCounter));
+    if(mousePressedCounter >= CLIC_COUNTER_TOGGLE){
+        toggleFullscreen();
+        mousePressedCounter = 0;
+    }
     
+    
+    // Get the frame number of this click.
     // Must be the last thing to do
     lastClickFrame = ofGetFrameNum();
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+    // Disable help menu when right click released
+    if(button == OF_MOUSE_BUTTON_3){
+        showHelpMenu = false;
+    }
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDoubleClicked(){
+void ofApp::mouseDoubleClicked(int x, int y, int button){
     // Create a cloud, only if there is no other cloud selected (allow other future behavior on double click on a selected cloud)
     if(selectedCloud == -1){
         int idx = grainCloud->size();
@@ -1584,6 +1657,10 @@ void ofApp::mouseDoubleClicked(){
         grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
         //grainCloud->at(idx)->toggleActive();
         numClouds+=1;
+    }
+    // If a cloud is selected, enter edit mode to show its parameters
+    else if(selectedCloud != -1 && editMode == -1){
+        editMode = selectedCloud;
     }
 }
 
@@ -1737,4 +1814,12 @@ void ofApp::voiceLimiter(){
             }
         }
     }
+}
+
+// Convert a value in a range to another new range
+float ofApp::convertValueRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax){
+    float oldRange = (oldMax - oldMin);
+    float newRange = (newMax - newMin);
+    float newValue = (((oldValue - oldMin) * newRange) / oldRange) + newMin;
+    return newValue;
 }

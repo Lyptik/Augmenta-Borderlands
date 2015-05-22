@@ -124,7 +124,9 @@ class ofApp : public ofBaseApp{
         int selectedCloud;
         int selectedRect;
         int selectionIndex;
-        
+        int editMode;
+        bool isEditingParameter;
+    
         //cloud parameter changing
         enum{NUMGRAINS,DURATION,WINDOW, MOTIONX, MOTIONY,MOTIONXY,DIRECTION,OVERLAP, PITCH, ANIMATE,P_LFO_FREQ,P_LFO_AMT,SPATIALIZE,VOLUME};
         //flag indicating parameter change
@@ -178,7 +180,7 @@ class ofApp : public ofBaseApp{
         void keyUpFunc(unsigned char key, int x, int y);
         void deselect(int mode);
     
-        void mouseDoubleClicked();
+        void mouseDoubleClicked(int x, int y, int button);
         void mouseFunc(int button, int state, int x, int y);
         void mouseDrag(int x, int y);
         void mousePassiveMotion(int x, int y);
@@ -200,4 +202,6 @@ class ofApp : public ofBaseApp{
         bool belongsToAugmenta(int pid);
     
         void voiceLimiter();
+    
+        float convertValueRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax);
 };

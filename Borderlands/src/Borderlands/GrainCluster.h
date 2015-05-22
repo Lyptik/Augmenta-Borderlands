@@ -143,6 +143,15 @@ public:
     //return number of voices
     unsigned int getNumVoices();
     
+    //draw cluster parameters
+    void drawParameters();
+    void drawDiscParam(float angle, int param, float paramRangeMin, float paramRangeMax);
+    
+    //select a parameter in edit mode
+    bool selectParameter(int x, int y);
+    
+    //modify the currently selected parameter by dragging its disc
+    void updateParameter(int x, int y);
     
 protected:
     //update internal trigger point
@@ -189,8 +198,15 @@ private:
     unsigned int numVoices;
 
     //cluster params
+    enum{PITCH};
     float overlap, overlapNorm, pitch, duration,pitchLFOFreq, pitchLFOAmount;
     int myDirMode, windowType;
+    
+    //position of visual representations of params
+    vector<ofPoint*> parameterPositions;
+    
+    //parameter selected for edit mode
+    int parameterSelected;
     
     //audio files
     vector<AudioFile *> *theSounds;
@@ -262,5 +278,6 @@ private:
     vector<SoundRect*> * theLandscape;
 };
 
+float convertValueRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax);
 
 #endif

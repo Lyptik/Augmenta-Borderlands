@@ -155,6 +155,13 @@ void GrainCluster::init(vector<AudioFile*> * soundSet, float theNumVoices){
     
     //state - (user can remove cloud from "play" for editing)
     isActive = true;
+    
+    //initialize vector of parameters discs positions
+    for(int i=0; i < 1; i++){
+        parameterPositions.push_back(new ofPoint(0.0f, 0.0f));
+    }
+    
+    parameterSelected = -1;
 }
 
 void GrainCluster::initWithSettings(ofxXmlSettings settings){
@@ -258,7 +265,7 @@ void GrainCluster::removeGrain(){
 }
 
 void GrainCluster::setGrains(int num){
-    isActive = true;
+    setActiveState(true);
     int grainsToAdd = num - myGrains->size();
     
     if(num == 0){
@@ -377,8 +384,11 @@ void GrainCluster::updateBangTime(){
 
 //pitch
 void GrainCluster::setPitch(float targetPitch){
-    if (targetPitch < 0.0001){
-        targetPitch = 0.0001;
+    if (targetPitch < 0.05){
+        targetPitch = 0.05;
+    }
+    if(targetPitch > 6){
+        targetPitch = 6;
     }
     pitch = targetPitch;
     for (int i = 0; i < myGrains->size(); i++)
@@ -470,7 +480,130 @@ unsigned int GrainCluster::getNumVoices(){
     return myGrains->size();
 }
 
+void GrainCluster::drawParameters(){
+    ofPushMatrix();
+    ofPushStyle();
+    
+    float parameterValue = 0; // current parameter value
+    
+    ofTranslate(myVis->getX(), myVis->getY());
+    ofPushMatrix();
+    ofPushStyle();
+    // Cloud referential
+    
+    // PITCH
+    drawDiscParam(-45, PITCH, 0.0f, 6.0f);
+    
+    ofPopStyle();
+    ofPopMatrix();
+    
+    ofPopStyle();
+    ofPopMatrix();
+}
 
+void GrainCluster::drawDiscParam(float angle, int param, float paramRangeMin, float paramRangeMax){
+    float paramDiscMinDist = 80;   // minimal distance between parameter disc and cloud
+    float paramDiscMaxDist = 160;   // maximal distance between parameter disc and cloud
+    
+    float parameterValue = 0.0f;
+    string paramString = "";
+    
+    // Set the values for the right parameter
+    switch(param){
+        case PITCH:
+            parameterValue = pitch;
+            paramString = "Pitch";
+            break;
+            
+        default:
+            break;
+    }
+    
+    ostringstream parameterValueStr;
+    parameterValueStr << parameterValue;
+    
+    // Scale the parameter value for its visual representation
+    float newParameterValue = convertValueRange(parameterValue, paramRangeMin, paramRangeMax, paramDiscMinDist, paramDiscMaxDist);
+    
+    
+    // Draw
+    ofPushStyle();
+    ofPushMatrix();
+    
+        ofVec2f currentPos = ofVec2f(myVis->getX(), myVis->getY());
+        ofVec2f currentTransform = ofVec2f(1, 0);
+        
+        ofRotate(angle);
+        currentTransform.rotate(angle);
+        
+        ofPushMatrix();
+            ofTranslate(newParameterValue, 0);
+            currentTransform.scale(newParameterValue);
+            currentPos += currentTransform;
+
+            ofRotate(-angle);
+            // Parameter circle referential
+            
+            // outline
+            ofSetColor(70, 70, 255, 150);
+            gluDisk(gluNewQuadric(), 27, 30, 128, 2);
+            // fill
+            ofSetColor(70, 70, 255, 50);
+            ofCircle(0, 0, 30);
+            
+            ofSetColor(ofColor::white);
+            ofDrawBitmapString(paramString, -20, -2, 0);
+            ofDrawBitmapString(parameterValueStr.str(), -20, 12, 0);
+            
+        ofPopMatrix();
+        
+        ofLine(20, 0, newParameterValue -35, 0);
+    
+    ofPopMatrix();
+    ofPopStyle();
+    
+    
+    // Update parameter visual representation's position
+    switch(param){
+        case PITCH:
+            parameterPositions.at(PITCH)->set(currentPos.x, currentPos.y);
+            break;
+            
+        default:
+            break;
+    }
+}
+
+//select a parameter in edit mode
+bool GrainCluster::selectParameter(int x, int y){
+    for(int i = 0; i < parameterPositions.size(); i++){
+        if(ofDist(x, y, parameterPositions.at(i)->x, parameterPositions.at(i)->y) <= 30 ){ // 30 is the radius of parameter visual representation
+            parameterSelected = i;
+            return true;
+        }
+    }
+    parameterSelected = -1;
+    return false;
+}
+
+//modify the currently selected parameter by dragging its disc
+void GrainCluster::updateParameter(int x, int y){
+    if(parameterSelected != -1){
+        ofVec2f finger = ofVec2f(x, y) - ofVec2f(myVis->getX(), myVis->getY());
+
+        switch(parameterSelected){
+            case PITCH:
+                //TODO : clean way to get range values
+                // convert the scale of the finger vector (in pixels)
+                // to the scale of the parameter
+                setPitch(convertValueRange(finger.length(), 80, 160, 0.0f, 6.0f));
+                break;
+                
+            default:
+                break;
+        }
+    }
+}
 
 //compute audio
 void GrainCluster::nextBuffer(double * accumBuff,unsigned int numFrames)
@@ -936,3 +1069,10 @@ void GrainClusterVis::removeGrain()
     
 }
 
+// Convert a value in a range to another new range
+float convertValueRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax){
+    float oldRange = (oldMax - oldMin);
+    float newRange = (newMax - newMin);
+    float newValue = (((oldValue - oldMin) * newRange) / oldRange) + newMin;
+    return newValue;
+}
