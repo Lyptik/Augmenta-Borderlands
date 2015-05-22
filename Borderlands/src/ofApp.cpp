@@ -697,6 +697,7 @@ void ofApp::draw(){
 
     // Draw fbo
     //m_fbo.begin();
+    myLock->lock();
     drawVisuals();
     //m_fbo.end();
 
@@ -704,6 +705,7 @@ void ofApp::draw(){
         drawHelp();
     }
 
+    myLock->unlock();
     //ofDisableAlphaBlending();
 
 
