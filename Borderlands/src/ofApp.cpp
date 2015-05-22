@@ -1431,7 +1431,7 @@ void ofApp::mouseDragged(int x, int y, int button){
     int xDiff = 0;
     int yDiff = 0;
     
-    if (selectedCloud >= 0){
+    if (selectedCloud >= 0 &&  !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
         grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
     }
     else if(editMode != -1 && isEditingParameter){
