@@ -492,7 +492,7 @@ void GrainCluster::drawParameters(){
     // Cloud referential
     
     // PITCH
-    drawDiscParam(-45, PITCH, 0.0f, 3.0f);
+    drawDiscParam(-45, PITCH, 0.0f, 6.0f);
     
     ofPopStyle();
     ofPopMatrix();
@@ -589,12 +589,18 @@ bool GrainCluster::selectParameter(int x, int y){
 //modify the currently selected parameter by dragging its disc
 void GrainCluster::updateParameter(int x, int y){
     if(parameterSelected != -1){
-        ofVec2f axis = ofVec2f(parameterPositions.at(parameterSelected)->x, parameterPositions.at(parameterSelected)->y) - ofVec2f(myVis->getX(), myVis->getY());
-        axis.normalize();
+        ofVec2f finger = ofVec2f(x, y) - ofVec2f(myVis->getX(), myVis->getY());
 
         switch(parameterSelected){
             case PITCH:
-                setPitch(getPitch() + axis.dot(ofVec2f(x, y))/10);
+                //TODO : clean way to get range values
+                // convert the scale of the finger vector (in pixels)
+                // to the scale of the parameter
+                setPitch(convertValueRange(finger.length(), 80, 160, 0.0f, 6.0f));
+                break;
+                
+            default:
+                break;
         }
     }
 }

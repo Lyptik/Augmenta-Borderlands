@@ -1453,19 +1453,13 @@ void ofApp::mouseDragged(int x, int y, int button){
     if (selectedCloud >= 0 &&  !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
         grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
     }
-    else if(editMode != -1 && isEditingParameter){
-        if(lastDragX == veryHighNumber || lastDragY == veryHighNumber){
-            lastDragX = x;
-            lastDragY = y;
+    else if(editMode != -1){
+        //check if finger is still on the parameter disc
+        isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
+        
+        if(isEditingParameter){
+            grainCloud->at(editMode)->updateParameter(x, y);
         }
-        
-        xDiff = x - lastDragX;
-        yDiff = y - lastDragY;
-        
-        grainCloud->at(editMode)->updateParameter(xDiff, yDiff);
-        
-        lastDragX = x;
-        lastDragY = y;
     }
     else{
         
