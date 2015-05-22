@@ -1556,6 +1556,10 @@ void ofApp::mousePressed(int x, int y, int button){
         //first check grain clouds to see if we have selection
         for (int i = 0; i < grainCloudVis->size(); i++){
             if (grainCloudVis->at(i)->select(mouseX, mouseY) == true){
+                //if the grain is linked to augmenta and is inactive, we can't select it
+                if(belongsToAugmenta(grainCloud->at(i)->getId()) && ( !grainCloud->at(i)->getActiveState() || grainCloud->at(i)->getNumVoices() == 0 )){
+                    break;
+                }
                 grainCloudVis->at(i)->setSelectState(true);
                 selectedCloud = i;
                 break;
