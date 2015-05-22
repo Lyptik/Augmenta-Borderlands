@@ -1536,8 +1536,8 @@ void ofApp::mousePressed(int x, int y, int button){
     }
     
     
-    //look for selections if button is down
-    if ((button == OF_MOUSE_BUTTON_1) || (button == OF_MOUSE_BUTTON_2)){
+    //look for selections if left button is down
+    if (button == OF_MOUSE_BUTTON_1){
         
         paramString = "";
         
@@ -1606,6 +1606,10 @@ void ofApp::mousePressed(int x, int y, int button){
         editMode = -1;
     }
     
+    // Show help with right click pressed
+    if(button == OF_MOUSE_BUTTON_3){
+        showHelpMenu = true;
+    }
     
     // Check if we click several times on the upper left corner and toggle fullscreen.
     // This to be able to quit fullscreen app when only in touch
@@ -1631,7 +1635,10 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+    // Disable help menu when right click released
+    if(button == OF_MOUSE_BUTTON_3){
+        showHelpMenu = false;
+    }
 }
 
 //--------------------------------------------------------------
