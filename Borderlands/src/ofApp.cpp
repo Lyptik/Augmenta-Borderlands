@@ -35,7 +35,7 @@
 
 // Global variable containing pointer on instance of this class, used for callback function
 // In setup(), the openStream method wait a pointer on a callback function which
-// respond to typedef RtAudioCallback defined in RTAudio.h, and the callback must access member variables 
+// respond to typedef RtAudioCallback defined in RTAudio.h, and the callback must access member variables
 // So we can't provide a pointer on this class in parameter, and we can't make the callback static
 ofApp* g_thisApp;
 
@@ -48,11 +48,13 @@ using namespace std;
 void ofApp::init(){
     //grain cloud audio objects
     grainCloud = NULL;
-    
+
+    myLock = new Mutex();
+
     fullscreen = false;
     menuFlag = true;
     showCursor = true;
-    
+
     //audio system
     theAudio = NULL;
     //library path
@@ -72,11 +74,11 @@ void ofApp::init(){
     grainCloudVis = NULL;
     //cloud counter
     numClouds = 0;
-    
+
     //Initial camera movement vars
     //my position
     position = ofPoint(0.0,0.0,0.0f);
-    
+
     //ENUMS
     //default selection mode
     selectionMode = CLOUD;
@@ -85,17 +87,17 @@ void ofApp::init(){
     //rubber band select params
     rb_anchor_x = -1;
     rb_anchor_y = -1;
-    
+
     //not used yet - for multiple selection
     selectionIndices = new vector<int>;
-    
+
     //selection helper vars
     selectedCloud = -1;
     selectedRect = -1;
     selectionIndex = 0;
     editMode = -1;
     isEditingParameter = false;
-    
+
     //flag indicating parameter change
     paramChanged = false;
     currentParam = NUMGRAINS;
@@ -109,88 +111,88 @@ void ofApp::init(){
     veryHighNumber = 50000000;
     lastDragX = veryHighNumber;
     lastDragY = veryHighNumber;
-    
+
     //keyboard modifier key
     modkey = -1;
-    
+
     //flag for help menu display
     showHelpMenu = false;
-    
+
     //flag for voice limiter function
     voiceLimiterActive = false;
-    
+
     //voice limiter variables
     voicesLimit = 150;
     maxVoicesPerCloud = 10;
-    
+
     //initial number of voices when a new grain is created
     numVoices = 8;
-    
+
     //max number of tracked people by Augmenta
     maxNumPeople = INT32_MAX;
-    
+
     generateOutsideInteractiveArea = false;
     interactiveArea = ofRectangle(0.0f, 0.0f, 1.0f, 1.0f);
     oscPort = 12000;
 #ifdef MAC_OS_X_VERSION_10_6
     syphonServerName = string("Borderlands");
 #endif
-    
+
 }
 
 void ofApp::loadSettings(){
-    
+
     if(settings.getValue("appSettings:fullscreen", "") == "true")
         fullscreen = true;
     else if(settings.getValue("appSettings:fullscreen", "") == "false")
         fullscreen = false;
     //else, default value defined in init()
-    
+
     if(settings.getValue("appSettings:showStartMenu", "") == "true")
         menuFlag = true;
     else if(settings.getValue("appSettings:showStartMenu", "") == "false")
         menuFlag = false;
     //else, default value defined in init()
-    
+
     if(settings.getValue("appSettings:showCursor", "") == "true")
         showCursor = true;
     else if(settings.getValue("appSettings:showCursor", "") == "false")
         showCursor = false;
     //else, default value defined in init()
-    
+
     //library path
     drawAudioPath = string("data/") + settings.getValue("appSettings:audioPath", g_audioPath);
     g_audioPath = settings.getValue("appSettings:audioPath", g_audioPath);
-    
+
     //desired audio buffer size
     g_buffSize = (unsigned int)settings.getValue("appSettings:bufferSize", (int)g_buffSize);
-    
+
     //flag for voice limiter function
     if(settings.getValue("appSettings:useVoiceLimiter", "") == "true")
         voiceLimiterActive = true;
     else if(settings.getValue("appSettings:useVoiceLimiter", "") == "false")
         voiceLimiterActive = false;
     //else, default value defined in init()
-    
+
     voicesLimit = settings.getValue("appSettings:voicesLimit", voicesLimit);
     maxVoicesPerCloud = settings.getValue("appSettings:maxVoicesPerCloud", maxVoicesPerCloud);
-    
+
     numVoices = settings.getValue("cloudSettings:numVoices", numVoices);
     numVoices = settings.getValue("cloudSettings:numVoices", numVoices);
     maxNumPeople = settings.getValue("cloudSettings:maxTrackedPeople", maxNumPeople);
-    
-    
+
+
     if(settings.getValue("appSettings:createSoundsOutside", "") == "true")
         generateOutsideInteractiveArea = true;
     else if(settings.getValue("appSettings:createSoundsOutside", "") == "false")
         generateOutsideInteractiveArea = false;
     //else, default value defined in init()
-    
+
     interactiveArea = ofRectangle(settings.getValue("appSettings:interactiveAreaOriginX", interactiveArea.x),
                                   settings.getValue("appSettings:interactiveAreaOriginY", interactiveArea.y),
                                   settings.getValue("appSettings:interactiveAreaWidth", interactiveArea.width),
                                   settings.getValue("appSettings:interactiveAreaHeight", interactiveArea.height));
-    
+
     oscPort = settings.getValue("appSettings:oscPort", oscPort);
 #ifdef MAC_OS_X_VERSION_10_6
     syphonServerName = settings.getValue("appSettings:syphonServerName", syphonServerName);
@@ -214,11 +216,11 @@ void ofApp::cleaningFunction(){
         delete mySounds;
     if (theAudio !=NULL)
         delete theAudio;
-    
+
     if (grainCloud!=NULL){
         delete grainCloud;
     }
-    
+
     if (grainCloudVis!=NULL){
         delete grainCloudVis;
     }
@@ -241,7 +243,9 @@ int audioCallback( void * outputBuffer, void * inputBuffer, unsigned int numFram
     //cast audio buffers
     SAMPLE * out = (SAMPLE *)outputBuffer;
     SAMPLE * in = (SAMPLE *)inputBuffer;
-    
+
+    g_thisApp->myLock->lock();
+
     memset(out, 0, sizeof(SAMPLE)*numFrames*MY_CHANNELS );
     if (g_thisApp->menuFlag == false){
         for(int i = 0; i < g_thisApp->grainCloud->size(); i++){
@@ -249,6 +253,9 @@ int audioCallback( void * outputBuffer, void * inputBuffer, unsigned int numFram
         }
     }
     borderlands::GTime::instance().sec += numFrames*g_thisApp->samp_time_sec;
+
+    g_thisApp->myLock->unlock();
+
     // cout << GTime::instance().sec<<endl;
     return 0;
 }
@@ -262,7 +269,7 @@ void ofApp::drawAxis()
 {
     //PUSH -- //store state
     glPushMatrix();
-    
+
     //specify vertices with this drawing mode
     glBegin(GL_LINES);
     glLineWidth(0.9f);
@@ -270,20 +277,20 @@ void ofApp::drawAxis()
     glColor4f(1,0,0,0.9);
     glVertex3f(0,0,0);
     glVertex3f(ofGetWidth(),0,0);
-    
+
     //x axis
     glColor4f(0,1,0,0.9);
     glVertex3f(0,0,0);
     glVertex3f(0,ofGetHeight(),0);
-    
+
     //z axis
     glColor4f(0,0,1,0.7);
     glVertex3f(0,0,0);
     glVertex3f(0,0,400);
-    
+
     //stop drawing
     glEnd();
-    
+
     //POP -- //restore state
     glPopMatrix();
 }
@@ -296,13 +303,13 @@ void ofApp::drawAxis()
 void ofApp::draw_string( GLfloat x, GLfloat y, GLfloat z, const char * str, GLfloat scale = 1.0f )
 {
     GLint len = strlen( str ), i;
-    
+
     glPushMatrix();
     glTranslatef( x, ofGetHeight()-y, z );
     glScalef( .001f * scale, .001f * scale, .001f * scale );
-    
+
     myFont.drawString(str, 0, 0);
-    
+
     glPopMatrix();
 }
 
@@ -317,26 +324,26 @@ void ofApp::printUsage(){
     float theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec);
     glColor4f(theA,theA,theA,theA);
     draw_string(0.2f*(float)ofGetWidth()/2,(float)ofGetHeight()/2.0f, 0.5f,"AUGMENTA BORDERLANDS",160);
-    
+
     theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-1);
     float insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
     string folderPath = "LOAD .AIFF OR .WAV IN "+drawAudioPath+" FOLDER";
     draw_string(0.2f*(float)ofGetWidth()/2+20.0,(float)ofGetHeight()/2.0f - 40.0, 0.5f, (char*)folderPath.c_str(),96);
-    
+
     theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-2);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
     draw_string(0.2f*(float)ofGetWidth()/2+20.0,(float)ofGetHeight()/2.0f - 65.0, 0.5f,"CLICK TO START",96);
-    
+
     theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-3);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
     //key info
     draw_string(0.2f*(float)ofGetWidth()/2+20.0,(float)ofGetHeight()/2.0f - 90.0, 0.5f,"ESCAPE TO QUIT",96);
-    
+
     theA = 0.6f + 0.2*sin(0.8*PI*borderlands::GTime::instance().sec-4);
     insColor = theA*0.4f;
     glColor4f(insColor,insColor,insColor,theA);
@@ -355,7 +362,7 @@ void ofApp::printParam(){
         ostringstream sinput2;
         float theA = 0.7f + 0.3*sin(1.6*PI*borderlands::GTime::instance().sec);
         glColor4f(1.0f,1.0f,1.0f,theA);
-        
+
         switch (currentParam) {
             case NUMGRAINS:
                 myValue = "Voices: ";
@@ -398,7 +405,7 @@ void ofApp::printParam(){
                         myValue = "";
                         break;
                 }
-                
+
                 draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
             case MOTIONX:
@@ -421,7 +428,7 @@ void ofApp::printParam(){
                 myValue = myValue + sinput2.str();
                 draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
-                
+
             case DIRECTION:
                 switch(theCloud->getDirection()){
                     case FORWARD:
@@ -439,7 +446,7 @@ void ofApp::printParam(){
                 }
                 draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 break;
-                
+
             case SPATIALIZE:
                 switch(theCloud->getSpatialMode()){
                     case UNITY:
@@ -489,7 +496,7 @@ void ofApp::printParam(){
                 draw_string((GLfloat)cloudX,(GLfloat) (ofGetHeight()-cloudY),0.0,myValue.c_str(),100.0f);
                 //            myValue = "Duration (ms): " + theCloud->getDurationMs();
                 break;
-                
+
             case P_LFO_FREQ:
                 myValue = "Pitch LFO Freq: ";
                 if (paramString == ""){
@@ -516,7 +523,7 @@ void ofApp::printParam(){
                 break;
         }
     }
-    
+
 }
 
 
@@ -548,50 +555,50 @@ void ofApp::deselect(int shapeType){
                 selectedCloud = -1;
                 //cout << "deselecting cloud" <<endl;
             }
-            
+
         case RECT:
             if (selectedRect >= 0){
                 //cout << "deselecting rect" << endl;
                 soundViews->at(selectedRect)->setSelectState(false);
                 selectedRect = -1;
             }
-            
+
     }
 }
 
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
+
     // Hide cursor
     ofHideCursor(); // Bug in of 0.8.4, even if we want to show cursor we have to go through that
-    
+
     // Load settings file
     settings.loadFile("settings.xml");
-    
+
     // Initialize Borderlands variables with default values
     init();
     // If needed, override default variables with values defined in settings.xml
     loadSettings();
-    
+
 #ifdef DEV_MODE
     // Override settings for dev use
     fullscreen = false;
     showCursor = true;
-    
+
 #endif
-    
-    
+
+
     ofSetFullscreen(fullscreen);
     ofSetWindowTitle("Augmenta Borderlands");
-    
+
     // Global pointer to this instance of Borderlands
     g_thisApp = this;
-    
+
     // Initialize path to loops
     ofDirectory g_audioDir(g_audioPath);
     g_audioPath = g_audioDir.path();
-    
+
     // Connect augmenta receiver
     oscPortDisplayMessage = "Listening to OSC on port " + ofToString(oscPort);
     try {
@@ -600,40 +607,40 @@ void ofApp::setup(){
         std::cerr << "Error : " << e.what() << endl;
         oscPortDisplayMessage = "Could not bind to port " + ofToString(oscPort) + " !";
     }
-    
+
     ofxAddAugmentaListeners(this);  // for augmenta events
     augmentaReceiver.setMaxNumPeople(maxNumPeople);
-    
+
     // TODO : Change to value from xml (beware nothing to do with window size)
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
-    
+
     #ifdef MAC_OS_X_VERSION_10_6
     syphonServer.setName(syphonServerName);
     #endif
-    
+
     // Load font
     myFont.loadFont(OF_TTF_MONO, 128);
-    
+
     //init random number generator
     srand(time(NULL));
     //start time
-    
+
     //-------------Graphics Initialization--------//
-    
+
     // initialize graphics
     //initialize();
-    
+
     // load sounds
     newFileMgr = new AudioFileSet();
-    
+
     if (newFileMgr->loadFileSet(g_audioPath) == 1){
         cleaningFunction();
         return;
     }
-    
+
     mySounds = newFileMgr->getFileVector();
     cout << "Sounds loaded successfully..." << endl;
-    
+
     //create visual representation of sounds
     soundViews = new vector<SoundRect *>;
     for (int i = 0; i < mySounds->size(); i++)
@@ -644,13 +651,13 @@ void ofApp::setup(){
             soundViews->push_back(new SoundRect());
         soundViews->at(i)->associateSound(mySounds->at(i)->wave,mySounds->at(i)->frames,mySounds->at(i)->channels);
     }
-    
+
     //init grain cloud vector and corresponding view vector
     grainCloud = new vector<GrainCluster *>;
     grainCloudVis = new vector<GrainClusterVis *>;
-    
+
     //-------------Audio Configuration-----------//
-    
+
     //configure RtAudio
     //create the object
     try {
@@ -669,7 +676,7 @@ void ofApp::setup(){
         theAudio->startStream();
         //report latency
         theAudio->reportStreamLatency();
-        
+
     }catch (RtError & err )
     {
         err.printMessage();
@@ -680,29 +687,29 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 
     //ofEnableAlphaBlending();
-    
+
     // Draw fbo
     //m_fbo.begin();
     drawVisuals();
     //m_fbo.end();
-    
+
     if(showHelpMenu){
         drawHelp();
     }
-    
+
     //ofDisableAlphaBlending();
-    
+
 
     //glEnable(GL_BLEND);
 	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    
+
     // Draw visuals
     //ofSetColor(ofColor::white); // Needed !
     //m_fbo.draw(0,0,ofGetWidth(),ofGetHeight());
@@ -711,18 +718,18 @@ void ofApp::draw(){
     #ifdef MAC_OS_X_VERSION_10_6
     syphonServer.publishTexture(&m_fbo.getTextureReference());
     #endif
-    
+
     //glDisable(GL_BLEND);
 }
 
 //--------------------------------------------------------------
 void ofApp::drawVisuals(){
-    
+
     //ofClear(ofColor::white);
     ofBackground(ofColor::black);
-    
+
     ofPushMatrix();
-    
+
     //update viewer position
     ofTranslate(position.x,position.y,position.z); //translate the screen to the position of our camera
     if (menuFlag == false){
@@ -733,7 +740,7 @@ void ofApp::drawVisuals(){
                 soundViews->at(i)->draw();
             }
         }
-        
+
         //render grain clouds if they exist
         if (grainCloudVis){
             for (int i = 0; i < grainCloudVis->size(); i++)
@@ -741,7 +748,7 @@ void ofApp::drawVisuals(){
                 grainCloudVis->at(i)->draw();
             }
         }
-        
+
         //print current param if editing
         if ( (selectedCloud >= 0) || (selectedRect >= 0) ){
             printParam();
@@ -749,7 +756,7 @@ void ofApp::drawVisuals(){
         if(editMode != -1){
             grainCloud->at(editMode)->drawParameters();
         }
-        
+
         //draw interactive area
         ofPushStyle();
         ofSetColor(200, 235, 255, 40);
@@ -762,9 +769,9 @@ void ofApp::drawVisuals(){
     }else{
         printUsage();
     }
-    
+
     ofPopMatrix();
-    
+
     // Draw cursor
     if(showCursor){
         ofCircle(mouseX, mouseY, 10);
@@ -781,7 +788,7 @@ void ofApp::toggleFullscreen(){
 
 //--------------------------------------------------------------
 void ofApp::drawHelp(){
-    
+
     ofSetColor(ofColor::white);
     ofDrawBitmapString(" Controls\n"
                        "------------------------------------------------------------------------\n"
@@ -845,7 +852,7 @@ void ofApp::drawHelp(){
                        "L key (+shift)    Adjust playback rate LFO frequency\n"
                        "K key (+shift)	  Adjust playback rate LFO amplitude\n"
                        "B key (+shift)	  Adjust cloud volume in dB", 10, 32);
-    
+
     // Voice Limiter state
     if(voiceLimiterActive){
         ofSetColor(ofColor::green);
@@ -855,16 +862,16 @@ void ofApp::drawHelp(){
         ofSetColor(ofColor::yellow);
         ofDrawBitmapString("Voice Limiter OFF", 800, 32);
     }
-    
+
     // OSC port
     ofSetColor(ofColor::white);
     ofDrawBitmapString(oscPortDisplayMessage, 800, 50);
-    
+
     // Number of grains
     std::stringstream number;
     number << grainCloud->size();
     ofDrawBitmapString(number.str()+" grains", 800, 68);
-    
+
     int totalVoices = 0;
     for(int i=0; i<grainCloud->size(); i++){
         if(grainCloud->at(i)->getActiveState()){
@@ -878,14 +885,14 @@ void ofApp::drawHelp(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    
+
     static float sidewaysMoveSpeed = 10.0f;
     static float upDownMoveSpeed = 10.0f;
-    
+
     static bool negativeFlag = false;//for negative value entry
-    
+
     //cout << "special key" << key <<endl;
-    
+
     switch (key){
         case OF_KEY_SHIFT:
             modkey = OF_KEY_SHIFT;
@@ -913,17 +920,17 @@ void ofApp::keyPressed(int key){
         case OF_KEY_DOWN:
             //move backward
             position.y -= upDownMoveSpeed;
-            mouseY +=sidewaysMoveSpeed;          
+            mouseY +=sidewaysMoveSpeed;
             break;
         case OF_KEY_UP:
             //move forward
             position.y += upDownMoveSpeed;
             mouseY -=sidewaysMoveSpeed;
             break;
-*/ 
-            
+*/
+
         case 9: //tab key
-            
+
             if (selectionIndices->size() > 1){
                 soundViews->at(selectedRect)->setSelectState(false);
                 selectionIndex++;
@@ -941,7 +948,7 @@ void ofApp::keyPressed(int key){
                     grainCloud->at(selectedCloud)->setWindowType(0);
                 }
             }
-            
+
             break;
         case '2':
             paramString.push_back('2');
@@ -959,7 +966,7 @@ void ofApp::keyPressed(int key){
                 }
             }
             break;
-            
+
         case '4':
             paramString.push_back('4');
             if (currentParam == WINDOW){
@@ -999,11 +1006,11 @@ void ofApp::keyPressed(int key){
         case '.':
             paramString.push_back('.');
             break;
-            
+
         case 13://enter key - for saving param string
             if (paramString != ""){
                 float value = atof(paramString.c_str());
-                
+
                 //cout << "value received " << value << endl;
                 switch (currentParam){
                     case DURATION:
@@ -1034,7 +1041,7 @@ void ofApp::keyPressed(int key){
                             grainCloud->at(selectedCloud)->setPitchLFOAmount(value);
                         }
                         break;
-                        
+
                     case VOLUME:
                         if (selectedCloud >=0){
                             grainCloud->at(selectedCloud)->setVolumeDb(value);
@@ -1046,24 +1053,24 @@ void ofApp::keyPressed(int key){
             }
             // cout << "enter key caught" << endl;
             break;
-            
-            
-            
-            
+
+
+
+
         case 27: //esc key
             cleaningFunction();
             ofExit(1);
             break;
-            
+
         case 'Q'://spatialization
         case 'q':
             break;
-            
+
         case 'O':
         case 'o':
             toggleFullscreen();
             break;
-            
+
         case 'T':
         case 't':
             paramString = "";
@@ -1075,7 +1082,7 @@ void ofApp::keyPressed(int key){
                         if (selectedCloud >=0){
                             int theSpat = grainCloud->at(selectedCloud)->getSpatialMode();
                             grainCloud->at(selectedCloud)->setSpatialMode(theSpat - 1,-1);
-                            
+
                         }
                     }else{
                         if (selectedCloud >=0){
@@ -1086,7 +1093,7 @@ void ofApp::keyPressed(int key){
                 }
             }
             break;
-            
+
         case 'S'://overlap control
         case 's':
             paramString = "";
@@ -1125,7 +1132,7 @@ void ofApp::keyPressed(int key){
                         if (selectedCloud >=0){
                             int theDir = grainCloud->at(selectedCloud)->getDirection();
                             grainCloud->at(selectedCloud)->setDirection(theDir - 1);
-                            
+
                         }
                     }else{
                         if (selectedCloud >=0){
@@ -1142,7 +1149,7 @@ void ofApp::keyPressed(int key){
             break;
         case 'P'://waveform display on/off
         case 'p':
-            
+
             //            for (int i = 0; i < soundViews->size();i++){
             //                soundViews->at(i)->toggleWaveDisplay();
             //            }
@@ -1157,7 +1164,7 @@ void ofApp::keyPressed(int key){
                     if (selectedCloud >=0){
                         int theWin = grainCloud->at(selectedCloud)->getWindowType();
                         grainCloud->at(selectedCloud)->setWindowType(theWin - 1);
-                        
+
                     }
                 }else{
                     if (selectedCloud >=0){
@@ -1166,9 +1173,9 @@ void ofApp::keyPressed(int key){
                     }
                 }
             }
-            
+
             break;
-            
+
         case 'B':
         case 'b':
             //cloud volume
@@ -1188,14 +1195,14 @@ void ofApp::keyPressed(int key){
                     }
                 }
             }
-            
-            
+
+
             break;
-            
+
         case '/'://switch to menu view
         case '?':
             menuFlag = !menuFlag;
-            
+
             break;
         case 'G':
         case 'g':
@@ -1219,7 +1226,7 @@ void ofApp::keyPressed(int key){
                     break;
                     */
                 }else{
-                    int idx = grainCloud->size();
+                   // int idx = grainCloud->size();
                     /*if (selectedCloud >=0){
                         if (numClouds > 0){
                             grainCloudVis->at(selectedCloud)->setSelectState(false);
@@ -1231,16 +1238,16 @@ void ofApp::keyPressed(int key){
                     //create visualization
                     grainCloudVis->push_back(new GrainClusterVis(mouseX,mouseY,numVoices,soundViews));
                     //select new cloud
-                    grainCloudVis->at(idx)->setSelectState(false);
+                    grainCloudVis->back()->setSelectState(false);
                     //register visualization with audio
-                    grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
+                    grainCloud->back()->registerVis(grainCloudVis->back());
                     //grainCloud->at(idx)->toggleActive();
                     numClouds+=1;
                 }
                 //                        cout << "cloud added" << endl;
                 //grainControl->newCluster(mouseX,mouseY,1);
             }
-            
+
             break;
         case 'V': //grain voices (add, delete)
         case 'v':
@@ -1254,7 +1261,7 @@ void ofApp::keyPressed(int key){
                             grainCloud->at(selectedCloud)->removeGrain();
                         //cout << "grain removed" << endl;
                     }
-                    
+
                 }else{
                     if (selectedCloud >=0){
                         if (grainCloud)
@@ -1264,7 +1271,7 @@ void ofApp::keyPressed(int key){
                 }
             }
             break;
-            
+
         case 'D':
         case 'd':
             paramString = "";
@@ -1287,8 +1294,8 @@ void ofApp::keyPressed(int key){
         case 'I':
         case 'i':
             break;
-            
-            
+
+
         case 'L':
         case 'l':
             paramString = "";
@@ -1308,7 +1315,7 @@ void ofApp::keyPressed(int key){
                 }
             }
             break;
-            
+
         case 'K':
         case 'k':
             paramString = "";
@@ -1333,9 +1340,9 @@ void ofApp::keyPressed(int key){
             showHelpMenu = true;
             break;
         /*case ' '://add delete
-            
+
             break;*/
-            
+
         case 'X':
         case 'x':
             paramString = "";
@@ -1350,7 +1357,7 @@ void ofApp::keyPressed(int key){
                 currentParam = MOTIONY;
             }
             break;
-            
+
         case 'Z':
         case 'z':
             paramString = "";
@@ -1370,7 +1377,7 @@ void ofApp::keyPressed(int key){
                 }
             }
             break;
-            
+
         case '-':
         case '_':
             paramString.insert(0,"-");
@@ -1379,7 +1386,7 @@ void ofApp::keyPressed(int key){
         case OF_KEY_BACKSPACE:
             if (paramString == ""){
                 if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
-                    //delete grainCloud->at(selectedCloud);
+                    delete grainCloud->at(selectedCloud);
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
                     grainCloudVis->erase(grainCloudVis->begin() + selectedCloud);
                     if(editMode == selectedCloud)
@@ -1390,7 +1397,7 @@ void ofApp::keyPressed(int key){
             }else{
                 if (paramString.size () > 0)  paramString.resize (paramString.size () - 1);
             }
-            
+
             break;
         case 'A':
         case 'a':
@@ -1403,17 +1410,17 @@ void ofApp::keyPressed(int key){
         case 'm':
             voiceLimiterActive = !voiceLimiterActive;
             break;
-            
+
         //Ubuntu Ginn events
         case OF_KEY_UP:
         {
             if(selectedRect != -1){
                 float incrementFactorX = 0.0f;
                 float incrementFactorY = 50.0f;
-                    
+
                 float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
                 float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
-                
+
                 //update width and height
                 soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
             }
@@ -1424,10 +1431,10 @@ void ofApp::keyPressed(int key){
             if(selectedRect != -1){
                 float incrementFactorX = 50.0f;
                 float incrementFactorY = 0.0f;
-                
+
                 float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
                 float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
-                
+
                 //update width and height
                 soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
             }
@@ -1438,10 +1445,10 @@ void ofApp::keyPressed(int key){
             if(selectedRect != -1){
                 float incrementFactorX = 0.0f;
                 float incrementFactorY = -50.0f;
-                
+
                 float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
                 float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
-                
+
                 //update width and height
                 soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
             }
@@ -1452,10 +1459,10 @@ void ofApp::keyPressed(int key){
             if(selectedRect != -1){
                 float incrementFactorX = -50.0f;
                 float incrementFactorY = 0.0f;
-                
+
                 float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
                 float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
-                
+
                 //update width and height
                 soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
             }
@@ -1474,16 +1481,16 @@ void ofApp::keyPressed(int key){
                     incrementFactorX = 50.0f;
                     incrementFactorY = 50.0f;
                 }
-                
+
                 float newWidth = soundViews->at(selectedRect)->getWidth() + incrementFactorX;
                 float newHeight = soundViews->at(selectedRect)->getHeight() + incrementFactorY;
-                
+
                 //update width and height
                 soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
             }
             break;
         }
-            
+
         default:
             break;
     }
@@ -1491,14 +1498,14 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    
+
     switch (key) {
         case OF_KEY_SHIFT:
         case OF_KEY_ALT:
         case OF_KEY_CONTROL:
             modkey = -1;
             break;
-            
+
         case 'a':
             break;
         case 'R':
@@ -1518,9 +1525,9 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y){
-    
+
     updateMouseCoords(x,y);
-    
+
     if (selectedCloud >=0){
         switch (currentParam) {
             case MOTIONX:
@@ -1536,7 +1543,7 @@ void ofApp::mouseMoved(int x, int y){
                 break;
         }
     }
-    
+
     //ofShowCursor(); // Hotfix of 0.8.4 bug if you want to show real cursor
 }
 
@@ -1546,7 +1553,7 @@ void ofApp::mouseDragged(int x, int y, int button){
     updateMouseCoords(x,y);
     int xDiff = 0;
     int yDiff = 0;
-    
+
     if(button == OF_MOUSE_BUTTON_1){
         if (selectedCloud >= 0 &&  !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
             grainCloudVis->at(selectedCloud)->updateCloudPosition(mouseX,mouseY);
@@ -1554,17 +1561,17 @@ void ofApp::mouseDragged(int x, int y, int button){
         else if(editMode != -1){
             //check if finger is still on the parameter disc
             isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
-            
+
             if(isEditingParameter){
                 grainCloud->at(editMode)->updateParameter(x, y);
             }
         }
         else{
-            
+
             switch (dragMode) {
                 case MOVE:
                     if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
-                        
+
                         if (selectedRect >=0){                    //movement case
                             soundViews->at(selectedRect)->move(mouseX - lastDragX,mouseY - lastDragY);
                         }
@@ -1572,19 +1579,19 @@ void ofApp::mouseDragged(int x, int y, int button){
                     lastDragX = mouseX;
                     lastDragY = mouseY;
                     break;
-                    
+
                 case RESIZE:
                     if( (lastDragX != veryHighNumber) && (lastDragY != veryHighNumber)){
                         //cout << "drag ok" << endl;
                         //for width height - use screen coords
-                        
+
                         if (selectedRect >= 0){
                             xDiff = x - lastDragX;
                             yDiff = y - lastDragY;
                             //get width and height
                             float newWidth = soundViews->at(selectedRect)->getWidth();
                             float newHeight = soundViews->at(selectedRect)->getHeight();
-                            
+
                             int thresh = 0;
                             //check motion mag
                             if (xDiff < -thresh){
@@ -1599,13 +1606,13 @@ void ofApp::mouseDragged(int x, int y, int button){
                                 if (yDiff < -thresh)
                                     newHeight = newHeight * 0.8 + 0.2*(newHeight * (0.85 - abs(yDiff/50.0)));
                             }
-                            
+
                             //update width and height
                             soundViews->at(selectedRect)->setWidthHeight(newWidth,newHeight);
-                            
+
                         }
-                        
-                        
+
+
                     }
                     lastDragX = x;
                     lastDragY = y;
@@ -1620,29 +1627,29 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     isEditingParameter = false;
-    
+
     // Double-click check
     // check if mousePressedCounter = 0 to prevent creating cloud if clicking in toggleFullscreen area (see above)
     if(button == OF_MOUSE_BUTTON_1 && (ofGetFrameNum() - lastClickFrame) < DOUBLE_CLICK_SPEED && mousePressedCounter == 0){
         mouseDoubleClicked(x, y, button);
     }
-    
-    
+
+
     //look for selections if left button is down
     if (button == OF_MOUSE_BUTTON_1){
-        
+
         paramString = "";
-        
+
         //hide menu
         if (menuFlag == true)
             menuFlag = false;
-        
+
         deselect(CLOUD);
         //deselect existing selections
         deselect(RECT);
         //exit parameter editing
         currentParam = -1;
-        
+
         lastDragX = veryHighNumber;
         lastDragY = veryHighNumber;
         //first check grain clouds to see if we have selection
@@ -1657,8 +1664,8 @@ void ofApp::mousePressed(int x, int y, int button){
                 break;
             }
         }
-        
-        
+
+
         //clear selection buffer
         if (selectionIndices)
             delete selectionIndices;
@@ -1677,32 +1684,32 @@ void ofApp::mousePressed(int x, int y, int button){
                     //break;
                 }
             }
-            
+
             if (selectionIndices->size() > 0){
                 selectedRect = selectionIndices->at(0);
                 soundViews->at(selectedRect)->setSelectState(true);
             }
         }
-        
-        
-        
+
+
+
         //edit mode
         if(editMode != -1){
             isEditingParameter = grainCloud->at(editMode)->selectParameter(x, y);
         }
-        
+
     }
-    
+
     // If current selected cloud is not the one we were editing, exit editMode
     if(selectedCloud != editMode && !isEditingParameter){
         editMode = -1;
     }
-    
+
     // Show help with right click pressed
     if(button == OF_MOUSE_BUTTON_3){
         showHelpMenu = true;
     }
-    
+
     // Check if we click several times on the upper left corner and toggle fullscreen.
     // This to be able to quit fullscreen app when only in touch
     if(x < CLIC_COUNTER_AREA_SIZE && y < CLIC_COUNTER_AREA_SIZE){
@@ -1718,8 +1725,8 @@ void ofApp::mousePressed(int x, int y, int button){
         toggleFullscreen();
         mousePressedCounter = 0;
     }
-    
-    
+
+
     // Get the frame number of this click.
     // Must be the last thing to do
     lastClickFrame = ofGetFrameNum();
@@ -1737,15 +1744,15 @@ void ofApp::mouseReleased(int x, int y, int button){
 void ofApp::mouseDoubleClicked(int x, int y, int button){
     // Create a cloud, only if there is no other cloud selected (allow other future behavior on double click on a selected cloud)
     if(selectedCloud == -1){
-        int idx = grainCloud->size();
+        //int idx = grainCloud->size();
         //create audio
         grainCloud->push_back(new GrainCluster(mySounds,numVoices, settings));
         //create visualization
         grainCloudVis->push_back(new GrainClusterVis(mouseX,mouseY,numVoices,soundViews));
         //select new cloud
-        grainCloudVis->at(idx)->setSelectState(false);
+        grainCloudVis->back()->setSelectState(false);
         //register visualization with audio
-        grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
+        grainCloud->back()->registerVis(grainCloudVis->back());
         //grainCloud->at(idx)->toggleActive();
         numClouds+=1;
     }
@@ -1766,7 +1773,7 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
@@ -1774,50 +1781,60 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 // Augmenta Events
 //--------------------------------------------------------------
 void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
+
+
+    g_thisApp->myLock->lock();
+
     // Translate relative position of the person (between 0 & 1) to a screen position in pixels, restricted to the interactive area
     int posX = ofGetWidth() * (augmentaEvent.person->centroid.x * interactiveArea.width + interactiveArea.x);
     int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
-    
+
     // Create a new grain based on person
-    int idx = grainCloud->size();
-    
+    //int idx = grainCloud->size();
+
     //create audio
     grainCloud->push_back(new GrainCluster(augmentaEvent.person->pid, mySounds,numVoices, settings));
     //create visualization
     grainCloudVis->push_back(new GrainClusterVis(posX,posY,numVoices,soundViews));
     //select new cloud
-    grainCloudVis->at(idx)->setSelectState(false);
+    grainCloudVis->back()->setSelectState(false);
     //register visualization with audio
-    grainCloud->at(idx)->registerVis(grainCloudVis->at(idx));
+    grainCloud->back()->registerVis(grainCloudVis->back());
     //grainCloud->at(idx)->toggleActive();
     numClouds+=1;
-    
+
     //update voices with voice limiter
     if(voiceLimiterActive)
         voiceLimiter();
+
+            g_thisApp->myLock->unlock();
 }
 
 void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
+        g_thisApp->myLock->lock();
     // Translate relative position of the person (between 0 & 1) to a screen position in pixels, restricted to the interactive area
     int posX = ofGetWidth() * (augmentaEvent.person->centroid.x * interactiveArea.width + interactiveArea.x);
     int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
-    
+
     // Update grain's position with person associated
     grainCloudVis->at(getIndexOfGrainCloudWithPID(augmentaEvent.person->pid))->updateCloudPosition(posX,posY);
+        g_thisApp->myLock->unlock();
 }
 
 void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
+
+        g_thisApp->myLock->lock();
     int pid = augmentaEvent.person->pid;
-    
+
     if (grainCloud->size() > 0){
         //GrainCluster* grainCloudToDelete = getGrainCloudWithPID(pid);
         //GrainClusterVis* grainCloudVisToDelete = grainCloudToDelete->getRegisteredVis();
-        
+
         int index = getIndexOfGrainCloudWithPID(pid);
-        
+
         if(selectedCloud != -1){
             int selectedCloudPid = grainCloud->at(selectedCloud)->getId();
-            
+
             // if the person leaving is selected, we deselect it
             if(selectedCloudPid == pid){
                 deselect(CLOUD);
@@ -1827,21 +1844,23 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
                 selectedCloud--;
             }
         }
-        
-        //delete grainCloud->at(index);
+
+        delete grainCloud->at(index);
         grainCloud->erase(grainCloud->begin() + index);
         grainCloudVis->erase(grainCloudVis->begin() + index);
-        
+
         // TO FIX ? Do not delete grain cloud, because GrainVoice Destructor delete the sounds and singleton Window
         //delete grainCloudVisToDelete;
         //delete grainCloudToDelete;
-        
+
         numClouds-=1;
     }
-    
+
     //update voices with voice limiter
     if(voiceLimiterActive)
         voiceLimiter();
+
+            g_thisApp->myLock->unlock();
 }
 
 GrainCluster* ofApp::getGrainCloudWithPID(int pid){
@@ -1862,7 +1881,7 @@ int ofApp::getIndexOfGrainCloudWithPID(int pid){
 
 bool ofApp::belongsToAugmenta(int pid){
     vector<Augmenta::Person *> people = augmentaReceiver.getPeople();
-    
+
     for(int i=0; i<people.size(); i++){
         if(people[i]->pid == pid)
             return true;
@@ -1873,7 +1892,7 @@ bool ofApp::belongsToAugmenta(int pid){
 void ofApp::voiceLimiter(){
     // Distribute the voices in clouds
     float voicesPerCloud = (float)voicesLimit / (float)grainCloud->size();
-    
+
     // There is not enough clouds to reach the limit : we set voices to the max limit per cloud
     if(voicesPerCloud >= maxVoicesPerCloud){
         for(int i=0; i<grainCloud->size(); i++){
@@ -1895,7 +1914,7 @@ void ofApp::voiceLimiter(){
             else{
                 // Distribute voices randomly
                 float probability = (float)remainingVoices / (float)(grainCloud->size()-i);
-                
+
                 if((float)std::rand()/RAND_MAX <= probability){
                     grainCloud->at(i)->setGrains(1);
                     remainingVoices--;
