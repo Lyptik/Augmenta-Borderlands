@@ -832,6 +832,7 @@ void ofApp::drawHelp(){
                        "K key (+shift)	  Adjust playback rate LFO amplitude\n"
                        "B key (+shift)	  Adjust cloud volume in dB", 10, 32);
     
+    // Voice Limiter state
     if(voiceLimiterActive){
         ofSetColor(ofColor::green);
         ofDrawBitmapString("Voice Limiter ON", 800, 32);
@@ -841,8 +842,24 @@ void ofApp::drawHelp(){
         ofDrawBitmapString("Voice Limiter OFF", 800, 32);
     }
     
+    // OSC port
     ofSetColor(ofColor::white);
     ofDrawBitmapString(oscPortDisplayMessage, 800, 50);
+    
+    // Number of grains
+    std::stringstream number;
+    number << grainCloud->size();
+    ofDrawBitmapString(number.str()+" grains", 800, 68);
+    
+    int totalVoices = 0;
+    for(int i=0; i<grainCloud->size(); i++){
+        if(grainCloud->at(i)->getActiveState()){
+            totalVoices += grainCloud->at(i)->getNumVoices();
+        }
+    }
+    number.str("");
+    number << totalVoices;
+    ofDrawBitmapString(number.str()+" voices", 800, 86);
 }
 
 //--------------------------------------------------------------
