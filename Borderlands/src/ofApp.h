@@ -159,6 +159,8 @@ class ofApp : public ofBaseApp{
     
         //initial number of voices when a new grain is created
         int numVoices;
+        //max number of tracked people by Augmenta
+        int maxNumPeople;
     
         #ifdef MAC_OS_X_VERSION_10_6
         ofxSyphonServer syphonServer;

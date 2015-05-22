@@ -126,6 +126,9 @@ void ofApp::init(){
     //initial number of voices when a new grain is created
     numVoices = 8;
     
+    //max number of tracked people by Augmenta
+    maxNumPeople = INT32_MAX;
+    
     generateOutsideInteractiveArea = false;
     interactiveArea = ofRectangle(0.0f, 0.0f, 1.0f, 1.0f);
     oscPort = 12000;
@@ -173,6 +176,8 @@ void ofApp::loadSettings(){
     maxVoicesPerCloud = settings.getValue("appSettings:maxVoicesPerCloud", maxVoicesPerCloud);
     
     numVoices = settings.getValue("cloudSettings:numVoices", numVoices);
+    numVoices = settings.getValue("cloudSettings:numVoices", numVoices);
+    maxNumPeople = settings.getValue("cloudSettings:maxTrackedPeople", maxNumPeople);
     
     
     if(settings.getValue("appSettings:createSoundsOutside", "") == "true")
@@ -597,6 +602,7 @@ void ofApp::setup(){
     }
     
     ofxAddAugmentaListeners(this);  // for augmenta events
+    augmentaReceiver.setMaxNumPeople(maxNumPeople);
     
     // TODO : Change to value from xml (beware nothing to do with window size)
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
