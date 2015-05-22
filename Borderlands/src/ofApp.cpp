@@ -1348,6 +1348,8 @@ void ofApp::keyPressed(int key){
                 if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
                     grainCloudVis->erase(grainCloudVis->begin() + selectedCloud);
+                    if(editMode == selectedCloud)
+                        editMode = -1;
                     selectedCloud = -1;
                     numClouds-=1;
                 }
