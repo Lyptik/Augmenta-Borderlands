@@ -265,7 +265,7 @@ void GrainCluster::removeGrain(){
 }
 
 void GrainCluster::setGrains(int num){
-    isActive = true;
+    setActiveState(true);
     int grainsToAdd = num - myGrains->size();
     
     if(num == 0){
