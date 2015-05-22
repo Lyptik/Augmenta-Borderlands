@@ -41,6 +41,7 @@ AudioFileSet::~AudioFileSet()
             delete fileSet->at(i);
         }
     }
+    //delete fileSet;
     
 }
 
