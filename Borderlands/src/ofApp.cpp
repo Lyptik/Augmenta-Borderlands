@@ -1839,7 +1839,7 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
 }
 
 void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
-       g_thisApp->myLock->lock();
+  /*     g_thisApp->myLock->lock();
     // Translate relative position of the person (between 0 & 1) to a screen position in pixels, restricted to the interactive area
     int posX = ofGetWidth() * (augmentaEvent.person->centroid.x * interactiveArea.width + interactiveArea.x);
     int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
@@ -1849,7 +1849,7 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
     if(index >= 0){
     grainCloudVis->at(index)->updateCloudPosition(posX,posY);
 }
-       g_thisApp->myLock->unlock();
+       g_thisApp->myLock->unlock();*/
 }
 
 void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
