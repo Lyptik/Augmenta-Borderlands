@@ -1391,9 +1391,11 @@ void ofApp::keyPressed(int key){
         case OF_KEY_BACKSPACE:
             if (paramString == ""){
                 if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
-                    delete grainCloud->at(selectedCloud);
+
+        GrainCluster* tmp =   grainCloud->at(selectedCloud);
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
                     grainCloudVis->erase(grainCloudVis->begin() + selectedCloud);
+                    delete tmp;
                     if(editMode == selectedCloud)
                         editMode = -1;
                     selectedCloud = -1;
@@ -1839,7 +1841,7 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
 }
 
 void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
-  /*     g_thisApp->myLock->lock();
+       g_thisApp->myLock->lock();
     // Translate relative position of the person (between 0 & 1) to a screen position in pixels, restricted to the interactive area
     int posX = ofGetWidth() * (augmentaEvent.person->centroid.x * interactiveArea.width + interactiveArea.x);
     int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
@@ -1849,7 +1851,7 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
     if(index >= 0){
     grainCloudVis->at(index)->updateCloudPosition(posX,posY);
 }
-       g_thisApp->myLock->unlock();*/
+       g_thisApp->myLock->unlock();
 }
 
 void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
@@ -1877,10 +1879,12 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
         }
         if(index != -1){
 
-        delete grainCloud->at(index);
+        GrainCluster* tmp =  grainCloud->at(index);
 
         grainCloud->erase(grainCloud->begin() + index);
         grainCloudVis->erase(grainCloudVis->begin() + index);
+
+        delete tmp;
 
         // TO FIX ? Do not delete grain cloud, because GrainVoice Destructor delete the sounds and singleton Window
         //delete grainCloudVisToDelete;
