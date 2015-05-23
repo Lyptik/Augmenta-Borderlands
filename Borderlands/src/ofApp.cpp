@@ -609,7 +609,7 @@ void ofApp::setup(){
     }
 
     ofxAddAugmentaListeners(this);  // for augmenta events
-    augmentaReceiver.setMaxNumPeople(maxNumPeople);
+   // augmentaReceiver.setMaxNumPeople(maxNumPeople);
 
     // TODO : Change to value from xml (beware nothing to do with window size)
     m_fbo.allocate(ofGetWidth(), ofGetHeight());
