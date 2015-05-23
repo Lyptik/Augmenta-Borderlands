@@ -888,6 +888,9 @@ void ofApp::drawHelp(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
+
+    myLock->lock();
+
     static float sidewaysMoveSpeed = 10.0f;
     static float upDownMoveSpeed = 10.0f;
 
@@ -1388,7 +1391,6 @@ void ofApp::keyPressed(int key){
         case OF_KEY_BACKSPACE:
             if (paramString == ""){
                 if (selectedCloud >=0 && !belongsToAugmenta(grainCloud->at(selectedCloud)->getId())){
-                    myLock->lock();
                     delete grainCloud->at(selectedCloud);
                     grainCloud->erase(grainCloud->begin() + selectedCloud);
                     grainCloudVis->erase(grainCloudVis->begin() + selectedCloud);
@@ -1396,7 +1398,6 @@ void ofApp::keyPressed(int key){
                         editMode = -1;
                     selectedCloud = -1;
                     numClouds-=1;
-                    myLock->unlock();
                 }
             }else{
                 if (paramString.size () > 0)  paramString.resize (paramString.size () - 1);
@@ -1498,6 +1499,9 @@ void ofApp::keyPressed(int key){
         default:
             break;
     }
+
+
+    myLock->unlock();
 }
 
 //--------------------------------------------------------------
@@ -1530,6 +1534,8 @@ void ofApp::keyReleased(int key){
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y){
 
+
+    myLock->lock();
     updateMouseCoords(x,y);
 
     if (selectedCloud >=0){
@@ -1548,12 +1554,18 @@ void ofApp::mouseMoved(int x, int y){
         }
     }
 
+
+    myLock->unlock();
+
     //ofShowCursor(); // Hotfix of 0.8.4 bug if you want to show real cursor
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
     //update mouse coordinates based on drag position
+
+
+    myLock->lock();
     updateMouseCoords(x,y);
     int xDiff = 0;
     int yDiff = 0;
@@ -1626,10 +1638,15 @@ void ofApp::mouseDragged(int x, int y, int button){
             }
         }
     }
+
+
+    myLock->unlock();
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+
+    myLock->lock();
     isEditingParameter = false;
 
     // Double-click check
@@ -1734,6 +1751,9 @@ void ofApp::mousePressed(int x, int y, int button){
     // Get the frame number of this click.
     // Must be the last thing to do
     lastClickFrame = ofGetFrameNum();
+
+
+    myLock->unlock();
 }
 
 //--------------------------------------------------------------
@@ -1746,7 +1766,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseDoubleClicked(int x, int y, int button){
-
+/*
     myLock->lock();
     // Create a cloud, only if there is no other cloud selected (allow other future behavior on double click on a selected cloud)
     if(selectedCloud == -1){
@@ -1767,7 +1787,7 @@ void ofApp::mouseDoubleClicked(int x, int y, int button){
         editMode = selectedCloud;
     }
 
-    myLock->unlock();
+    myLock->unlock();*/
 }
 
 //--------------------------------------------------------------
@@ -1826,7 +1846,7 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
 
     // Update grain's position with person associated
     int index = getIndexOfGrainCloudWithPID(augmentaEvent.person->pid);
-    if(index != -1){
+    if(index >= 0){
     grainCloudVis->at(index)->updateCloudPosition(posX,posY);
 }
        g_thisApp->myLock->unlock();
