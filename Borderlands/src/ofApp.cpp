@@ -687,6 +687,52 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+  g_thisApp->myLock->lock();
+    Augmenta::Scene* scene = augmentaReceiver.getScene();
+    int numPeople = scene->numPeople ;
+
+    
+
+    for(int i=0; i<grainCloud->size(); i++){
+        if(grainCloud->at(i)->getId() >= numPeople){
+
+        int index = i;
+
+        if(selectedCloud != -1){
+            int selectedCloudPid = grainCloud->at(selectedCloud)->getId();
+
+            // if the person leaving is selected, we deselect it
+            if(selectedCloudPid == grainCloud->at(i)->getId()){
+                deselect(CLOUD);
+            }
+            // if an other person is selected and is after the person leaving in the vector, we update its index
+            else if(selectedCloud >= index){
+                selectedCloud--;
+            }
+        }
+        if(index != -1){
+
+        GrainCluster* tmp =  grainCloud->at(index);
+
+        grainCloud->erase(grainCloud->begin() + index);
+        grainCloudVis->erase(grainCloudVis->begin() + index);
+
+        delete tmp;
+
+        // TO FIX ? Do not delete grain cloud, because GrainVoice Destructor delete the sounds and singleton Window
+        //delete grainCloudVisToDelete;
+        //delete grainCloudToDelete;
+
+        numClouds-=1;
+        }
+    }
+    }
+
+    //update voices with voice limiter
+    if(voiceLimiterActive)
+        voiceLimiter();
+
+            g_thisApp->myLock->unlock();
 
 }
 
@@ -1861,50 +1907,7 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
 
 void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
 
-        g_thisApp->myLock->lock();
-    int pid = augmentaEvent.person->oid;
-
-    if (grainCloud->size() > 0){
-        //GrainCluster* grainCloudToDelete = getGrainCloudWithPID(pid);
-        //GrainClusterVis* grainCloudVisToDelete = grainCloudToDelete->getRegisteredVis();
-
-        int index = getIndexOfGrainCloudWithPID(pid);
-
-        if(selectedCloud != -1){
-            int selectedCloudPid = grainCloud->at(selectedCloud)->getId();
-
-            // if the person leaving is selected, we deselect it
-            if(selectedCloudPid == pid){
-                deselect(CLOUD);
-            }
-            // if an other person is selected and is after the person leaving in the vector, we update its index
-            else if(selectedCloud >= index){
-                selectedCloud--;
-            }
-        }
-        if(index != -1){
-
-        GrainCluster* tmp =  grainCloud->at(index);
-
-        grainCloud->erase(grainCloud->begin() + index);
-        grainCloudVis->erase(grainCloudVis->begin() + index);
-
-        delete tmp;
-
-        // TO FIX ? Do not delete grain cloud, because GrainVoice Destructor delete the sounds and singleton Window
-        //delete grainCloudVisToDelete;
-        //delete grainCloudToDelete;
-
-        numClouds-=1;
-        }
-    }
-
-    //update voices with voice limiter
-    if(voiceLimiterActive)
-        voiceLimiter();
-
-            g_thisApp->myLock->unlock();
-}
+      }
 
 GrainCluster* ofApp::getGrainCloudWithPID(int pid){
     for(int i=0; i<grainCloud->size(); i++){
