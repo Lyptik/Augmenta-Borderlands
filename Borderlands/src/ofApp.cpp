@@ -1767,7 +1767,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mouseDoubleClicked(int x, int y, int button){
 
-    myLock->lock();
+   /* myLock->lock();
     // Create a cloud, only if there is no other cloud selected (allow other future behavior on double click on a selected cloud)
     if(selectedCloud == -1){
         //int idx = grainCloud->size();
@@ -1787,7 +1787,7 @@ void ofApp::mouseDoubleClicked(int x, int y, int button){
         editMode = selectedCloud;
     }
 
-    myLock->unlock();
+    myLock->unlock();*/
 }
 
 //--------------------------------------------------------------
