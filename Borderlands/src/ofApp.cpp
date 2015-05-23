@@ -1822,8 +1822,10 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
     // Create a new grain based on person
     //int idx = grainCloud->size();
 
+    int index = getIndexOfGrainCloudWithPID(augmentaEvent.person->oid);
+    if(index < 0){
     //create audio
-    grainCloud->push_back(new GrainCluster(augmentaEvent.person->pid, mySounds,numVoices, settings));
+    grainCloud->push_back(new GrainCluster(augmentaEvent.person->oid, mySounds,numVoices, settings));
     //create visualization
     grainCloudVis->push_back(new GrainClusterVis(posX,posY,numVoices,soundViews));
     //select new cloud
@@ -1832,10 +1834,13 @@ void ofApp::onPersonEntered( Augmenta::EventArgs & augmentaEvent ){
     grainCloud->back()->registerVis(grainCloudVis->back());
     //grainCloud->at(idx)->toggleActive();
     numClouds+=1;
-
+    }else{
+    grainCloudVis->at(index)->updateCloudPosition(posX,posY);
+    }
     //update voices with voice limiter
     if(voiceLimiterActive)
         voiceLimiter();
+
 
             g_thisApp->myLock->unlock();
 }
@@ -1847,7 +1852,7 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
     int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
 
     // Update grain's position with person associated
-    int index = getIndexOfGrainCloudWithPID(augmentaEvent.person->pid);
+    int index = getIndexOfGrainCloudWithPID(augmentaEvent.person->oid);
     if(index >= 0){
     grainCloudVis->at(index)->updateCloudPosition(posX,posY);
 }
@@ -1857,7 +1862,7 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
 void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
 
         g_thisApp->myLock->lock();
-    int pid = augmentaEvent.person->pid;
+    int pid = augmentaEvent.person->oid;
 
     if (grainCloud->size() > 0){
         //GrainCluster* grainCloudToDelete = getGrainCloudWithPID(pid);
