@@ -1746,6 +1746,8 @@ void ofApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseDoubleClicked(int x, int y, int button){
+
+    myLock->lock();
     // Create a cloud, only if there is no other cloud selected (allow other future behavior on double click on a selected cloud)
     if(selectedCloud == -1){
         //int idx = grainCloud->size();
@@ -1764,6 +1766,8 @@ void ofApp::mouseDoubleClicked(int x, int y, int button){
     else if(selectedCloud != -1 && editMode == -1){
         editMode = selectedCloud;
     }
+
+    myLock->unlock();
 }
 
 //--------------------------------------------------------------
@@ -1821,7 +1825,10 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
     int posY = ofGetHeight() * (augmentaEvent.person->centroid.y * interactiveArea.height + interactiveArea.y);
 
     // Update grain's position with person associated
-    grainCloudVis->at(getIndexOfGrainCloudWithPID(augmentaEvent.person->pid))->updateCloudPosition(posX,posY);
+    int index = getIndexOfGrainCloudWithPID(augmentaEvent.person->pid);
+    if(index != -1){
+    grainCloudVis->at(index)->updateCloudPosition(posX,posY);
+}
        g_thisApp->myLock->unlock();
 }
 
@@ -1848,6 +1855,7 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
                 selectedCloud--;
             }
         }
+        if(index != -1){
 
         delete grainCloud->at(index);
 
@@ -1859,6 +1867,7 @@ void ofApp::onPersonWillLeave( Augmenta::EventArgs & augmentaEvent ){
         //delete grainCloudToDelete;
 
         numClouds-=1;
+        }
     }
 
     //update voices with voice limiter
