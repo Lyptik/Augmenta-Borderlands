@@ -607,6 +607,8 @@ void ofApp::setup(){
         std::cerr << "Error : " << e.what() << endl;
         oscPortDisplayMessage = "Could not bind to port " + ofToString(oscPort) + " !";
     }
+    
+    augmentaReceiver.setTimeOut(30);
 
     ofxAddAugmentaListeners(this);  // for augmenta events
    // augmentaReceiver.setMaxNumPeople(maxNumPeople);
@@ -1854,6 +1856,19 @@ void ofApp::onPersonUpdated( Augmenta::EventArgs & augmentaEvent ){
     int index = getIndexOfGrainCloudWithPID(augmentaEvent.person->pid);
     if(index >= 0){
         grainCloudVis->at(index)->updateCloudPosition(posX,posY);
+    }
+    // if the person is not found, we recreate it
+    else{
+        //create audio
+        grainCloud->push_back(new GrainCluster(augmentaEvent.person->pid, mySounds,numVoices, settings));
+        //create visualization
+        grainCloudVis->push_back(new GrainClusterVis(posX,posY,numVoices,soundViews));
+        //select new cloud
+        grainCloudVis->back()->setSelectState(false);
+        //register visualization with audio
+        grainCloud->back()->registerVis(grainCloudVis->back());
+        //grainCloud->at(idx)->toggleActive();
+        numClouds+=1;
     }
     g_thisApp->myLock->unlock();
 }
