@@ -21,7 +21,7 @@
 
     <!-- Voice limiter function : distribute voices in scene according to the voicesLimit to prevent sound crashes -->
     <useVoiceLimiter>true</useVoiceLimiter> 		<!-- enable the voice limiter function (true or false) -->
-    <voicesLimit>110</voicesLimit> 					<!-- limit the total number of voices in the scene. Use this parameter to prevent sound crashes -->
+    <voicesLimit>200</voicesLimit> 					<!-- limit the total number of voices in the scene. Use this parameter to prevent sound crashes -->
     <maxVoicesPerCloud>10</maxVoicesPerCloud> 		<!-- maximum number of voices per cloud when voiceLimiter is active -->
 </appSettings>
 
