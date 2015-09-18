@@ -44,6 +44,19 @@ You can use these free sounds to test the application (provided by Chris Carlson
 
 Performance obtained with Jackd2 on Linux are far more efficient than OSX and iPad version
 
+## Notice
+
+TOFIX :
+
+While lastminute debuggin we might have done wrong modification to track down remaining segfault (which were coming from discussion between jack and borderlands in linux through the jack driver, changing jack parameter fixed that (buffer was eaten in a too fast way by the api in borderlands))
+
+-> API is still not protected, should be, the application shoudl not crash (segfault) when jack has wrong parameter
+
+-> We might have removed some delete or other part of code which were suspicious, but there were not responsible finally so they should be reintroducesd and tested
+
+-> We were working without tracking with Augmenta at Gaite so we might have as well modified the way Borderlands use the point, this should also be checked
+(This could be broken with a normal use of Augmenta)
+
 ## Credits
 
 Copyright (C) 2015 Théoriz Studio
