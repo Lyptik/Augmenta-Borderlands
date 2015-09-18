@@ -47,6 +47,11 @@ GrainCluster::~GrainCluster()
         delete myLock; 
     if (channelMults)
         delete[] channelMults;
+    if (parameterPositions.size() != 0){
+        for(int i=0; i<parameterPositions.size(); i++){
+            delete parameterPositions.at(i);
+        }
+    }
 }
 
 
@@ -840,8 +845,14 @@ void GrainCluster::updateSpatialization(){
 //-----------------------------------------------------------------------------------------------
 
 GrainClusterVis::~GrainClusterVis(){
-    if (myGrainsV)
+    if (myGrainsV){
+        if(myGrainsV->size() != 0){
+            for(int i=0; i<myGrainsV->size(); i++){
+                delete myGrainsV->at(i);
+            }
+        }
         delete myGrainsV;
+    }
 }
 
 GrainClusterVis::GrainClusterVis(float x, float y, unsigned int numVoices,vector<SoundRect*>*rects)

@@ -1,11 +1,11 @@
-# Augmenta Borderlands
+﻿# Augmenta Borderlands
 
 This is a fork of Christopher Carlson's Borderlands interactive granular sampler
 
 Original code is hosted here : https://github.com/Lyptik/Borderlands
 
 Project website:
-	http::/ccrma.stanford.edu/~carlsonc/256a/Borderlands/index.html
+	http://ccrma.stanford.edu/~carlsonc/256a/Borderlands/index.html
 
 ## Features
 

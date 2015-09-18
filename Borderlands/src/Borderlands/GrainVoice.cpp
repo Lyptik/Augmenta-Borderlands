@@ -37,9 +37,9 @@
 //-----------------------------------------------------------------------------
 GrainVoice::~GrainVoice()
 {
-    
-    if (theSounds != NULL)
-        delete theSounds;
+    // Don't delete because reference to the sounds used in the app
+    //if (theSounds != NULL)
+    //    delete theSounds;
     
     if (playPositions !=NULL)
         delete [] playPositions;
@@ -47,8 +47,9 @@ GrainVoice::~GrainVoice()
     if (playVols != NULL)
         delete [] playVols;
     
-    if (window != NULL)
-        delete[]window;
+    // Don't delete because window is an instance of singleton
+    //if (window != NULL)
+    //    delete [] window;
     
     if (activeSounds!=NULL)
         delete activeSounds;
